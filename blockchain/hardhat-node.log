@@ -1,0 +1,1138 @@
+
+> drugchain-blockchain@1.0.0 node
+> hardhat node
+
+Started HTTP and WebSocket JSON-RPC server at http://127.0.0.1:8545/
+
+Accounts
+========
+
+WARNING: These accounts, and their private keys, are publicly known.
+Any funds sent to them on Mainnet or any other live network WILL BE LOST.
+
+Account #0: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 (10000 ETH)
+Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+
+Account #1: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 (10000 ETH)
+Private Key: 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d
+
+Account #2: 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC (10000 ETH)
+Private Key: 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a
+
+Account #3: 0x90F79bf6EB2c4f870365E785982E1f101E93b906 (10000 ETH)
+Private Key: 0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6
+
+Account #4: 0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65 (10000 ETH)
+Private Key: 0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a
+
+Account #5: 0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc (10000 ETH)
+Private Key: 0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba
+
+Account #6: 0x976EA74026E726554dB657fA54763abd0C3a0aa9 (10000 ETH)
+Private Key: 0x92db14e403b83dfe3df233f83dfa3a0d7096f21ca9b0d6d6b8d88b2b4ec1564e
+
+Account #7: 0x14dC79964da2C08b23698B3D3cc7Ca32193d9955 (10000 ETH)
+Private Key: 0x4bbbf85ce3377467afe5d46f804f221813b2bb87f24d81f60f1fcdbf7cbf4356
+
+Account #8: 0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f (10000 ETH)
+Private Key: 0xdbda1821b80551c9d65939329250298aa3472ba22feea921c0cf5d620ea67b97
+
+Account #9: 0xa0Ee7A142d267C1f36714E4a8F75612F20a79720 (10000 ETH)
+Private Key: 0x2a871d0798f97d79848a013d4936a73bf4cc922c825d33c1cf7073dff6d409c6
+
+Account #10: 0xBcd4042DE499D14e55001CcbB24a551F3b954096 (10000 ETH)
+Private Key: 0xf214f2b2cd398c806f84e317254e0f0b801d0643303237d97a22a48e01628897
+
+Account #11: 0x71bE63f3384f5fb98995898A86B02Fb2426c5788 (10000 ETH)
+Private Key: 0x701b615bbdfb9de65240bc28bd21bbc0d996645a3dd57e7b12bc2bdf6f192c82
+
+Account #12: 0xFABB0ac9d68B0B445fB7357272Ff202C5651694a (10000 ETH)
+Private Key: 0xa267530f49f8280200edf313ee7af6b827f2a8bce2897751d06a843f644967b1
+
+Account #13: 0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec (10000 ETH)
+Private Key: 0x47c99abed3324a2707c28affff1267e45918ec8c3f20b8aa892e8b065d2942dd
+
+Account #14: 0xdF3e18d64BC6A983f673Ab319CCaE4f1a57C7097 (10000 ETH)
+Private Key: 0xc526ee95bf44d8fc405a158bb884d9d1238d99f0612e9f33d006bb0789009aaa
+
+Account #15: 0xcd3B766CCDd6AE721141F452C550Ca635964ce71 (10000 ETH)
+Private Key: 0x8166f546bab6da521a8369cab06c5d2b9e46670292d85c875ee9ec20e84ffb61
+
+Account #16: 0x2546BcD3c84621e976D8185a91A922aE77ECEc30 (10000 ETH)
+Private Key: 0xea6c44ac03bff858b476bba40716402b03e41b8e97e276d1baec7c37d42484a0
+
+Account #17: 0xbDA5747bFD65F08deb54cb465eB87D40e51B197E (10000 ETH)
+Private Key: 0x689af8efa8c651a91ad287602527f3af2fe9f6501a7ac4b061667b5a93e037fd
+
+Account #18: 0xdD2FD4581271e230360230F9337D5c0430Bf44C0 (10000 ETH)
+Private Key: 0xde9be858da4a475276426320d5e9262ecfc3ba460bfac56360bfa6c4c28b4ee0
+
+Account #19: 0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199 (10000 ETH)
+Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
+
+WARNING: These accounts, and their private keys, are publicly known.
+Any funds sent to them on Mainnet or any other live network WILL BE LOST.
+
+[32meth_chainId[0m
+[32meth_accounts[0m
+[32mhardhat_metadata[0m
+[32mhardhat_metadata (2)[0m
+[32mhardhat_metadata (3)[0m
+[32mhardhat_metadata (4)[0m
+[32mhardhat_metadata (5)[0m
+[32mhardhat_metadata (6)[0m
+[32mhardhat_metadata (7)[0m
+[32mhardhat_metadata (8)[0m
+[32mhardhat_metadata (9)[0m
+[32mhardhat_metadata (10)[0m
+[32mhardhat_metadata (11)[0m
+[32mhardhat_metadata (12)[0m
+[32mhardhat_metadata (13)[0m
+[32mhardhat_metadata (14)[0m
+[32mhardhat_metadata (15)[0m
+[32mhardhat_metadata (16)[0m
+[32mhardhat_metadata (17)[0m
+[32mhardhat_metadata (18)[0m
+[32mhardhat_metadata (19)[0m
+[32mhardhat_metadata (20)[0m
+[32meth_chainId[0m
+[32meth_getBalance[0m
+[32meth_accounts[0m
+[32mhardhat_metadata[0m
+[32mhardhat_metadata (2)[0m
+[32mhardhat_metadata (3)[0m
+[32mhardhat_metadata (4)[0m
+[32mhardhat_metadata (5)[0m
+[32mhardhat_metadata (6)[0m
+[32mhardhat_metadata (7)[0m
+[32mhardhat_metadata (8)[0m
+[32mhardhat_metadata (9)[0m
+[32mhardhat_metadata (10)[0m
+[32mhardhat_metadata (11)[0m
+[32mhardhat_metadata (12)[0m
+[32mhardhat_metadata (13)[0m
+[32mhardhat_metadata (14)[0m
+[32mhardhat_metadata (15)[0m
+[32mhardhat_metadata (16)[0m
+[32mhardhat_metadata (17)[0m
+[32mhardhat_metadata (18)[0m
+[32mhardhat_metadata (19)[0m
+[32mhardhat_metadata (20)[0m
+[32meth_blockNumber[0m
+[32meth_getBlockByNumber[0m
+[32meth_feeHistory[0m
+[32meth_maxPriorityFeePerGas[0m
+[32meth_sendTransaction[0m
+  Contract deployment: DrugSupplyChain
+  Contract address:    0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Transaction:         0xc12fb34d9a14217845616de81d124c2d237937444f736174b74c42e6d5ac3a44
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  Value:               0 ETH
+  Gas used:            4659348 of 16777216
+  Block #1:            0xd1ede471902fc3555300c391c557d6ce9004709fafbd1d8fea41049176b6862d
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_chainId (3)[0m
+[32meth_accounts[0m
+[32mhardhat_metadata[0m
+[32mhardhat_metadata (2)[0m
+[32mhardhat_metadata (3)[0m
+[32mhardhat_metadata (4)[0m
+[32mhardhat_metadata (5)[0m
+[32mhardhat_metadata (6)[0m
+[32mhardhat_metadata (7)[0m
+[32mhardhat_metadata (8)[0m
+[32mhardhat_metadata (9)[0m
+[32mhardhat_metadata (10)[0m
+[32mhardhat_metadata (11)[0m
+[32mhardhat_metadata (12)[0m
+[32mhardhat_metadata (13)[0m
+[32mhardhat_metadata (14)[0m
+[32mhardhat_metadata (15)[0m
+[32mhardhat_metadata (16)[0m
+[32mhardhat_metadata (17)[0m
+[32mhardhat_metadata (18)[0m
+[32mhardhat_metadata (19)[0m
+[32mhardhat_metadata (20)[0m
+[32meth_blockNumber[0m
+[32meth_getBlockByNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  Transaction:         0xa86e149fef4d6ba30e230cfe2de8a14a003b47daa06162a1d755c2cc9c8e17cc
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            274116 of 16777216
+  Block #2:            0x90b9e49f08c0d883266cda182adc2006488fe2cb9c7e2cd744e49f1bf2319c09
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  Transaction:         0xd2823a82728e66e77b95333daf94a1e5b3b90efc4711fd9e0ceb8a8716c19d5a
+  From:                0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            257088 of 16777216
+  Block #3:            0x6d9560dfb528501fc167ca2a20aed0f924c7b2954e6d3fffdba2c0c8b2cf22fd
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  Transaction:         0xc7b2029119fe5943868631ce5a8348e24eebadfafc7eca989c6ff21ff45795e8
+  From:                0x90f79bf6eb2c4f870365e785982e1f101e93b906
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            257052 of 16777216
+  Block #4:            0xb548d7b9fb7f08505ec13e30ff255b96ec8b41c2baf6bbef87c7e3435e5fe33b
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  Transaction:         0x3aa4a0d83fcd18b357f74b628e284e8935a16c44b6c9a6df02d425af0be3f931
+  From:                0x15d34aaf54267db7d7c367839aaf71a00a2c6a65
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            256944 of 16777216
+  Block #5:            0x2c271cff4f16e32e1cec9f465f18fa85522834fa52b5209adf24e552e7fc297a
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#manufactureDrug
+  Transaction:         0xe61b1af5a5ed262a1a0d574db586661d6a6d6d55e2f3551bb583af39df2522a5
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            306513 of 16777216
+  Block #6:            0x590277306a1b788fe95bfa37403a75b6e6598b281d89d5e79641003844827b62
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#manufactureDrug
+  Transaction:         0xfa919304e8ebf05f6906215997ee7cf072e41c96004a0461130fdca6042f6daf
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            289413 of 16777216
+  Block #7:            0x047a3203c2c29f18d6cdc54c8599ed097623dfea1027458dc275ea2b68f25271
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#manufactureDrug
+  Transaction:         0xbd5e578a3642b9d2903753af7a0b73d4a33dd1feafffdd5f33955b0c7bd87fcb
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            289389 of 16777216
+  Block #8:            0x5eb636ed2160c895eb4b94569674770c5755d5cdf8ead4da1a24de3acaf370f8
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToWholesaler
+  Transaction:         0xba97e075a94dd072ff228de1df22b9eb2b0dd0c3fb55f613b080c034aedd86c6
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            416221 of 16777216
+  Block #9:            0xb84275407cdf56e10929908f4d1deb04b077790d5f887bdd014539926f99abd5
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToWholesaler
+  Transaction:         0x00f139d8d3530b969c35258328a8ceac12cb4414e90d13bcea13a5c85696c74f
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            399109 of 16777216
+  Block #10:           0x2ff7916473eae6c1ec84a089819976c3a27bf4e75e2e53653cda43718f867950
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToWholesaler
+  Transaction:         0x69f1d66c6b173dafd5a1a6393187756ba5ccd3b7299d448f86e0afd9e123c283
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            399121 of 16777216
+  Block #11:           0x3a5169b004a309867a7814d6237eafe533587a55825e754499c58007463310b5
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToRetailer
+  Transaction:         0x195aa732b60a3ec31f1e08be834e9a94e30a042b8f25a5d7dd9f932dc0bff37c
+  From:                0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            421078 of 16777216
+  Block #12:           0xb9d8aa8cfc8edc50ea9c716222c2585be2439817dbdae6ceb1f45b5c0fd62b52
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToRetailer
+  Transaction:         0x8046f03380f09c4061e41872cf840249a4d14ce5c9cb14e485da54ddfd8a882a
+  From:                0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            403978 of 16777216
+  Block #13:           0xaf3355e1a9249541679ef4726f6ada23491e1738c1386e8ebe49bbe9ce408e9f
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToRetailer
+  Transaction:         0x949f8f3dc667c91f65d0d8ed60cd4fb6c4860a6dc2fb52c8ac45ff8c1729e835
+  From:                0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            403978 of 16777216
+  Block #14:           0xe6e06b583595f0d541a02187dde7b94d06309240c5e9870268f81591f5e0cf02
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToCustomer
+  Transaction:         0xae5cb0d191d5b28216e0a9cea9ad75045a57ed69cc61a11db199702412cb0f0e
+  From:                0x90f79bf6eb2c4f870365e785982e1f101e93b906
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            396563 of 16777216
+  Block #15:           0xb2e1b540369eeb7c4deb27b666bb34948d4f1d7822a31b2c636805f9a363914e
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToCustomer
+  Transaction:         0xefeb6d69385cfa6218cdde0ca0008b2967602fe3c0b36cefbbd312c794228124
+  From:                0x90f79bf6eb2c4f870365e785982e1f101e93b906
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            379463 of 16777216
+  Block #16:           0xb7f4896df4bc7f4a0a344c0e85fa5bf059e5d601243a0aea765e6ecf553eaf05
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_accounts[0m
+[32mhardhat_metadata[0m
+[32mhardhat_metadata (2)[0m
+[32mhardhat_metadata (3)[0m
+[32mhardhat_metadata (4)[0m
+[32mhardhat_metadata (5)[0m
+[32mhardhat_metadata (6)[0m
+[32mhardhat_metadata (7)[0m
+[32mhardhat_metadata (8)[0m
+[32mhardhat_metadata (9)[0m
+[32mhardhat_metadata (10)[0m
+[32mhardhat_metadata (11)[0m
+[32mhardhat_metadata (12)[0m
+[32mhardhat_metadata (13)[0m
+[32mhardhat_metadata (14)[0m
+[32mhardhat_metadata (15)[0m
+[32mhardhat_metadata (16)[0m
+[32mhardhat_metadata (17)[0m
+[32mhardhat_metadata (18)[0m
+[32mhardhat_metadata (19)[0m
+[32mhardhat_metadata (20)[0m
+[32meth_chainId[0m
+[32meth_getBalance[0m
+[32meth_accounts[0m
+[32mhardhat_metadata[0m
+[32mhardhat_metadata (2)[0m
+[32mhardhat_metadata (3)[0m
+[32mhardhat_metadata (4)[0m
+[32mhardhat_metadata (5)[0m
+[32mhardhat_metadata (6)[0m
+[32mhardhat_metadata (7)[0m
+[32mhardhat_metadata (8)[0m
+[32mhardhat_metadata (9)[0m
+[32mhardhat_metadata (10)[0m
+[32mhardhat_metadata (11)[0m
+[32mhardhat_metadata (12)[0m
+[32mhardhat_metadata (13)[0m
+[32mhardhat_metadata (14)[0m
+[32mhardhat_metadata (15)[0m
+[32mhardhat_metadata (16)[0m
+[32mhardhat_metadata (17)[0m
+[32mhardhat_metadata (18)[0m
+[32mhardhat_metadata (19)[0m
+[32mhardhat_metadata (20)[0m
+[32meth_blockNumber[0m
+[32meth_getBlockByNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract deployment: DrugSupplyChain
+  Contract address:    0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Transaction:         0x07131adffffee4ab2166559a1aa10726c5eb01335824309ae0ba7deb58869fa9
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  Value:               0 ETH
+  Gas used:            4659348 of 16777216
+  Block #17:           0x84ddaf8716b96141d0095642406aa9441462fcf8767f7689de4b37a08d564412
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_chainId (3)[0m
+[32meth_accounts[0m
+[32mhardhat_metadata[0m
+[32mhardhat_metadata (2)[0m
+[32mhardhat_metadata (3)[0m
+[32mhardhat_metadata (4)[0m
+[32mhardhat_metadata (5)[0m
+[32mhardhat_metadata (6)[0m
+[32mhardhat_metadata (7)[0m
+[32mhardhat_metadata (8)[0m
+[32mhardhat_metadata (9)[0m
+[32mhardhat_metadata (10)[0m
+[32mhardhat_metadata (11)[0m
+[32mhardhat_metadata (12)[0m
+[32mhardhat_metadata (13)[0m
+[32mhardhat_metadata (14)[0m
+[32mhardhat_metadata (15)[0m
+[32mhardhat_metadata (16)[0m
+[32mhardhat_metadata (17)[0m
+[32mhardhat_metadata (18)[0m
+[32mhardhat_metadata (19)[0m
+[32mhardhat_metadata (20)[0m
+[32meth_blockNumber[0m
+[32meth_getBlockByNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  Transaction:         0x60a76cf7842f863edf9a64dc12cbb001143c251cf0faaa85e4f0676f6046c798
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            274116 of 16777216
+  Block #18:           0x024ab13850feca34c08018da958fef5386e1710775fca8b61cf673e53eca0146
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  Transaction:         0xb7abd8017dc18bf05c2078628435f5bb0c9c89cc76731563eb9ce1ce6280d77d
+  From:                0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            257088 of 16777216
+  Block #19:           0x4be0dc515d0bd6b23452f6c93e1b8734ebec2930c431cc44b759db8d0226bbdd
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  Transaction:         0x753582466740c549536c84e0ca6227e080dfd0201a1c529421fa4c3429447fac
+  From:                0x90f79bf6eb2c4f870365e785982e1f101e93b906
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            257052 of 16777216
+  Block #20:           0x879fad398a87d68fa42c7e957ad5b754a26818b421cb28902dfa0c65bbe8baad
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  Transaction:         0x354799b8b143a07fba6c5ec854f39bab91314f94576c4b72b19c68fc5e36320f
+  From:                0x15d34aaf54267db7d7c367839aaf71a00a2c6a65
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            256944 of 16777216
+  Block #21:           0x156c04198c6b6012b37c5094abec29a8a5b22cc7b458e5da39e3bb3ec70d6dfa
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#manufactureDrug
+  Transaction:         0x8660513aa1c9bd03860a3acec4a9b4f8bd401c95a8b5d5f095c9730d2e5ce8d1
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            306513 of 16777216
+  Block #22:           0x81ab33d262cbd9ffcab5b1d3f2a716e49f3cf39abdd783abdce30549c5148215
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#manufactureDrug
+  Transaction:         0x4e83aa8d9fb7e0bd1649c3e9d8366b081a177ddfb55e4b92d7ecdb9b2a1d6aaf
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            289413 of 16777216
+  Block #23:           0xaf2d239f8a177c8bae8ef85c9e1ffcdcd2fc151659b0482c1074c47e14c1308b
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#manufactureDrug
+  Transaction:         0x1e9771590d537f094b30ac71503fa6aac0c4eaf88a2e470ac9f010bd859a7b35
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            289389 of 16777216
+  Block #24:           0x8f3b54aef2843bb784bd02549edc7844de1b76dc21ed4847e38c008c50a6760d
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToWholesaler
+  Transaction:         0x7fa28149812f4f32891ac09bdf642f914c7c36b97b19c6414157bec2b8952b30
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            416221 of 16777216
+  Block #25:           0x7d00e99a1f9c57eb0c818b5c748ad0c926ea7eef139f97c39149f7183623c899
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToWholesaler
+  Transaction:         0xcb46fcffca059768a717d109521156bdfbacd307b5ffc39e3cff97609b869cda
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            399109 of 16777216
+  Block #26:           0x7a90a38307ac938df145ced25d83dd5c4106f32767346074a220d1e8e307f3bb
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToWholesaler
+  Transaction:         0x0c99c78766d1972dcce56cd1f91ca079702f0e65d7cc97de39637bcd5a0f3bd4
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            399121 of 16777216
+  Block #27:           0xf4d54d97799f0c2da5ad81e605a56d6c9485e38e47bec1b183785a148ba1ba80
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToRetailer
+  Transaction:         0x9b229ed58fab93eb6a5b23338d8599d2973e22b760db699fee91882462db3eaa
+  From:                0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            421078 of 16777216
+  Block #28:           0x5e60d55c31783351cb5f297b5787f2c918863bc414279fca6c387f2b003a5d78
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToRetailer
+  Transaction:         0x8c5b67def5bcb5a16c53e950c97ddc2db5ff907151a520c43d353ad3b76fa946
+  From:                0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            403978 of 16777216
+  Block #29:           0x79dbfe0b8b829cc084ff47cacdcde835e633e2aac89f62d78fc07ce5e2cabe99
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToRetailer
+  Transaction:         0x6fffe2ae3ba70e42e1b55a3282521b0661c8c40d7c1a31efb262d18d3bb2226a
+  From:                0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            403978 of 16777216
+  Block #30:           0x7e3938825b89a18fea76fa753143e542b18ff31385dfebcef1113afa2a6377ca
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToCustomer
+  Transaction:         0x040ed278f93a603f5abb410ab44482e1ec1820136b44a38224a31bf180bc8b96
+  From:                0x90f79bf6eb2c4f870365e785982e1f101e93b906
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            396563 of 16777216
+  Block #31:           0x5c7c1263b50817c69e6a3c2b1f215d107848b50cc4b98045a49d037b23ce3121
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract call:       DrugSupplyChain#supplyToCustomer
+  Transaction:         0x3f2e06529f10183ad0c15c8b4aca7ae52a0eb70e6842b0301f47caf5b346b719
+  From:                0x90f79bf6eb2c4f870365e785982e1f101e93b906
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            379463 of 16777216
+  Block #32:           0xd0fec2c6795ac3e40cdc376e8a91f2883c14aa80a59b079cdf1fc9de2633711d
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_accounts[0m
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#getEntityByWallet
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[32meth_blockNumber[0m
+[32meth_estimateGas[0m
+[32meth_getCode[0m
+[32meth_getCode (2)[0m
+[32meth_blockNumber[0m
+[32meth_gasPrice[0m
+[32meth_getBalance[0m
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[32meth_getBlockByNumber[0m
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[32meth_blockNumber[0m
+[32meth_getTransactionCount[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  Transaction:         0xeff66bda48185da1ad44ec34d9ec30db8f1b03c23e8f4dbe902f16c46a651190
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            257052 of 257052
+  Block #33:           0xad188b4b87951f118f13f17b8f95894ec650e7bd13e584b137b9a6d3472e1123
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[32meth_getTransactionReceipt[0m
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[32meth_blockNumber[0m
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#getEntityByWallet
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[31meth_call[0m
+  Contract deployment: <UnrecognizedContract>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+
+  TransactionExecutionError: StackOverflow
+
+[32meth_getBlockByNumber[0m
+[32meth_getBalance[0m
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[32meth_blockNumber[0m
+[32meth_blockNumber (2)[0m
+[32meth_blockNumber (3)[0m
+[32meth_blockNumber (4)[0m
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#getManufacturerInventory
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#getEntitiesByRole
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[32meth_blockNumber[0m
+[32meth_blockNumber (2)[0m
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#verifyDrug
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#getDrugHistory
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#getAllEntities
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[32meth_blockNumber[0m
+[32meth_blockNumber (2)[0m
+[32meth_blockNumber (3)[0m
+[32meth_estimateGas[0m
+[32meth_getCode[0m
+[32meth_getCode (2)[0m
+[32meth_gasPrice[0m
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[32meth_getTransactionCount[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       DrugSupplyChain#manufactureDrug
+  Transaction:         0x7af7a046ab836533d2ebd41ce2bb7e1f4461ef2d88ebca0dbcf501e1a45a7413
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+  Gas used:            289437 of 289437
+  Block #34:           0x00a410591089b90e4a5eb36c2b446a5509db40885c652c4e12f3862f1bfbd897
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[32meth_getTransactionReceipt[0m
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[32meth_blockNumber[0m
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#getManufacturerInventory
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[31meth_call[0m
+  Contract deployment: <UnrecognizedContract>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+
+  TransactionExecutionError: StackOverflow
+
+[31meth_call[0m
+  Contract deployment: <UnrecognizedContract>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+
+  TransactionExecutionError: StackOverflow
+
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#getDrugHistory
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[32meth_getBlockByNumber[0m
+[32meth_getTransactionReceipt[0m
+[32meth_getBlockByHash[0m
+[32meth_getBalance[0m
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       DrugSupplyChain#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+  Error: Transaction reverted without a reason
+
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#verifyDrug
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[32meth_blockNumber[0m
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#getEntitiesByRole
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[32meth_blockNumber[0m
+[32meth_blockNumber (2)[0m
+[32meth_blockNumber (3)[0m
+[32meth_blockNumber (4)[0m
+[32meth_blockNumber (5)[0m
+[32meth_blockNumber (6)[0m
+[32meth_blockNumber (7)[0m
+[32meth_blockNumber (8)[0m
+[32meth_call[0m
+  Contract call:       DrugSupplyChain#getEntityByWallet
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+
+[32meth_blockNumber[0m
+[32meth_blockNumber (2)[0m
+[32meth_blockNumber (3)[0m
+[32meth_blockNumber (4)[0m
+[31meth_estimateGas[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+
+  Error: reverted with reason string 'Wallet already registered'
+
+[31meth_estimateGas[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+
+  Error: reverted with reason string 'Wallet already registered'
+
+[31meth_estimateGas[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+
+  Error: reverted with reason string 'Wallet already registered'
+
+[32meth_blockNumber[0m
+[31meth_estimateGas[0m
+  Contract call:       DrugSupplyChain#registerEntity
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+  Value:               0 ETH
+
+  Error: reverted with reason string 'Wallet already registered'
+
+[32meth_blockNumber[0m
+[32meth_blockNumber (2)[0m
+[32meth_blockNumber (3)[0m
+[32meth_blockNumber (4)[0m
+[32meth_blockNumber (5)[0m
+[32meth_blockNumber (6)[0m
+[32meth_blockNumber (7)[0m
+[32meth_blockNumber (8)[0m
+[32meth_blockNumber (9)[0m
+[32meth_blockNumber (10)[0m
+[32meth_blockNumber (11)[0m
+[32meth_blockNumber (12)[0m
+[32meth_blockNumber (13)[0m
+[32meth_blockNumber (14)[0m
+[32meth_chainId[0m
+[32meth_blockNumber[0m
+[32meth_blockNumber (2)[0m

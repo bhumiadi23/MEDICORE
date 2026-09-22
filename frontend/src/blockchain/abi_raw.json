@@ -1,0 +1,2991 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "ReentrancyGuardReentrantCall",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "docType",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "ipfsCid",
+        "type": "string"
+      }
+    ],
+    "name": "DocumentAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "drugName",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "manufacturerId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum DrugSupplyChain.DrugStatus",
+        "name": "status",
+        "type": "uint8"
+      }
+    ],
+    "name": "DrugCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "DrugFlagged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "drugName",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "manufacturerId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "expiryDate",
+        "type": "uint256"
+      }
+    ],
+    "name": "DrugManufactured",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "DrugQuarantined",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "DrugRecalled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "DrugReleased",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum DrugSupplyChain.DrugStatus",
+        "name": "oldStatus",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum DrugSupplyChain.DrugStatus",
+        "name": "newStatus",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "changedBy",
+        "type": "address"
+      }
+    ],
+    "name": "DrugStatusChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "wallet",
+        "type": "address"
+      }
+    ],
+    "name": "EntityActivated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "wallet",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum DrugSupplyChain.Role",
+        "name": "role",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "EntityRegistered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "wallet",
+        "type": "address"
+      }
+    ],
+    "name": "EntitySuspended",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "officerId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "QualityApproved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "officerId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "QualityRejected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "approverCount",
+        "type": "uint8"
+      }
+    ],
+    "name": "RecallApproved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "initiatorId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "RecallRequested",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "shipmentId",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "transporterId",
+        "type": "string"
+      }
+    ],
+    "name": "ShipmentCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "shipmentId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum DrugSupplyChain.ShipmentStatus",
+        "name": "oldStatus",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum DrugSupplyChain.ShipmentStatus",
+        "name": "newStatus",
+        "type": "uint8"
+      }
+    ],
+    "name": "ShipmentStatusChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "fromRetailerId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "toCustomerId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "SuppliedToCustomer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "fromWholesalerId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "toRetailerId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "SuppliedToRetailer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "fromManufacturerId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "toWholesalerId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "SuppliedToWholesaler",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "shipmentId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "recordedTemp",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "TemperatureViolation",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_id",
+        "type": "string"
+      }
+    ],
+    "name": "activateEntity",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_docType",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_ipfsCid",
+        "type": "string"
+      }
+    ],
+    "name": "addDocument",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_comments",
+        "type": "string"
+      }
+    ],
+    "name": "approveDrug",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "approveRecall",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_shipmentId",
+        "type": "string"
+      }
+    ],
+    "name": "completeShipment",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_shipmentId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quantity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_sourceId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_destinationId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_transporterId",
+        "type": "string"
+      }
+    ],
+    "name": "createShipment",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllDrugs",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "manufacturerId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "manufacturerWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "remainingQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturingDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expiryDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRecalled",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "recallReason",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "genericName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "brandName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "batchNumber",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "mrp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "dosage",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "storageRequirement",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "origin",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "currentOwner",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "currentOwnerId",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.DrugStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "int256",
+            "name": "minTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "maxTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "string",
+            "name": "ipfsCertificateHash",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.DrugBatch[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllEntities",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.Role",
+            "name": "role",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "wallet",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRegistered",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "registeredAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.Entity[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_customerId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCustomerDrug",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "quantity",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "fromRetailerId",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "receivedAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.CustomerDrug",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_customerId",
+        "type": "string"
+      }
+    ],
+    "name": "getCustomerDrugCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_customerId",
+        "type": "string"
+      }
+    ],
+    "name": "getCustomerInventory",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "quantity",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "fromRetailerId",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "receivedAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.CustomerDrug[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getDocuments",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "docType",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "ipfsCid",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "uploader",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.Document[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getDrug",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "manufacturerId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "manufacturerWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "remainingQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturingDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expiryDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRecalled",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "recallReason",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "genericName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "brandName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "batchNumber",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "mrp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "dosage",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "storageRequirement",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "origin",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "currentOwner",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "currentOwnerId",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.DrugStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "int256",
+            "name": "minTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "maxTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "string",
+            "name": "ipfsCertificateHash",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.DrugBatch",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getDrugCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getDrugHistory",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "fromId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "toId",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.Role",
+            "name": "fromRole",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.Role",
+            "name": "toRole",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "quantity",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "fromWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toWallet",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.DrugTransaction[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getDrugHistoryCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getDrugHistoryItem",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "fromId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "toId",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.Role",
+            "name": "fromRole",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.Role",
+            "name": "toRole",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "quantity",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "fromWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toWallet",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.DrugTransaction",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getDrugStatus",
+    "outputs": [
+      {
+        "internalType": "enum DrugSupplyChain.DrugStatus",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum DrugSupplyChain.Role",
+        "name": "_role",
+        "type": "uint8"
+      }
+    ],
+    "name": "getEntitiesByRole",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.Role",
+            "name": "role",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "wallet",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRegistered",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "registeredAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.Entity[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_id",
+        "type": "string"
+      }
+    ],
+    "name": "getEntityById",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.Role",
+            "name": "role",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "wallet",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRegistered",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "registeredAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.Entity",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_wallet",
+        "type": "address"
+      }
+    ],
+    "name": "getEntityByWallet",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.Role",
+            "name": "role",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "wallet",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRegistered",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "registeredAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.Entity",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getExpiredDrugs",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "manufacturerId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "manufacturerWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "remainingQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturingDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expiryDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRecalled",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "recallReason",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "genericName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "brandName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "batchNumber",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "mrp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "dosage",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "storageRequirement",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "origin",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "currentOwner",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "currentOwnerId",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.DrugStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "int256",
+            "name": "minTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "maxTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "string",
+            "name": "ipfsCertificateHash",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.DrugBatch[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_wallet",
+        "type": "address"
+      }
+    ],
+    "name": "getManufacturerInventory",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "manufacturerId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "manufacturerWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "remainingQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturingDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expiryDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRecalled",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "recallReason",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "genericName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "brandName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "batchNumber",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "mrp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "dosage",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "storageRequirement",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "origin",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "currentOwner",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "currentOwnerId",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.DrugStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "int256",
+            "name": "minTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "maxTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "string",
+            "name": "ipfsCertificateHash",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.DrugBatch[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getQualityApproval",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "officer",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "officerId",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "approved",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "comments",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.QualityApproval",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getRecallInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "reason",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "initiator",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "initiatorId",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint8",
+            "name": "approvalCount",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.RecallStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.RecallRequest",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRecalledDrugs",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "manufacturerId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "manufacturerWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "remainingQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturingDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expiryDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRecalled",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "recallReason",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "genericName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "brandName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "batchNumber",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "mrp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "dosage",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "storageRequirement",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "origin",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "currentOwner",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "currentOwnerId",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.DrugStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "int256",
+            "name": "minTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "maxTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "string",
+            "name": "ipfsCertificateHash",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.DrugBatch[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_wallet",
+        "type": "address"
+      }
+    ],
+    "name": "getRetailerInventory",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "receivedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "availableQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "suppliedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.InventorySlot[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_shipmentId",
+        "type": "string"
+      }
+    ],
+    "name": "getShipment",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "shipmentId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "quantity",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "sourceId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "destinationId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "transporterId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "transporterWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "departureTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expectedArrival",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "actualArrival",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.ShipmentStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.Shipment",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_transporterAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getShipmentsByTransporter",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "shipmentId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "quantity",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "sourceId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "destinationId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "transporterId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "transporterWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "departureTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expectedArrival",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "actualArrival",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.ShipmentStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.Shipment[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalDrugs",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalEntities",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_wallet",
+        "type": "address"
+      }
+    ],
+    "name": "getTransporterInventory",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "receivedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "availableQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "suppliedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.InventorySlot[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getViolationCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getViolations",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "shipmentId",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "recordedTemp",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "minAllowed",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "maxAllowed",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "reportedBy",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.EnvironmentalViolation[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_wallet",
+        "type": "address"
+      }
+    ],
+    "name": "getWholesalerInventory",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "receivedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "availableQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "suppliedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.InventorySlot[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "isDrugExpired",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_wallet",
+        "type": "address"
+      }
+    ],
+    "name": "isEntityRegistered",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quantity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_manufacturingDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_expiryDate",
+        "type": "uint256"
+      }
+    ],
+    "name": "manufactureDrug",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quantity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_manufacturingDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_expiryDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_genericName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_brandName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_mrp",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_dosage",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_storageRequirement",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_origin",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "_minTemp",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "_maxTemp",
+        "type": "int256"
+      },
+      {
+        "internalType": "string",
+        "name": "_ipfsCertificateHash",
+        "type": "string"
+      }
+    ],
+    "name": "manufactureDrug",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_reason",
+        "type": "string"
+      }
+    ],
+    "name": "recallDrug",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_id",
+        "type": "string"
+      },
+      {
+        "internalType": "enum DrugSupplyChain.Role",
+        "name": "_role",
+        "type": "uint8"
+      }
+    ],
+    "name": "registerEntity",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_comments",
+        "type": "string"
+      }
+    ],
+    "name": "rejectDrug",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_shipmentId",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "_recordedTemp",
+        "type": "int256"
+      }
+    ],
+    "name": "reportEnvironmentalViolation",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_reason",
+        "type": "string"
+      }
+    ],
+    "name": "requestRecall",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_customerId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quantity",
+        "type": "uint256"
+      }
+    ],
+    "name": "supplyToCustomer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_retailerId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quantity",
+        "type": "uint256"
+      }
+    ],
+    "name": "supplyToRetailer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_wholesalerId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quantity",
+        "type": "uint256"
+      }
+    ],
+    "name": "supplyToWholesaler",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_id",
+        "type": "string"
+      }
+    ],
+    "name": "suspendEntity",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_shipmentId",
+        "type": "string"
+      },
+      {
+        "internalType": "enum DrugSupplyChain.ShipmentStatus",
+        "name": "_newStatus",
+        "type": "uint8"
+      }
+    ],
+    "name": "updateShipmentStatus",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "verifyDrug",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "drugName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "manufacturerId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "manufacturerWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturingDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expiryDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isExpired",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRecalled",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "recallReason",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "manufacturedQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "remainingQty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "genericName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "brandName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "batchNumber",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.DrugStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "currentOwnerId",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.VerifyResult",
+        "name": "result",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
