@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../context/Web3Context';
 import { Link, useLocation } from 'react-router-dom';
 import { ShieldCheck, Package, Clock, ExternalLink, Activity, AlertTriangle, Fingerprint, Dna, CheckCircle2, History } from 'lucide-react';
@@ -7,6 +8,7 @@ import { formatDateTime } from '../utils/helpers';
 import { motion } from 'framer-motion';
 
 const CustomerDashboard = () => {
+  const navigate = useNavigate();
   const { contract, entityInfo } = useWeb3();
   const location = useLocation();
   const [drugs, setDrugs] = useState([]);
@@ -201,7 +203,7 @@ const CustomerDashboard = () => {
               <th className="p-4 font-bold border-b border-white/10">Medication Name</th>
               <th className="p-4 font-bold border-b border-white/10">Batch ID</th>
               <th className="p-4 font-bold border-b border-white/10">Dispensed By</th>
-              <th className="p-4 font-bold border-b border-white/10 rounded-tr-xl">Status</th>
+              <th className="p-4 font-bold border-b border-white/10">Status</th><th className="p-4 font-bold border-b border-white/10 rounded-tr-xl">Action</th>
             </tr>
           </thead>
           <tbody className="text-sm">
@@ -215,10 +217,7 @@ const CustomerDashboard = () => {
                   {drug.isRecalled ? (
                     <span className="px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded text-xs font-bold uppercase">Recalled</span>
                   ) : (
-                    <span className="px-2 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-xs font-bold uppercase">Safe</span>
-                  )}
-                </td>
-              </tr>
+                    <span className="px-2 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-xs font-bold uppercase">Safe</span>)}</td><td className="p-4"><button onClick={() => navigate(`/verify/${drug.drugId}`)} className="px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-500/30 text-xs font-bold rounded-lg transition-colors">View Passport</button></td></tr>
             ))}
             {drugs.length === 0 && (
               <tr>
@@ -248,3 +247,5 @@ const CustomerDashboard = () => {
 };
 
 export default CustomerDashboard;
+
+

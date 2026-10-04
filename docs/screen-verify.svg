@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc"/>
+      <stop offset="100%" style="stop-color:#f1f5f9"/>
+    </linearGradient>
+    <linearGradient id="hero" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#0c4a6e"/>
+    </linearGradient>
+    <linearGradient id="btn" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2563eb"/>
+      <stop offset="100%" style="stop-color:#0284c7"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#00000020"/>
+    </filter>
+  </defs>
+
+  <rect width="900" height="520" fill="url(#bg)"/>
+
+  <!-- Nav -->
+  <rect x="0" y="0" width="900" height="50" fill="white"/>
+  <rect x="0" y="49" width="900" height="1" fill="#e2e8f0"/>
+  <rect x="24" y="16" width="8" height="8" rx="2" fill="#0e7490"/>
+  <rect x="34" y="16" width="8" height="8" rx="2" fill="#0284c7"/>
+  <text x="48" y="27" font-family="monospace" font-size="12" font-weight="bold" fill="#0f172a">MEDICORE</text>
+  <text x="580" y="28" font-family="sans-serif" font-size="11" fill="#64748b">Track</text>
+  <text x="630" y="28" font-family="sans-serif" font-size="11" fill="#64748b">Passport</text>
+  <text x="690" y="28" font-family="sans-serif" font-size="11" fill="#64748b">IoT Monitor</text>
+  <rect x="790" y="13" width="90" height="26" rx="6" fill="url(#btn)"/>
+  <text x="835" y="30" font-family="sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Connect Wallet</text>
+
+  <!-- Hero section -->
+  <rect x="0" y="50" width="900" height="160" fill="url(#hero)"/>
+  <!-- Shield icon -->
+  <rect x="418" y="68" width="64" height="64" rx="14" fill="#3b82f6" opacity="0.2"/>
+  <text x="450" y="110" font-family="sans-serif" font-size="28" text-anchor="middle">🛡️</text>
+  <text x="450" y="148" font-family="sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">Verify Medicine Authenticity</text>
+  <text x="450" y="168" font-family="sans-serif" font-size="11" fill="#93c5fd" text-anchor="middle">Enter the unique Product ID or scan the QR code to verify on the blockchain.</text>
+  <text x="450" y="184" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="middle">No wallet required · Public read-only verification</text>
+
+  <!-- Search bar -->
+  <rect x="200" y="196" width="500" height="46" rx="10" fill="white" filter="url(#shadow)"/>
+  <rect x="200" y="196" width="500" height="46" rx="10" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="224" y="224" font-family="sans-serif" font-size="11" fill="#94a3b8">🔍  BATCH-2026-X99</text>
+  <rect x="640" y="202" width="54" height="34" rx="7" fill="url(#btn)"/>
+  <text x="667" y="223" font-family="sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Verify</text>
+
+  <!-- Result card — AUTHENTIC -->
+  <rect x="200" y="258" width="500" height="80" rx="12" fill="#f0fdf4" filter="url(#shadow)"/>
+  <rect x="200" y="258" width="500" height="80" rx="12" fill="none" stroke="#86efac" stroke-width="2"/>
+  <text x="228" y="290" font-family="sans-serif" font-size="22">✅</text>
+  <text x="260" y="286" font-family="sans-serif" font-size="14" font-weight="bold" fill="#166534">AUTHENTIC PRODUCT</text>
+  <text x="260" y="304" font-family="sans-serif" font-size="10" fill="#16a34a">Cryptographically verified on MediCore Network</text>
+  <text x="260" y="322" font-family="sans-serif" font-size="9" fill="#4ade80">Block confirmed · Immutable record · ReentrancyGuard protected</text>
+
+  <!-- Detail cards row -->
+  <rect x="200" y="352" width="238" height="90" rx="10" fill="white" filter="url(#shadow)"/>
+  <rect x="200" y="352" width="238" height="90" rx="10" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="216" y="372" font-family="sans-serif" font-size="8" font-weight="bold" fill="#94a3b8">DRUG NAME</text>
+  <text x="216" y="390" font-family="sans-serif" font-size="13" font-weight="bold" fill="#0f172a">Amoxicillin 500mg</text>
+  <text x="216" y="408" font-family="sans-serif" font-size="8" font-weight="bold" fill="#94a3b8">MANUFACTURER</text>
+  <text x="216" y="424" font-family="sans-serif" font-size="11" fill="#334155">ABC Pharmaceuticals · MFR-001</text>
+  <text x="216" y="436" font-family="monospace" font-size="8" fill="#94a3b8">0x7099...79C8</text>
+
+  <rect x="450" y="352" width="250" height="90" rx="10" fill="white" filter="url(#shadow)"/>
+  <rect x="450" y="352" width="250" height="90" rx="10" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="466" y="372" font-family="sans-serif" font-size="8" font-weight="bold" fill="#94a3b8">BATCH ID</text>
+  <text x="466" y="388" font-family="monospace" font-size="11" fill="#0f172a">BATCH-2026-X99</text>
+  <text x="466" y="406" font-family="sans-serif" font-size="8" font-weight="bold" fill="#94a3b8">STATUS</text>
+  <rect x="466" y="412" width="68" height="16" rx="4" fill="#dbeafe"/>
+  <text x="500" y="423" font-family="sans-serif" font-size="8" font-weight="bold" fill="#1d4ed8" text-anchor="middle">AVAILABLE</text>
+  <text x="466" y="438" font-family="sans-serif" font-size="8" fill="#94a3b8">Expiry: 2028-06-30 · Mfg: 2026-01-15</text>
+
+  <!-- View passport link -->
+  <rect x="200" y="456" width="500" height="36" rx="8" fill="#eff6ff"/>
+  <rect x="200" y="456" width="500" height="36" rx="8" fill="none" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="450" y="478" font-family="sans-serif" font-size="11" fill="#2563eb" text-anchor="middle">📄  View Full Digital Product Passport →</text>
+
+  <text x="450" y="512" font-family="monospace" font-size="9" fill="#94a3b8" text-anchor="middle">MEDICORE · Public Drug Verification · /verify/BATCH-2026-X99</text>
+</svg>

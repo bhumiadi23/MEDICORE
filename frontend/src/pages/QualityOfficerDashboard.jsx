@@ -59,35 +59,17 @@ const QualityOfficerDashboard = () => {
     }
   };
 
-  const loadDemoData = () => {
-    setPendingApprovals([
-      { drugId: 'BATCH-2026-X99', drugName: 'Amoxicillin 500mg', manufacturerId: 'MFG-GLOBAL-01', status: 1, exists: true },
-      { drugId: 'BATCH-2026-Y42', drugName: 'Lisinopril 10mg', manufacturerId: 'MFG-BIO-04', status: 1, exists: true }
-    ]);
-    setHistory([
-      { drugId: 'BATCH-2025-A11', drugName: 'Paracetamol 500mg', manufacturerId: 'MFG-GLOBAL-01', manufacturingDate: Date.now()/1000 - 864000, isRecalled: false, exists: true, status: 2 },
-      { drugId: 'BATCH-2025-B22', drugName: 'Contaminated Syrup', manufacturerId: 'MFG-SHADY-99', manufacturingDate: Date.now()/1000 - 400000, isRecalled: true, exists: true, status: 2 },
-      { drugId: 'BATCH-2026-C33', drugName: 'Atorvastatin 20mg', manufacturerId: 'MFG-BIO-04', manufacturingDate: Date.now()/1000 - 100000, isRecalled: false, exists: true, status: 2 }
-    ]);
-  };
-
   // Mock charts
   const pieData = [
-    { name: 'Pending', value: pendingApprovals.length > 0 ? pendingApprovals.length : 1 },
-    { name: 'Approved', value: history.filter(d => !d.isRecalled).length > 0 ? history.filter(d => !d.isRecalled).length : 42 },
-    { name: 'Rejected', value: history.filter(d => d.isRecalled).length > 0 ? history.filter(d => d.isRecalled).length : 3 }
+    { name: 'Pending', value: pendingApprovals.length },
+    { name: 'Approved', value: history.filter(d => !d.isRecalled).length },
+    { name: 'Rejected', value: history.filter(d => d.isRecalled).length }
   ];
   const COLORS = ['#f59e0b', '#10b981', '#ef4444'];
 
   const renderCommandCenter = () => (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 overflow-y-auto pb-8 space-y-6">
       
-      <div className="flex justify-end mb-4">
-        <button onClick={loadDemoData} className="px-6 py-3 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-xl font-bold tracking-widest text-xs uppercase transition-all shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-          Inject Demo Data
-        </button>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-2xl relative overflow-hidden group hover:border-amber-500/30 transition-all">
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-[40px] -mr-16 -mt-16"></div>
@@ -104,7 +86,7 @@ const QualityOfficerDashboard = () => {
             <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl"><CheckCircle className="w-6 h-6" /></div>
             <h3 className="text-slate-400 font-bold tracking-widest text-xs uppercase">Batches Approved</h3>
           </div>
-          <p className="text-4xl font-black text-white">{history.filter(d => !d.isRecalled).length || 42}</p>
+          <p className="text-4xl font-black text-white">{history.filter(d => !d.isRecalled).length}</p>
         </div>
 
         <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-2xl relative overflow-hidden group hover:border-red-500/30 transition-all">
@@ -113,7 +95,7 @@ const QualityOfficerDashboard = () => {
             <div className="p-3 bg-red-500/20 text-red-400 rounded-xl"><XCircle className="w-6 h-6" /></div>
             <h3 className="text-slate-400 font-bold tracking-widest text-xs uppercase">Batches Rejected</h3>
           </div>
-          <p className="text-4xl font-black text-white">{history.filter(d => d.isRecalled).length || 3}</p>
+          <p className="text-4xl font-black text-white">{history.filter(d => d.isRecalled).length}</p>
         </div>
       </div>
 

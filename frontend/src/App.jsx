@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import { Web3Provider } from './context/Web3Context';
 import { NotificationProvider } from './context/NotificationContext';
+import ConnectionIndicator from './components/ConnectionIndicator';
 
 // Layouts
 import PublicLayout from './layouts/PublicLayout';
@@ -14,6 +15,7 @@ import ConnectWallet from './pages/ConnectWallet';
 import Register from './pages/Register';
 import DrugVerification from './pages/DrugVerification';
 import DrugTracking from './pages/DrugTracking';
+import VerifyShipment from './pages/VerifyShipment';
 import DrugPassport from './pages/DrugPassport'; // Note: Will create this file
 import IoTSimulator from './pages/IoTSimulator'; // Note: Will create this file
 import Analytics from './pages/Analytics'; // Note: Will create this file
@@ -46,6 +48,7 @@ function App() {
               <Route path="track" element={<DrugTracking />} />
               <Route path="passport/:drugId" element={<DrugPassport />} />
               <Route path="iot" element={<IoTSimulator />} />
+              <Route path="verify/shipment/:shipmentId" element={<VerifyShipment />} />
             </Route>
 
             {/* Protected Routes (Dashboard) */}
@@ -64,6 +67,7 @@ function App() {
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <ConnectionIndicator />
         </NotificationProvider>
       </Web3Provider>
     </Router>

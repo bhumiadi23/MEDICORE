@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { useTransaction } from '../hooks/useTransaction';
-import { PackagePlus, Send, Archive, AlertTriangle, FileUp, Activity, Cpu, Hexagon } from 'lucide-react';
+import { PackagePlus, Send, Archive, AlertTriangle, FileUp, Activity, Cpu, Hexagon, CheckCircle2, Copy } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { formatDateTime } from '../utils/helpers';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { mockIpfs } from '../utils/mockIpfs';
+import { ethers } from 'ethers';
+import toast from 'react-hot-toast';
+import { QRCodeSVG } from 'qrcode.react';
 
 const GlowingStatCard = ({ icon: Icon, title, value, color }) => (
   <div className="relative group overflow-hidden rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 p-6 flex flex-col justify-between h-32 hover:border-white/20 transition-all duration-300">
@@ -45,10 +49,14 @@ const ManufacturerDashboard = () => {
   const { execute, isLoading } = useTransaction();
   const [drugs, setDrugs] = useState([]);
   const [formData, setFormData] = useState({ drugName: '', drugId: '', quantity: '', expiryDays: '365' });
-  const [supplyData, setSupplyData] = useState({ drugId: '', wholesalerId: '', quantity: '' });
+  const [dispatchData, setDispatchData] = useState({ drugId: '', receiverId: '', transporterId: '', quantity: '' });
+  const [dispatchPreview, setDispatchPreview] = useState({ receiver: null, transporter: null });
+  const [suspendReason, setSuspendReason] = useState(null);
+  const [successModal, setSuccessModal] = useState({ isOpen: false, data: null });
+  const [dispatchError, setDispatchError] = useState('');
 
   const fetchDrugs = async () => {
-    if (!contract) return;
+    if (!contract || !entityInfo) return;
     try {
       const allDrugs = await contract.getAllDrugs();
       const myDrugs = allDrugs.filter(d => d.manufacturerId === entityInfo.id && d.exists);
@@ -62,13 +70,74 @@ const ManufacturerDashboard = () => {
     fetchDrugs();
   }, [contract, entityInfo]);
 
-  const handleManufacture = async (e) => {
+  useEffect(() => {
+    const fetchSuspensionReason = async () => {
+       if (entityInfo && !entityInfo.isActive && contract && contract.getAdminAuditLogs) {
+           try {
+             const logs = await contract.getAdminAuditLogs();
+             const entityLogs = logs.filter(l => l.entityId === entityInfo.id && l.actionType === 'suspendEntity');
+             if (entityLogs.length > 0) {
+                const latestLog = entityLogs[entityLogs.length - 1];
+                setSuspendReason(latestLog.reason);
+             }
+           } catch(e) {
+             console.error("Error fetching logs", e);
+           }
+       }
+    };
+    fetchSuspensionReason();
+  }, [contract, entityInfo]);
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+       if(!contract) return;
+       let receiver = null;
+       let transporter = null;
+       try {
+           if(dispatchData.receiverId) receiver = await contract.getEntityById(dispatchData.receiverId);
+           if(dispatchData.transporterId) transporter = await contract.getEntityById(dispatchData.transporterId);
+       } catch(e) {}
+       setDispatchPreview({ 
+           receiver: receiver?.isRegistered ? receiver : null, 
+           transporter: transporter?.isRegistered ? transporter : null 
+       });
+    };
+    fetchProfiles();
+  }, [dispatchData.receiverId, dispatchData.transporterId, contract]);
+
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, data: null });
+
+  if (entityInfo && !entityInfo.isActive) {
+    return (
+      <div className="absolute inset-0 z-[100] flex flex-col items-center justify-center p-8 bg-red-950/95 backdrop-blur-xl">
+         <AlertTriangle className="w-24 h-24 text-red-500 mb-6 animate-pulse" />
+         <h1 className="text-4xl font-black text-white tracking-widest mb-4 text-center">MANUFACTURER ACCOUNT SUSPENDED</h1>
+         <p className="text-xl text-red-200 text-center max-w-2xl bg-red-900/50 p-6 rounded-xl border border-red-500/30">
+            Your account has been suspended by the network administrator. All cryptographic actions and supply chain access are blocked.
+            <br/><br/>
+            <strong>Reason:</strong> {suspendReason || 'Contact network admin for details.'}
+         </p>
+      </div>
+    );
+  }
+
+  const handleManufactureRequest = (e) => {
     e.preventDefault();
+    setConfirmModal({
+      isOpen: true,
+      data: { ...formData }
+    });
+  };
+
+  const handleManufactureConfirm = async () => {
+    const data = confirmModal.data;
     const now = Math.floor(Date.now() / 1000);
-    const expiry = now + (Number(formData.expiryDays) * 24 * 60 * 60);
+    const expiry = now + (Number(data.expiryDays) * 24 * 60 * 60);
+    
+    setConfirmModal({ isOpen: false, data: null });
     
     try {
-      const success = await execute('manufactureDrug(string,string,uint256,uint256,uint256)', formData.drugName, formData.drugId, Number(formData.quantity), now, expiry);
+      const success = await execute('manufactureDrug(string,string,uint256,uint256,uint256)', data.drugName, data.drugId, Number(data.quantity), now, expiry);
       if (success) {
         setFormData({ drugName: '', drugId: '', quantity: '', expiryDays: '365' });
         fetchDrugs();
@@ -76,15 +145,85 @@ const ManufacturerDashboard = () => {
     } catch(err) { console.error(err); }
   };
 
-  const handleSupply = async (e) => {
+  const handleDispatch = async (e) => {
     e.preventDefault();
+    const { drugId, receiverId, transporterId, quantity } = dispatchData;
+    const qty = Number(quantity);
+    setDispatchError('');
+
+    const targetDrug = drugs.find(d => d.drugId === drugId);
+    if (!targetDrug) {
+      setDispatchError('Please select a valid batch.');
+      toast.error('Please select a valid batch.');
+      return;
+    }
+
+    if (qty > Number(targetDrug.remainingQty)) {
+      const msg = `Quantity Conservation Error: Cannot transfer ${qty} units. Remaining stock is only ${targetDrug.remainingQty} units!`;
+      setDispatchError(msg);
+      toast.error(msg);
+      return;
+    }
+    
     try {
-      const success = await execute('supplyToWholesaler', supplyData.drugId, supplyData.wholesalerId, Number(supplyData.quantity));
-      if (success) {
-        setSupplyData({ drugId: '', wholesalerId: '', quantity: '' });
-        fetchDrugs();
+      const shipmentId = `SH-${Date.now()}`;
+      
+      // Generate a secure verification code
+      const randStr = Math.random().toString(36).substring(2, 6).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
+      const verificationCode = `MC-${randStr}`;
+      
+      // Hash it for the smart contract
+      const verificationHash = ethers.keccak256(ethers.toUtf8Bytes(verificationCode));
+
+      const shipSuccess = await execute('createShipment', shipmentId, drugId, qty, entityInfo.id, receiverId, transporterId, verificationHash);
+      if (shipSuccess) {
+          try {
+            let originCoords = [19.0760, 72.8777];
+            if (contract.getEntityProfileCID) {
+              const profileCid = await contract.getEntityProfileCID(entityInfo.id);
+              if (profileCid) {
+                const profile = await mockIpfs.get(profileCid);
+                if (profile && profile.location) originCoords = profile.location;
+              }
+            }
+            fetch('http://localhost:3001/api/shipments/' + shipmentId + '/location', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ lat: originCoords[0], lng: originCoords[1] })
+            }).catch(console.error);
+          } catch(e) {
+            console.error("Error with IPFS profile fetch", e);
+          }
+
+         setSuccessModal({
+           isOpen: true,
+           data: {
+             shipmentId,
+             drugId,
+             quantity: qty,
+             from: entityInfo.id,
+             to: receiverId,
+             transporter: transporterId,
+             status: 'IN TRANSIT',
+             verificationCode
+           }
+         });
+         
+         setDispatchData({ drugId: '', receiverId: '', transporterId: '', quantity: '' });
+         fetchDrugs();
+      } else {
+         const failMsg = "Transaction reverted: Insufficient manufacturer stock or unauthorized role.";
+         setDispatchError(failMsg);
+         toast.error(`? Blockchain Revert: ${failMsg}`);
       }
-    } catch(err) { console.error(err); }
+    } catch(err) { 
+        console.error(err);
+        if(err.data?.message) {
+            alert(`Transaction failed: ${err.data.message}`);
+        } else if (err.message) {
+            alert(`Error: ${err.message}`);
+        }
+    }
   };
 
   const chartData = drugs.map(d => ({
@@ -102,10 +241,8 @@ const ManufacturerDashboard = () => {
 
   return (
     <div className="space-y-8 relative">
-      {/* Background ambient light */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
       
-      {/* Stats Row */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -119,7 +256,6 @@ const ManufacturerDashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Manufacture Form - Takes up 2 columns on lg */}
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -140,7 +276,7 @@ const ManufacturerDashboard = () => {
             </div>
           </div>
           
-          <form onSubmit={handleManufacture} className="space-y-6 relative z-10">
+          <form onSubmit={handleManufactureRequest} className="space-y-6 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-xs font-bold text-blue-300 uppercase tracking-widest">Drug Nomenclature</label>
@@ -197,7 +333,6 @@ const ManufacturerDashboard = () => {
         </motion.div>
 
         <div className="space-y-8 lg:col-span-1">
-          {/* Supply Form */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -212,16 +347,16 @@ const ManufacturerDashboard = () => {
               <div className="bg-teal-500/20 p-2.5 rounded-xl border border-teal-500/30 mr-3 shadow-[0_0_15px_rgba(20,184,166,0.3)]">
                 <Send className="h-5 w-5 text-teal-400" />
               </div>
-              <h3 className="text-lg font-black text-white tracking-wide">Distribute Supply</h3>
+              <h3 className="text-lg font-black text-white tracking-wide">Create & Dispatch Shipment</h3>
             </div>
 
-            <form onSubmit={handleSupply} className="space-y-5 relative z-10">
+            <form onSubmit={handleDispatch} className="space-y-5 relative z-10">
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-teal-300 uppercase tracking-widest">Select Target Batch</label>
                 <select required 
                   className="w-full bg-black/40 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono focus:ring-2 focus:ring-teal-500/50 outline-none transition-all appearance-none" 
-                  value={supplyData.drugId} 
-                  onChange={e => setSupplyData({...supplyData, drugId: e.target.value})}
+                  value={dispatchData.drugId} 
+                  onChange={e => setDispatchData({...dispatchData, drugId: e.target.value})}
                 >
                   <option value="" className="bg-slate-900">Select a batch in inventory...</option>
                   {drugs.filter(d => Number(d.remainingQty) > 0 && !d.isRecalled && Number(d.status) === 3).map(d => (
@@ -230,34 +365,78 @@ const ManufacturerDashboard = () => {
                     </option>
                   ))}
                 </select>
+                {drugs.find(d => d.drugId === dispatchData.drugId) && (
+                  <div className="p-2.5 bg-blue-500/10 border border-blue-500/30 rounded-lg text-xs flex justify-between items-center mt-2">
+                    <span className="text-slate-400">Available Stock:</span>
+                    <span className="font-mono font-bold text-emerald-400 text-sm">
+                      {Number(drugs.find(d => d.drugId === dispatchData.drugId).remainingQty).toLocaleString()} Units
+                    </span>
+                  </div>
+                )}
               </div>
               
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-teal-300 uppercase tracking-widest">Wholesaler Network ID</label>
+                <label className="text-[10px] font-bold text-teal-300 uppercase tracking-widest">Receiver (Wholesaler) ID</label>
                 <input required 
                   className="w-full bg-black/40 border border-slate-700 rounded-lg px-4 py-3 text-teal-400 font-mono focus:ring-2 focus:ring-teal-500/50 outline-none transition-all" 
                   placeholder="e.g. WH-001" 
-                  value={supplyData.wholesalerId} 
-                  onChange={e => setSupplyData({...supplyData, wholesalerId: e.target.value})} 
+                  value={dispatchData.receiverId} 
+                  onChange={e => setDispatchData({...dispatchData, receiverId: e.target.value})} 
                 />
+                {dispatchPreview?.receiver && (
+                  <p className="text-xs text-emerald-400 mt-1">Found: {dispatchPreview.receiver.name} ({dispatchPreview.receiver.wallet.slice(0,6)}...)</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-teal-300 uppercase tracking-widest">Transporter ID</label>
+                <input required 
+                  className="w-full bg-black/40 border border-slate-700 rounded-lg px-4 py-3 text-teal-400 font-mono focus:ring-2 focus:ring-teal-500/50 outline-none transition-all" 
+                  placeholder="e.g. TR-001" 
+                  value={dispatchData.transporterId} 
+                  onChange={e => setDispatchData({...dispatchData, transporterId: e.target.value})} 
+                />
+                {dispatchPreview?.transporter && (
+                  <p className="text-xs text-emerald-400 mt-1">Found: {dispatchPreview.transporter.name} ({dispatchPreview.transporter.wallet.slice(0,6)}...)</p>
+                )}
               </div>
 
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-teal-300 uppercase tracking-widest">Transfer Quantity</label>
                 <input required type="number" min="1" 
                   className="w-full bg-black/40 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono focus:ring-2 focus:ring-teal-500/50 outline-none transition-all" 
-                  value={supplyData.quantity} 
-                  onChange={e => setSupplyData({...supplyData, quantity: e.target.value})} 
+                  value={dispatchData.quantity} 
+                  onChange={e => setDispatchData({...dispatchData, quantity: e.target.value})} 
                 />
+                {drugs.find(d => d.drugId === dispatchData.drugId) && Number(dispatchData.quantity) > Number(drugs.find(d => d.drugId === dispatchData.drugId).remainingQty) && (
+                  <div className="p-3 bg-red-950/80 border border-red-500/50 rounded-lg text-xs text-red-200 font-bold flex items-start gap-2 mt-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                    <span>?? EXCEEDS AVAILABLE STOCK: You requested {Number(dispatchData.quantity).toLocaleString()} units, but only {Number(drugs.find(d => d.drugId === dispatchData.drugId).remainingQty).toLocaleString()} units remain. The blockchain will reject this!</span>
+                  </div>
+                )}
               </div>
               
+              {dispatchPreview?.receiver && dispatchPreview?.transporter && dispatchData.drugId && (
+                <div className="p-3 bg-white/5 border border-white/10 rounded-lg text-xs space-y-1">
+                   <div className="text-slate-400">Preview:</div>
+                   <div className="text-white font-mono">Origin: {entityInfo.name}</div>
+                   <div className="text-white font-mono">Dest: {dispatchPreview.receiver.name}</div>
+                   <div className="text-white font-mono">Transporter: {dispatchPreview.transporter.name}</div>
+                </div>
+              )}
+
+              {dispatchError && (
+                <div className="p-3 bg-red-950/90 border border-red-500/60 rounded-lg text-xs text-red-200 font-mono flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                  <span>{dispatchError}</span>
+                </div>
+              )}
               <button disabled={isLoading} className="w-full bg-teal-600 text-white font-black tracking-widest uppercase py-3 rounded-lg hover:bg-teal-500 disabled:opacity-50 transition-all shadow-[0_0_15px_rgba(20,184,166,0.4)] mt-2">
-                Execute Transfer
+                Create & Dispatch
               </button>
             </form>
           </motion.div>
 
-          {/* Chart */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -284,7 +463,6 @@ const ManufacturerDashboard = () => {
         </div>
       </div>
 
-      {/* Table */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -348,6 +526,99 @@ const ManufacturerDashboard = () => {
           </table>
         </div>
       </motion.div>
+
+      <AnimatePresence>
+        {confirmModal.isOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl max-w-lg w-full"
+            >
+              <h2 className="text-2xl font-bold text-white mb-4">Confirm Digital Minting</h2>
+              <p className="text-slate-400 mb-6">Please verify the cryptographic details before signing the transaction to the blockchain. This action is immutable.</p>
+              
+              <div className="bg-black/50 p-4 rounded-xl border border-white/5 space-y-3 font-mono text-sm mb-8">
+                <div className="flex justify-between"><span className="text-slate-500">Drug Name:</span><span className="text-blue-400 font-bold">{confirmModal.data.drugName}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Batch ID:</span><span className="text-white">{confirmModal.data.drugId}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Quantity:</span><span className="text-emerald-400">{confirmModal.data.quantity} Units</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Expiry:</span><span className="text-red-400">{confirmModal.data.expiryDays} Days</span></div>
+              </div>
+
+              <div className="flex space-x-4">
+                <button 
+                  onClick={() => setConfirmModal({ isOpen: false, data: null })}
+                  className="flex-1 py-3 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleManufactureConfirm}
+                  className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-900/50 transition-all"
+                >
+                  Approve & Sign
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {successModal.isOpen && successModal.data && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl max-w-lg w-full relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 p-4">
+                <CheckCircle2 className="w-16 h-16 text-emerald-500/20" />
+              </div>
+              <h2 className="text-2xl font-black text-emerald-400 mb-2">SHIPMENT CREATED</h2>
+              <p className="text-slate-400 mb-6 text-sm">Please share this verification code securely with the transporter. The receiver will need it to verify and confirm receipt.</p>
+              
+              <div className="bg-black/50 p-4 rounded-xl border border-white/5 space-y-3 font-mono text-sm mb-6">
+                <div className="flex justify-between"><span className="text-slate-500">Shipment ID:</span><span className="text-white">{successModal.data.shipmentId}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Batch ID:</span><span className="text-white">{successModal.data.drugId}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Quantity:</span><span className="text-emerald-400">{successModal.data.quantity} Units</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">From:</span><span className="text-white">{successModal.data.from}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">To:</span><span className="text-white">{successModal.data.to}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Transporter:</span><span className="text-white">{successModal.data.transporter}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Status:</span><span className="text-blue-400">{successModal.data.status}</span></div>
+              </div>
+
+              <div className="bg-emerald-900/20 border border-emerald-500/30 p-4 rounded-xl flex flex-col items-center justify-center mb-6">
+                <p className="text-xs text-emerald-400 uppercase tracking-widest font-bold mb-2">Delivery Verification Code</p>
+                <div className="flex items-center space-x-3">
+                  <span className="text-3xl font-black text-white tracking-widest">{successModal.data.verificationCode}</span>
+                  <button 
+                    onClick={() => navigator.clipboard.writeText(successModal.data.verificationCode)}
+                    className="p-2 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-400 rounded-lg transition-colors"
+                  >
+                    <Copy className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-center mb-6 bg-white p-4 rounded-xl">
+                 <QRCodeSVG 
+                    value={`${window.location.origin}/verify/shipment/${successModal.data.shipmentId}`}
+                    size={128}
+                 />
+              </div>
+
+              <button 
+                onClick={() => setSuccessModal({ isOpen: false, data: null })}
+                className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-colors uppercase tracking-widest"
+              >
+                Done
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

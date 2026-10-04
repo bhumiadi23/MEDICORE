@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { Store, UserCircle, ShoppingCart, AlertTriangle, Clock, Package, ShieldAlert, CheckCircle2, TrendingUp, Archive } from 'lucide-react';
 import { formatDateTime } from '../utils/helpers';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const RetailerDashboard = () => {
   const { contract, entityInfo, account } = useWeb3();
@@ -41,10 +41,21 @@ const RetailerDashboard = () => {
     fetchDrugs();
   }, [contract, entityInfo, account]);
 
-  const handleSell = async (e) => {
+const [confirmModal, setConfirmModal] = useState({ isOpen: false, data: null });
+
+  const handleSellRequest = (e) => {
     e.preventDefault();
+    setConfirmModal({
+      isOpen: true,
+      data: { ...sellData }
+    });
+  };
+
+  const handleSellConfirm = async () => {
+    const data = confirmModal.data;
+    setConfirmModal({ isOpen: false, data: null });
     try {
-      const success = await execute('supplyToCustomer', sellData.drugId, sellData.customerId, Number(sellData.quantity));
+      const success = await execute('supplyToCustomer', data.drugId, data.customerId, Number(data.quantity));
       if (success) {
         setSellData({ drugId: '', customerId: '', quantity: '' });
         fetchDrugs();
@@ -175,7 +186,7 @@ const RetailerDashboard = () => {
             <p className="text-slate-400 text-sm ml-12">Dispense verified medications directly to a patient's cryptographic identity.</p>
           </div>
 
-          <form onSubmit={handleSell} className="space-y-6 relative z-10">
+          <form onSubmit={handleSellRequest} className="space-y-6 relative z-10">
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Select Medication Batch</label>
               <select 
@@ -297,6 +308,44 @@ const RetailerDashboard = () => {
           {renderInventory()}
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      <AnimatePresence>
+        {confirmModal.isOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl max-w-lg w-full"
+            >
+              <h2 className="text-2xl font-bold text-white mb-4">Confirm Prescription Dispensation</h2>
+              <p className="text-slate-400 mb-6">Review the dispensing details before cryptographically assigning ownership of this medicine to the patient's wallet.</p>
+              
+              <div className="bg-black/50 p-4 rounded-xl border border-white/5 space-y-3 font-mono text-sm mb-8">
+                <div className="flex justify-between"><span className="text-slate-500">Batch ID:</span><span className="text-blue-400 font-bold">{confirmModal.data.drugId}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Patient/Customer ID:</span><span className="text-white">{confirmModal.data.customerId}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Dispense Quantity:</span><span className="text-emerald-400">{confirmModal.data.quantity} Units</span></div>
+              </div>
+
+              <div className="flex space-x-4">
+                <button 
+                  onClick={() => setConfirmModal({ isOpen: false, data: null })}
+                  className="flex-1 py-3 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleSellConfirm}
+                  className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-900/50 transition-all"
+                >
+                  Sign Dispensation
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

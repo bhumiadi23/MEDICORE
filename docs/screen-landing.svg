@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#020617"/>
+      <stop offset="50%" style="stop-color:#0c1a2e"/>
+      <stop offset="100%" style="stop-color:#020617"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0e7490;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="btn" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0e7490"/>
+      <stop offset="100%" style="stop-color:#0284c7"/>
+    </linearGradient>
+    <filter id="blur1">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+    <filter id="blur2">
+      <feGaussianBlur stdDeviation="25"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="url(#bg)"/>
+
+  <!-- Glow orbs -->
+  <circle cx="200" cy="200" r="180" fill="#0e7490" opacity="0.08" filter="url(#blur1)"/>
+  <circle cx="700" cy="320" r="150" fill="#7c3aed" opacity="0.07" filter="url(#blur1)"/>
+  <circle cx="450" cy="260" r="200" fill="#0284c7" opacity="0.05" filter="url(#blur2)"/>
+
+  <!-- Nav bar -->
+  <rect x="0" y="0" width="900" height="52" fill="#0f172a" opacity="0.9"/>
+  <rect x="0" y="51" width="900" height="1" fill="#1e293b"/>
+  <!-- Nav logo -->
+  <rect x="28" y="16" width="8" height="8" rx="2" fill="#0e7490"/>
+  <rect x="38" y="16" width="8" height="8" rx="2" fill="#0284c7"/>
+  <text x="52" y="27" font-family="monospace" font-size="13" font-weight="bold" fill="#f1f5f9">MEDICORE</text>
+  <!-- Nav links -->
+  <text x="580" y="27" font-family="sans-serif" font-size="11" fill="#94a3b8">Verify Drug</text>
+  <text x="660" y="27" font-family="sans-serif" font-size="11" fill="#94a3b8">Track</text>
+  <text x="710" y="27" font-family="sans-serif" font-size="11" fill="#94a3b8">IoT Monitor</text>
+  <!-- Connect wallet btn -->
+  <rect x="790" y="13" width="90" height="26" rx="6" fill="url(#btn)"/>
+  <text x="835" y="30" font-family="sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Connect Wallet</text>
+
+  <!-- Hero content -->
+  <!-- Badge -->
+  <rect x="310" y="90" width="280" height="22" rx="11" fill="#0e7490" opacity="0.15"/>
+  <rect x="310" y="90" width="280" height="22" rx="11" fill="none" stroke="#0e7490" stroke-width="1" opacity="0.4"/>
+  <circle cx="326" cy="101" r="4" fill="#22d3ee"/>
+  <text x="450" y="105" font-family="sans-serif" font-size="10" fill="#7dd3fc" text-anchor="middle">Pharmaceutical Supply Chain · Ethereum · Hardhat Local</text>
+
+  <!-- Main headline -->
+  <text x="450" y="160" font-family="sans-serif" font-size="38" font-weight="900" fill="white" text-anchor="middle">Secure Drug Supply</text>
+  <text x="450" y="205" font-family="sans-serif" font-size="38" font-weight="900" fill="url(#btn)" text-anchor="middle">On Blockchain</text>
+
+  <!-- Subtext -->
+  <text x="450" y="245" font-family="sans-serif" font-size="13" fill="#94a3b8" text-anchor="middle">Every batch minted, tracked, quality-approved and publicly verifiable.</text>
+  <text x="450" y="263" font-family="sans-serif" font-size="13" fill="#94a3b8" text-anchor="middle">No wallet required to verify authenticity.</text>
+
+  <!-- CTA buttons -->
+  <rect x="290" y="285" width="140" height="40" rx="8" fill="url(#btn)"/>
+  <text x="360" y="310" font-family="sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Connect Wallet →</text>
+  <rect x="445" y="285" width="165" height="40" rx="8" fill="none" stroke="#0e7490" stroke-width="1.5"/>
+  <text x="527" y="310" font-family="sans-serif" font-size="12" fill="#7dd3fc" text-anchor="middle">Verify a Drug (Public)</text>
+
+  <!-- Stat cards row -->
+  <rect x="100" y="355" width="155" height="80" rx="12" fill="#0f172a" opacity="0.8"/>
+  <rect x="100" y="355" width="155" height="80" rx="12" fill="none" stroke="#1e293b" stroke-width="1"/>
+  <text x="178" y="385" font-family="monospace" font-size="22" font-weight="bold" fill="#22d3ee" text-anchor="middle">13</text>
+  <text x="178" y="403" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="middle">Drug Status States</text>
+  <text x="178" y="420" font-family="sans-serif" font-size="9" fill="#475569" text-anchor="middle">on-chain enforced</text>
+
+  <rect x="273" y="355" width="155" height="80" rx="12" fill="#0f172a" opacity="0.8"/>
+  <rect x="273" y="355" width="155" height="80" rx="12" fill="none" stroke="#1e293b" stroke-width="1"/>
+  <text x="350" y="385" font-family="monospace" font-size="22" font-weight="bold" fill="#a78bfa" text-anchor="middle">8</text>
+  <text x="350" y="403" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="middle">Roles Enforced</text>
+  <text x="350" y="420" font-family="sans-serif" font-size="9" fill="#475569" text-anchor="middle">Solidity onlyRole()</text>
+
+  <rect x="446" y="355" width="155" height="80" rx="12" fill="#0f172a" opacity="0.8"/>
+  <rect x="446" y="355" width="155" height="80" rx="12" fill="none" stroke="#1e293b" stroke-width="1"/>
+  <text x="523" y="385" font-family="monospace" font-size="22" font-weight="bold" fill="#34d399" text-anchor="middle">2-of-N</text>
+  <text x="523" y="403" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="middle">Recall Approval</text>
+  <text x="523" y="420" font-family="sans-serif" font-size="9" fill="#475569" text-anchor="middle">multi-party on-chain</text>
+
+  <rect x="619" y="355" width="155" height="80" rx="12" fill="#0f172a" opacity="0.8"/>
+  <rect x="619" y="355" width="155" height="80" rx="12" fill="none" stroke="#1e293b" stroke-width="1"/>
+  <text x="696" y="385" font-family="monospace" font-size="22" font-weight="bold" fill="#f472b6" text-anchor="middle">0</text>
+  <text x="696" y="403" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="middle">Wallet to Verify</text>
+  <text x="696" y="420" font-family="sans-serif" font-size="9" fill="#475569" text-anchor="middle">public read-only</text>
+
+  <!-- Bottom label -->
+  <text x="450" y="500" font-family="monospace" font-size="9" fill="#334155" text-anchor="middle">MEDICORE · Landing Page · localhost:5173</text>
+</svg>

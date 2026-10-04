@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc"/>
+      <stop offset="100%" style="stop-color:#f1f5f9"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#00000015"/></filter>
+  </defs>
+
+  <rect width="900" height="520" fill="url(#bg)"/>
+
+  <!-- Nav -->
+  <rect x="0" y="0" width="900" height="50" fill="white"/>
+  <rect x="0" y="49" width="900" height="1" fill="#e2e8f0"/>
+  <rect x="24" y="16" width="8" height="8" rx="2" fill="#0e7490"/>
+  <rect x="34" y="16" width="8" height="8" rx="2" fill="#0284c7"/>
+  <text x="48" y="27" font-family="monospace" font-size="12" font-weight="bold" fill="#0f172a">MEDICORE</text>
+
+  <!-- IoT header bar -->
+  <rect x="0" y="50" width="900" height="44" fill="#0f172a"/>
+  <circle cx="30" cy="72" r="5" fill="#22c55e"/>
+  <text x="44" y="77" font-family="monospace" font-size="11" fill="#22c55e">● IOT SENSOR SIMULATOR</text>
+  <text x="400" y="77" font-family="monospace" font-size="10" fill="#475569">BATCH-DEMO-001  ·  SHP-1234  ·  STREAMING</text>
+  <rect x="760" y="60" width="110" height="24" rx="6" fill="#22c55e" opacity="0.15"/>
+  <rect x="760" y="60" width="110" height="24" rx="6" fill="none" stroke="#22c55e" stroke-width="1"/>
+  <text x="815" y="76" font-family="sans-serif" font-size="9" font-weight="bold" fill="#22c55e" text-anchor="middle">● LIVE STREAM ON</text>
+
+  <!-- Left panel: controls -->
+  <rect x="16" y="108" width="220" height="380" rx="12" fill="white" filter="url(#shadow)"/>
+  <rect x="16" y="108" width="220" height="380" rx="12" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="32" y="132" font-family="sans-serif" font-size="12" font-weight="bold" fill="#0f172a">Device Configuration</text>
+
+  <text x="32" y="158" font-family="sans-serif" font-size="9" font-weight="bold" fill="#94a3b8">DRUG BATCH ID</text>
+  <rect x="32" y="163" width="188" height="28" rx="6" fill="#f8fafc"/>
+  <rect x="32" y="163" width="188" height="28" rx="6" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="44" y="181" font-family="monospace" font-size="10" fill="#334155">BATCH-DEMO-001</text>
+
+  <text x="32" y="210" font-family="sans-serif" font-size="9" font-weight="bold" fill="#94a3b8">SHIPMENT ID</text>
+  <rect x="32" y="215" width="188" height="28" rx="6" fill="#f8fafc"/>
+  <rect x="32" y="215" width="188" height="28" rx="6" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="44" y="233" font-family="monospace" font-size="10" fill="#334155">SHP-1234</text>
+
+  <rect x="32" y="256" width="188" height="34" rx="8" fill="#ef4444" opacity="0.1"/>
+  <rect x="32" y="256" width="188" height="34" rx="8" fill="none" stroke="#ef4444" stroke-width="1"/>
+  <text x="126" y="277" font-family="sans-serif" font-size="10" font-weight="bold" fill="#ef4444" text-anchor="middle">■ Stop Data Stream</text>
+
+  <text x="32" y="314" font-family="sans-serif" font-size="11" font-weight="bold" fill="#0f172a">Trigger Anomalies</text>
+
+  <!-- Anomaly buttons -->
+  <rect x="32" y="322" width="188" height="30" rx="6" fill="#fef2f2"/>
+  <rect x="32" y="322" width="188" height="30" rx="6" fill="none" stroke="#fecaca" stroke-width="1"/>
+  <text x="126" y="341" font-family="sans-serif" font-size="10" fill="#dc2626" text-anchor="middle">🌡️  Inject High Temp (&gt;8°C)</text>
+
+  <rect x="32" y="360" width="188" height="30" rx="6" fill="#eff6ff"/>
+  <rect x="32" y="360" width="188" height="30" rx="6" fill="none" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="126" y="379" font-family="sans-serif" font-size="10" fill="#2563eb" text-anchor="middle">🌡️  Inject Low Temp (&lt;2°C)</text>
+
+  <rect x="32" y="398" width="188" height="30" rx="6" fill="#fefce8"/>
+  <rect x="32" y="398" width="188" height="30" rx="6" fill="none" stroke="#fde68a" stroke-width="1"/>
+  <text x="126" y="417" font-family="sans-serif" font-size="10" fill="#d97706" text-anchor="middle">💧  Inject High Humidity</text>
+
+  <!-- Violation alert toast -->
+  <rect x="32" y="444" width="188" height="36" rx="8" fill="#fef2f2"/>
+  <rect x="32" y="444" width="188" height="36" rx="8" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="126" y="460" font-family="sans-serif" font-size="9" font-weight="bold" fill="#dc2626" text-anchor="middle">⚠️ VIOLATION DETECTED</text>
+  <text x="126" y="474" font-family="sans-serif" font-size="8" fill="#ef4444" text-anchor="middle">Drug → QUARANTINED on-chain</text>
+
+  <!-- Right: sensor readings -->
+  <!-- Temp card -->
+  <rect x="252" y="108" width="148" height="80" rx="10" fill="white" filter="url(#shadow)"/>
+  <rect x="252" y="108" width="148" height="80" rx="10" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="268" y="128" font-family="sans-serif" font-size="9" fill="#64748b">🌡️  Temperature</text>
+  <text x="268" y="162" font-family="monospace" font-size="30" font-weight="bold" fill="#ef4444">14.2°C</text>
+  <text x="268" y="180" font-family="sans-serif" font-size="8" fill="#ef4444">⚠ Above max (8°C)</text>
+
+  <!-- Humidity card -->
+  <rect x="412" y="108" width="148" height="80" rx="10" fill="white" filter="url(#shadow)"/>
+  <rect x="412" y="108" width="148" height="80" rx="10" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="428" y="128" font-family="sans-serif" font-size="9" fill="#64748b">💧  Humidity</text>
+  <text x="428" y="162" font-family="monospace" font-size="30" font-weight="bold" fill="#0f172a">47.3%</text>
+  <text x="428" y="180" font-family="sans-serif" font-size="8" fill="#22c55e">✓ Normal range</text>
+
+  <!-- GPS card -->
+  <rect x="572" y="108" width="312" height="80" rx="10" fill="white" filter="url(#shadow)"/>
+  <rect x="572" y="108" width="312" height="80" rx="10" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="588" y="128" font-family="sans-serif" font-size="9" fill="#64748b">📍  GPS Location</text>
+  <text x="588" y="158" font-family="monospace" font-size="16" font-weight="bold" fill="#0f172a">40.7156, -74.0023</text>
+  <text x="588" y="176" font-family="sans-serif" font-size="8" fill="#64748b">New York Metro Area · Last ping 3s ago</text>
+
+  <!-- Chart area -->
+  <rect x="252" y="202" width="632" height="200" rx="12" fill="white" filter="url(#shadow)"/>
+  <rect x="252" y="202" width="632" height="200" rx="12" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="268" y="224" font-family="sans-serif" font-size="12" font-weight="bold" fill="#0f172a">Real-time Temperature Telemetry</text>
+  <text x="268" y="238" font-family="sans-serif" font-size="9" fill="#94a3b8">Safe range: 2°C – 8°C  ·  Updating every 3s</text>
+
+  <!-- Chart grid lines -->
+  <line x1="268" y1="260" x2="868" y2="260" stroke="#f1f5f9" stroke-width="1"/>
+  <line x1="268" y1="280" x2="868" y2="280" stroke="#f1f5f9" stroke-width="1"/>
+  <line x1="268" y1="300" x2="868" y2="300" stroke="#f1f5f9" stroke-width="1"/>
+  <line x1="268" y1="320" x2="868" y2="320" stroke="#f1f5f9" stroke-width="1"/>
+  <line x1="268" y1="340" x2="868" y2="340" stroke="#f1f5f9" stroke-width="1"/>
+  <line x1="268" y1="360" x2="868" y2="360" stroke="#f1f5f9" stroke-width="1"/>
+
+  <!-- Y axis labels -->
+  <text x="256" y="263" font-family="monospace" font-size="8" fill="#94a3b8" text-anchor="end">20</text>
+  <text x="256" y="283" font-family="monospace" font-size="8" fill="#94a3b8" text-anchor="end">15</text>
+  <text x="256" y="303" font-family="monospace" font-size="8" fill="#94a3b8" text-anchor="end">10</text>
+  <text x="256" y="323" font-family="monospace" font-size="8" fill="#94a3b8" text-anchor="end">5</text>
+  <text x="256" y="343" font-family="monospace" font-size="8" fill="#94a3b8" text-anchor="end">0</text>
+  <text x="256" y="363" font-family="monospace" font-size="8" fill="#94a3b8" text-anchor="end">-5</text>
+
+  <!-- Safe zone band -->
+  <rect x="268" y="300" width="600" height="40" fill="#22c55e" opacity="0.06"/>
+  <line x1="268" y1="300" x2="868" y2="300" stroke="#22c55e" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+  <line x1="268" y1="340" x2="868" y2="340" stroke="#22c55e" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+  <text x="874" y="312" font-family="sans-serif" font-size="7" fill="#22c55e">8°C</text>
+  <text x="874" y="344" font-family="sans-serif" font-size="7" fill="#22c55e">2°C</text>
+
+  <!-- Temperature line (normal then spike) -->
+  <polyline points="268,322 298,318 328,320 358,316 388,319 418,315 448,318 478,314 508,316 538,312 568,308 598,300 628,288 658,272 688,264 718,260 748,262 778,268 808,272 838,270 868,268"
+    fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Violation marker -->
+  <circle cx="598" cy="300" r="5" fill="#ef4444"/>
+  <line x1="598" y1="260" x2="598" y2="300" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="560" y="248" width="76" height="16" rx="4" fill="#fef2f2"/>
+  <text x="598" y="259" font-family="sans-serif" font-size="8" fill="#dc2626" text-anchor="middle">VIOLATION</text>
+
+  <!-- X axis labels -->
+  <text x="268" y="392" font-family="monospace" font-size="8" fill="#94a3b8">09:41</text>
+  <text x="388" y="392" font-family="monospace" font-size="8" fill="#94a3b8">09:42</text>
+  <text x="508" y="392" font-family="monospace" font-size="8" fill="#94a3b8">09:43</text>
+  <text x="628" y="392" font-family="monospace" font-size="8" fill="#94a3b8">09:44</text>
+  <text x="748" y="392" font-family="monospace" font-size="8" fill="#94a3b8">09:45</text>
+  <text x="848" y="392" font-family="monospace" font-size="8" fill="#94a3b8">09:46</text>
+
+  <!-- Bottom sync bar -->
+  <rect x="252" y="416" width="632" height="40" rx="8" fill="#f8fafc"/>
+  <rect x="252" y="416" width="632" height="40" rx="8" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="268" y="440" font-family="sans-serif" font-size="10" fill="#64748b">⚠️  Violations are written to the smart contract via reportEnvironmentalViolation()</text>
+  <rect x="790" y="424" width="82" height="24" rx="6" fill="#0f172a"/>
+  <text x="831" y="440" font-family="sans-serif" font-size="9" font-weight="bold" fill="white" text-anchor="middle">⟳ Force Sync</text>
+
+  <text x="450" y="510" font-family="monospace" font-size="9" fill="#94a3b8" text-anchor="middle">MEDICORE · IoT Cold-Chain Simulator · /iot</text>
+</svg>

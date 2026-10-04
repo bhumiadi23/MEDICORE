@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { getReadOnlyContract } from '../blockchain/contract';
+import { useWeb3 } from '../context/Web3Context';
 import { Search, MapPin, Truck, Store, User, Building2, ArrowDown } from 'lucide-react';
 import { formatDateTime, getRoleLabel } from '../utils/helpers';
 
@@ -17,6 +17,7 @@ const getRoleIcon = (role) => {
 const DrugTracking = () => {
   const [searchParams] = useSearchParams();
   const initialId = searchParams.get('id') || '';
+  const { contract } = useWeb3();
   
   const [drugId, setDrugId] = useState(initialId);
   const [history, setHistory] = useState([]);
@@ -94,13 +95,14 @@ const DrugTracking = () => {
         return;
       }
 
-      const contract = await getReadOnlyContract();
-      const drug = await contract.getDrug(idToSearch);
+      const contractToUse = contract; // use from context
+      if (!contractToUse) throw new Error("Contract not initialized");
+      const drug = await contractToUse.getDrug(idToSearch);
       if (!drug.exists) throw new Error("Drug not found");
       
       setDrugDetails(drug);
       
-      const hist = await contract.getDrugHistory(idToSearch);
+      const hist = await contractToUse.getDrugHistory(idToSearch);
       setHistory(hist);
     } catch (err) {
       console.error(err);
@@ -114,7 +116,7 @@ const DrugTracking = () => {
 
   useEffect(() => {
     if (initialId) fetchTracking(initialId);
-  }, [initialId]);
+  }, [initialId, contract]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

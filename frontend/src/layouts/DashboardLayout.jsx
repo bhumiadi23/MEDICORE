@@ -28,6 +28,7 @@ const ROLE_CONFIGS = {
     bgImage: '/wholesaler-bg.jpg',
     menu: [
       { name: 'Command Center', path: '/wholesaler', icon: LayoutDashboard },
+      { name: 'Incoming Deliveries', path: '/wholesaler/incoming', icon: ClipboardCheck },
       { name: 'Supply Distribution', path: '/wholesaler/supply', icon: Truck },
       { name: 'Inventory Ledger', path: '/wholesaler/inventory', icon: Package }
     ]

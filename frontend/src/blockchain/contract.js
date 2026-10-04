@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { abi } from './abi';
+import { NETWORK_CONFIG } from '../config/network';
 
 export const getContract = async (providerOrSigner) => {
   try {
@@ -10,15 +11,4 @@ export const getContract = async (providerOrSigner) => {
     console.error("Failed to load contract address", error);
     return null;
   }
-};
-
-export const getReadOnlyContract = async () => {
-  // Use public RPC if no wallet connected, for now fallback to window.ethereum if available
-  if (window.ethereum) {
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    return getContract(provider);
-  }
-  // Hardhat local node default URL
-  const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
-  return getContract(provider);
 };

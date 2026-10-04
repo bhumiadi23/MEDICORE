@@ -705,6 +705,11 @@
         "internalType": "string",
         "name": "_transporterId",
         "type": "string"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_verificationHash",
+        "type": "bytes32"
       }
     ],
     "name": "createShipment",
@@ -895,6 +900,86 @@
           }
         ],
         "internalType": "struct DrugSupplyChain.Entity[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllShipments",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "shipmentId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "quantity",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "sourceId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "destinationId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "transporterId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "transporterWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "departureTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expectedArrival",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "actualArrival",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.ShipmentStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "verificationHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.Shipment[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -2223,6 +2308,11 @@
             "type": "uint8"
           },
           {
+            "internalType": "bytes32",
+            "name": "verificationHash",
+            "type": "bytes32"
+          },
+          {
             "internalType": "bool",
             "name": "exists",
             "type": "bool"
@@ -2231,6 +2321,92 @@
         "internalType": "struct DrugSupplyChain.Shipment",
         "name": "",
         "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_receiverAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getShipmentsByReceiver",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "shipmentId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "quantity",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "sourceId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "destinationId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "transporterId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "transporterWallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "departureTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expectedArrival",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "actualArrival",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum DrugSupplyChain.ShipmentStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "verificationHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.Shipment[]",
+        "name": "",
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -2302,6 +2478,11 @@
             "internalType": "enum DrugSupplyChain.ShipmentStatus",
             "name": "status",
             "type": "uint8"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "verificationHash",
+            "type": "bytes32"
           },
           {
             "internalType": "bool",
@@ -2701,6 +2882,24 @@
       }
     ],
     "name": "recallDrug",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_shipmentId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_verificationCode",
+        "type": "string"
+      }
+    ],
+    "name": "receiveShipment",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

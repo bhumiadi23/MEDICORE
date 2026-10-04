@@ -19,7 +19,10 @@ const roles = [
 const BackgroundParticles = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 bg-slate-950">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black z-0"></div>
+      <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-30">
+        <source src="/MediCore-bg.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/60 to-slate-950/90 z-0"></div>
       
       {/* Animated glowing orbs */}
       {[...Array(20)].map((_, i) => (

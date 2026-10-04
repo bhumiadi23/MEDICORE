@@ -1,4 +1,17 @@
 node_modules/
 dist/
+frontend/dist/
+backend/node_modules/
 .env
 *.local
+*.exe
+*.log
+backend_test.json
+update_*.py
+write_*.py
+fix_*.py
+inject_*.py
+modify_contract*.py
+clean_*.py
+generate_ppt.py
+*.db

@@ -75,6 +75,26 @@ const RegulatorDashboard = () => {
         }
       });
 
+      try {
+        const res = await fetch('http://localhost:3001/api/incidents');
+        if (res.ok) {
+          const apiIncidents = await res.json();
+          apiIncidents.forEach(inc => {
+            incidentsData.push({
+              id: inc.incidentId,
+              drug: inc.shipmentId || inc.batchId || 'N/A',
+              type: inc.type,
+              entity: 'System API',
+              severity: inc.severity,
+              message: inc.message,
+              isApi: true
+            });
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching API incidents:", err);
+      }
+
       setStats({
         total,
         active,
@@ -93,16 +113,6 @@ const RegulatorDashboard = () => {
   useEffect(() => {
     fetchData();
   }, [contract]);
-
-  const loadDemoData = () => {
-    setStats({ total: 12450, active: 11800, recalled: 42, quarantined: 156, expired: 452, violations: 198 });
-    setIncidents([
-      { id: 'INC-REC-AMOX-001', drug: 'AMOX-2026-001', type: 'Active Recall', entity: 'XYZ Wholesalers', severity: 'High' },
-      { id: 'INC-QUA-METF-042', drug: 'METF-2026-042', type: 'Quarantined', entity: 'FastMed Logistics', severity: 'Medium' },
-      { id: 'INC-FLG-PARA-991', drug: 'PARA-2026-991', type: 'Flagged Temp', entity: 'CityCare Pharmacy', severity: 'Medium' },
-      { id: 'INC-REC-SYRP-088', drug: 'SYRP-2025-088', type: 'Active Recall', entity: 'MFG-SHADY-99', severity: 'High' }
-    ]);
-  };
 
   const handleApproveRecall = async (drugId) => {
     const success = await execute('approveRecall', drugId);
@@ -135,9 +145,6 @@ const RegulatorDashboard = () => {
         </div>
 
         <div className="flex gap-4 relative z-10">
-          <button onClick={loadDemoData} className="px-6 py-3 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl font-bold tracking-widest text-xs uppercase transition-all shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-            Inject Demo Data
-          </button>
           <button className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold tracking-widest text-xs uppercase transition-all flex items-center shadow-[0_0_20px_rgba(37,99,235,0.4)] border border-blue-500 hover:scale-105">
             <FileText className="w-4 h-4 mr-2" /> Compliance Report
           </button>
@@ -174,10 +181,10 @@ const RegulatorDashboard = () => {
               <thead>
                 <tr className="bg-white/5 text-slate-300 text-xs uppercase tracking-widest">
                   <th className="px-4 py-4 font-bold border-b border-white/10 rounded-tl-xl">Incident ID</th>
-                  <th className="px-4 py-4 font-bold border-b border-white/10">Batch</th>
+                  <th className="px-4 py-4 font-bold border-b border-white/10">Target</th>
                   <th className="px-4 py-4 font-bold border-b border-white/10">Type</th>
                   <th className="px-4 py-4 font-bold border-b border-white/10">Severity</th>
-                  <th className="px-4 py-4 font-bold border-b border-white/10 rounded-tr-xl">Action</th>
+                  <th className="px-4 py-4 font-bold border-b border-white/10 rounded-tr-xl">Details / Action</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
@@ -192,7 +199,9 @@ const RegulatorDashboard = () => {
                       {inc.severity !== 'High' && inc.severity !== 'Medium' && <span className="px-2 py-1 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded text-xs font-bold uppercase inline-flex items-center">{inc.severity}</span>}
                     </td>
                     <td className="px-4 py-4">
-                      {inc.type.includes('Recall') ? (
+                      {inc.isApi ? (
+                        <span className="text-xs text-slate-400 block max-w-xs truncate" title={inc.message}>{inc.message}</span>
+                      ) : inc.type.includes('Recall') ? (
                         <button 
                           onClick={() => setSelectedIncident(inc)}
                           className="text-xs font-bold uppercase tracking-widest text-red-400 hover:text-red-300 transition-colors"

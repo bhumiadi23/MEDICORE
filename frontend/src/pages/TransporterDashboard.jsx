@@ -4,6 +4,7 @@ import { useWeb3 } from '../context/Web3Context';
 import { useTransaction } from '../hooks/useTransaction';
 import { Truck, CheckCircle2, AlertTriangle, Snowflake, Navigation, Map as MapIcon, Activity, Radio, Play, ShieldAlert, Thermometer, History } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { mockIpfs } from '../utils/mockIpfs';
 import { formatDateTime } from '../utils/helpers';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } from 'recharts';
@@ -40,17 +41,7 @@ const MapController = ({ center, zoom }) => {
   return null;
 };
 
-const INDIA_LOCATIONS = {
-  'Mumbai': { coords: [19.0760, 72.8777], hub: 'BOM-Logistics', state: 'Maharashtra', pin: '400001' },
-  'Delhi': { coords: [28.7041, 77.1025], hub: 'DEL-ColdStore', state: 'Delhi', pin: '110001' },
-  'Bengaluru': { coords: [12.9716, 77.5946], hub: 'BLR-Bio', state: 'Karnataka', pin: '560001' },
-  'Chennai': { coords: [13.0827, 80.2707], hub: 'MAA-Pharma', state: 'Tamil Nadu', pin: '600001' },
-  'Kolkata': { coords: [22.5726, 88.3639], hub: 'CCU-Gateway', state: 'West Bengal', pin: '700001' },
-  'Hyderabad': { coords: [17.3850, 78.4867], hub: 'HYD-Chain', state: 'Telangana', pin: '500001' },
-  'Pune': { coords: [18.5204, 73.8567], hub: 'PNQ-Transit', state: 'Maharashtra', pin: '411001' },
-  'Ahmedabad': { coords: [23.0225, 72.5714], hub: 'AMD-Hub', state: 'Gujarat', pin: '380001' }
-};
-const CITY_KEYS = Object.keys(INDIA_LOCATIONS);
+
 const SHIPMENT_STATUSES = ['Preparing', 'Dispatched', 'In Transit', 'Arrived', 'Delivered', 'Delayed', 'Quarantined'];
 
 const GlowingStatCard = ({ icon: Icon, title, value, color }) => (
@@ -91,6 +82,7 @@ const TransporterDashboard = () => {
   
   const [shipments, setShipments] = useState([]);
   const [selectedShipment, setSelectedShipment] = useState(null);
+  const [filter, setFilter] = useState('all');
     // Simulation State
   const [isSimulating, setIsSimulating] = useState(false);
   const [simProgress, setSimProgress] = useState(0); 
@@ -103,48 +95,64 @@ const TransporterDashboard = () => {
 
   useEffect(() => {
     fetchShipments();
-    return () => clearInterval(simIntervalRef.current);
+    const interval = setInterval(fetchShipments, 3000);
+    return () => {
+      clearInterval(interval);
+      clearInterval(simIntervalRef.current);
+    };
   }, [account, contract]);
 
   const fetchShipments = async () => {
     if (!contract || !account) return;
     try {
       const data = await contract.getShipmentsByTransporter(account);
-      // Ensure we don't erase our local DEMO shipments when the blockchain syncs!
-      setShipments(prev => {
-        const demoShipments = prev.filter(s => s.id.startsWith('DEMO-'));
-        // If it's the very first load and we have localStorage demo shipments, use those too
-        const storedDemo = JSON.parse(localStorage.getItem('demo_shipments') || '[]');
-        
-        // Merge blockchain data with Demo data, prioritizing existing React state demo data over localStorage
-        const mergedDemos = [...demoShipments];
-        storedDemo.forEach(sd => {
-          if (!mergedDemos.find(d => d.id === sd.id)) {
-            mergedDemos.push(sd);
+
+      const FACILITY_LOCATIONS = {
+        'MFR-001': { name: 'ABC Pharmaceuticals (Mumbai)', coords: [19.0760, 72.8777] },
+        'WHL-001': { name: 'XYZ Wholesalers (Delhi)', coords: [28.6139, 77.2090] },
+        'RET-001': { name: 'CityCare Pharmacy (Bangalore)', coords: [12.9716, 77.5946] },
+        'TRN-001': { name: 'FastMed Logistics (Nagpur)', coords: [21.1458, 79.0882] },
+      };
+
+      const formatted = await Promise.all(data.map(async (d, idx) => {
+        let originProfile = null;
+        let destProfile = null;
+        try {
+          if (contract.getEntityProfileCID) {
+            const originCid = await contract.getEntityProfileCID(d.sourceId);
+            const destCid = await contract.getEntityProfileCID(d.destinationId);
+            if (originCid) originProfile = await mockIpfs.get(originCid);
+            if (destCid) destProfile = await mockIpfs.get(destCid);
           }
-        });
+        } catch(e) {}
 
-        const formatted = data.map((d, idx) => {
-          const startCity = CITY_KEYS[idx % CITY_KEYS.length];
-          const endCity = CITY_KEYS[(idx + 2) % CITY_KEYS.length];
-          return {
-            id: d.shipmentId || `BLOCKCHAIN-${idx}`,
-            drugId: d.drugId,
-            startCity: startCity,
-            endCity: endCity,
-            startCoords: INDIA_LOCATIONS[startCity].coords,
-            endCoords: INDIA_LOCATIONS[endCity].coords,
-            route: `${startCity} -> ${endCity}`,
-            curvedPath: generateCurvedLine(INDIA_LOCATIONS[startCity].coords, INDIA_LOCATIONS[endCity].coords),
-            distance: Math.floor(Math.random() * 1000 + 500),
-            statusIndex: Number(d.status),
-            status: SHIPMENT_STATUSES[Number(d.status)] || 'Unknown',
-            recipient: d.destinationId || d.currentOwner
-          };
-        });
+        const startCoords = originProfile?.location || FACILITY_LOCATIONS[d.sourceId]?.coords || [19.0760, 72.8777];
+        const endCoords = destProfile?.location || FACILITY_LOCATIONS[d.destinationId]?.coords || [28.6139, 77.2090];
 
-        return [...mergedDemos, ...formatted];
-      });
+        const startCity = originProfile?.name || FACILITY_LOCATIONS[d.sourceId]?.name || d.sourceId;
+        const endCity = destProfile?.name || FACILITY_LOCATIONS[d.destinationId]?.name || d.destinationId;
+
+        return {
+          id: d.shipmentId || `BLOCKCHAIN-${idx}`,
+          drugId: d.drugId,
+          quantity: Number(d.quantity || 0),
+          startCity: startCity,
+          endCity: endCity,
+          startCoords: startCoords,
+          endCoords: endCoords,
+          route: `${startCity} -> ${endCity}`,
+          curvedPath: generateCurvedLine(startCoords, endCoords),
+          distance: Math.floor(Math.random() * 1000 + 500),
+          statusIndex: Number(d.status),
+          status: SHIPMENT_STATUSES[Number(d.status)] || 'Unknown',
+          recipient: d.destinationId || d.currentOwner
+        };
+      }));
+
+      setShipments(formatted);
+      if (formatted.length > 0) {
+        setSelectedShipment(prev => prev ? formatted.find(s => s.id === prev.id) || formatted[0] : formatted[0]);
+      }
     } catch (error) {
       console.error("Failed to fetch shipments:", error);
     }
@@ -222,13 +230,6 @@ const TransporterDashboard = () => {
 
   const handleBlockchainSync = async (statusCode) => {
     try {
-      if (selectedShipment.id.startsWith('DEMO-')) {
-        // Bypass blockchain for presentation demo mode
-        setShipments(prev => prev.map(s => s.id === selectedShipment.id ? {...s, status: SHIPMENT_STATUSES[statusCode], statusIndex: statusCode} : s));
-        setSelectedShipment(prev => ({...prev, status: SHIPMENT_STATUSES[statusCode], statusIndex: statusCode}));
-        await new Promise(r => setTimeout(r, 800));
-        return true;
-      }
       await execute('updateShipmentStatus', selectedShipment.id, statusCode);
       fetchShipments(); 
       return true;
@@ -240,11 +241,6 @@ const TransporterDashboard = () => {
 
   const handleCompleteShipment = async () => {
     try {
-      if (selectedShipment.id.startsWith('DEMO-')) {
-        setShipments(prev => prev.map(s => s.id === selectedShipment.id ? {...s, status: 'Delivered', statusIndex: 4} : s));
-        setSelectedShipment(null);
-        return;
-      }
       await execute('completeShipment', selectedShipment.id);
       setSelectedShipment(null);
       fetchShipments();
@@ -253,54 +249,9 @@ const TransporterDashboard = () => {
     }
   };
 
-  const [demoStart, setDemoStart] = useState('Mumbai');
-  const [demoEnd, setDemoEnd] = useState('Delhi');
-
-  // Load demo shipments from localStorage on mount if they exist, to persist across routes
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('demo_shipments');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed.length > 0) {
-          // Merge with fetched shipments (we don't overwrite blockchain ones)
-          setShipments(prev => {
-            const nonDemo = prev.filter(s => !s.id.startsWith('DEMO-'));
-            return [...parsed, ...nonDemo];
-          });
-        }
-      }
-    } catch(e) {}
-  }, []);
-
-  // Save demo shipments whenever shipments array changes
-  useEffect(() => {
-    const demoOnly = shipments.filter(s => s.id.startsWith('DEMO-'));
-    localStorage.setItem('demo_shipments', JSON.stringify(demoOnly));
-  }, [shipments]);
-
-  const spawnDemoShipment = () => {
-    if (demoStart === demoEnd) return; // Basic validation
-    const demo = {
-      id: 'DEMO-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-      drugId: 'VACCINE-X-992',
-      startCity: demoStart,
-      endCity: demoEnd,
-      startCoords: INDIA_LOCATIONS[demoStart].coords,
-      endCoords: INDIA_LOCATIONS[demoEnd].coords,
-      route: `${demoStart} -> ${demoEnd}`,
-      curvedPath: generateCurvedLine(INDIA_LOCATIONS[demoStart].coords, INDIA_LOCATIONS[demoEnd].coords),
-      distance: Math.floor(Math.random() * 1000 + 500),
-      statusIndex: 1,
-      status: 'Preparing',
-      recipient: '0xMockRetailer...89F',
-      createdAt: Date.now() / 1000,
-    };
-    setShipments(prev => [demo, ...prev]);
-  };
-
   const getCurrentPosition = () => {
     if (!selectedShipment) return [20.5937, 78.9629];
+    if (selectedShipment.status === 'Delivered' || selectedShipment.status === 'Arrived') return selectedShipment.endCoords;
     if (simProgress === 0) return selectedShipment.startCoords;
     if (simProgress === 100) return selectedShipment.endCoords;
     
@@ -423,32 +374,41 @@ const TransporterDashboard = () => {
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-400">Blockchain State:</span>
                   <span className={`font-bold uppercase tracking-wider ${
+                    selectedShipment.status === 'Delivered' ? 'text-emerald-400 font-black' :
                     selectedShipment.status === 'Quarantined' ? 'text-red-400' :
                     selectedShipment.status === 'Delayed' ? 'text-amber-400' :
                     isSimulating ? 'text-indigo-400 animate-pulse' : 'text-slate-300'
                   }`}>
-                    {selectedShipment.status === 'In Transit' && isSimulating ? 'In Transit (Live)' : selectedShipment.status}
+                    {selectedShipment.status === 'Delivered' ? '? DELIVERED & RECEIVED' :
+                     selectedShipment.status === 'In Transit' && isSimulating ? 'In Transit (Live)' : selectedShipment.status}
                   </span>
                 </div>
                 <div className="w-full bg-slate-800 rounded-full h-2 mt-4 overflow-hidden">
                   <div className={`h-2 transition-all duration-300 ease-linear ${
+                    selectedShipment.status === 'Delivered' ? 'bg-emerald-500' :
                     selectedShipment.status === 'Quarantined' ? 'bg-red-500' :
                     selectedShipment.status === 'Delayed' ? 'bg-amber-500' :
                     'bg-indigo-500'
-                  }`} style={{ width: `${simProgress}%` }}></div>
+                  }`} style={{ width: `${selectedShipment.status === 'Delivered' ? 100 : simProgress}%` }}></div>
                 </div>
               </div>
 
               {/* Main Action Button */}
               <div className="mt-6 shrink-0">
-                {simProgress === 100 || selectedShipment.status === 'Arrived' || selectedShipment.status === 'Delivered' ? (
-                  <button 
-                    onClick={handleCompleteShipment}
-                    disabled={isLoading}
-                    className="w-full bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/50 py-4 rounded-xl font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-50"
-                  >
-                    {isLoading ? "Signing..." : "Verify Delivery"}
-                  </button>
+                {selectedShipment.status === 'Delivered' ? (
+                  <div className="w-full bg-emerald-950/60 border border-emerald-500/50 p-4 rounded-2xl text-center space-y-1 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                    <div className="flex items-center justify-center text-emerald-400 font-black text-sm uppercase tracking-widest gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400" /> Handoff Confirmed by Wholesaler
+                    </div>
+                    <p className="text-xs text-slate-400 font-mono">Code verified on blockchain. Units received into warehouse.</p>
+                  </div>
+                ) : simProgress === 100 || selectedShipment.status === 'Arrived' ? (
+                  <div className="w-full bg-amber-950/60 border border-amber-500/50 p-4 rounded-2xl text-center space-y-1">
+                    <div className="text-amber-400 font-black text-xs uppercase tracking-widest">
+                      ARRIVED AT DESTINATION
+                    </div>
+                    <p className="text-xs text-slate-400">Awaiting Wholesaler to verify delivery code.</p>
+                  </div>
                 ) : !isSimulating ? (
                   <button 
                     onClick={startSimulation}
@@ -475,21 +435,52 @@ const TransporterDashboard = () => {
           )}
         </div>
 
-        {/* List of Shipments */}
+        {/* List of Shipments with Tabs */}
         <div className="bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-white/10 shadow-xl overflow-hidden flex flex-col shrink-0 min-h-[350px]">
-          <div className="p-4 border-b border-white/5 bg-black/20">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Fleet Routing</h3>
+          <div className="p-4 border-b border-white/5 bg-black/20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Fleet Shipments</h3>
+            <div className="flex bg-slate-800/80 p-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+              <button 
+                onClick={() => setFilter('all')} 
+                className={`px-2.5 py-1 rounded-md transition-all ${filter === 'all' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
+              >
+                All ({shipments.length})
+              </button>
+              <button 
+                onClick={() => setFilter('active')} 
+                className={`px-2.5 py-1 rounded-md transition-all ${filter === 'active' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
+              >
+                Active ({activeShipments.length})
+              </button>
+              <button 
+                onClick={() => setFilter('completed')} 
+                className={`px-2.5 py-1 rounded-md transition-all ${filter === 'completed' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'}`}
+              >
+                Delivered ({shipments.filter(s => s.status === 'Delivered').length})
+              </button>
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-2 relative">
-            {activeShipments.map(s => (
+            {(filter === 'active' ? activeShipments : filter === 'completed' ? shipments.filter(s => s.status === 'Delivered') : shipments).map(s => (
               <div 
                 key={s.id} 
                 onClick={() => !isSimulating && setSelectedShipment(s)}
-                className={`p-4 rounded-2xl border cursor-pointer transition-all ${selectedShipment?.id === s.id ? 'bg-indigo-600/20 border-indigo-500/50' : 'bg-white/5 border-transparent hover:bg-white/10'} ${isSimulating && selectedShipment?.id !== s.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                  selectedShipment?.id === s.id ? 
+                    (s.status === 'Delivered' ? 'bg-emerald-600/20 border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.15)]' : 'bg-indigo-600/20 border-indigo-500/50') : 
+                  'bg-white/5 border-transparent hover:bg-white/10'
+                } ${isSimulating && selectedShipment?.id !== s.id ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-mono text-white text-sm font-bold">{s.id.substring(0,8)}</span>
-                  <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">{s.status}</span>
+                  <span className="font-mono text-white text-sm font-bold">{s.id.substring(0,10)}</span>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                    s.status === 'Delivered' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                    s.status === 'Quarantined' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                    s.status === 'Delayed' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+                    'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
+                  }`}>
+                    {s.status === 'Delivered' ? '? Delivered' : s.status}
+                  </span>
                 </div>
                 <div className="flex items-center text-xs text-slate-400 font-mono">
                   <Navigation className="w-3 h-3 mr-1 text-slate-500" />
@@ -498,36 +489,9 @@ const TransporterDashboard = () => {
               </div>
             ))}
             
-            {activeShipments.length === 0 && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-                <ShieldAlert className="w-8 h-8 text-slate-600 mb-2" />
-                <p className="text-xs text-slate-400 uppercase tracking-widest font-bold mb-4">Select Routing Nodes</p>
-                
-                <div className="flex flex-col space-y-2 w-full max-w-[200px] mb-4">
-                  <select 
-                    value={demoStart} 
-                    onChange={e => setDemoStart(e.target.value)}
-                    className="w-full bg-slate-900 border border-white/10 text-xs text-white rounded-lg px-3 py-2 outline-none focus:border-indigo-500 font-bold uppercase tracking-wider"
-                  >
-                    {CITY_KEYS.map(city => <option key={city} value={city}>{city}</option>)}
-                  </select>
-                  <Navigation className="w-4 h-4 text-slate-500 mx-auto" />
-                  <select 
-                    value={demoEnd} 
-                    onChange={e => setDemoEnd(e.target.value)}
-                    className="w-full bg-slate-900 border border-white/10 text-xs text-white rounded-lg px-3 py-2 outline-none focus:border-indigo-500 font-bold uppercase tracking-wider"
-                  >
-                    {CITY_KEYS.map(city => <option key={city} value={city}>{city}</option>)}
-                  </select>
-                </div>
-
-                <button 
-                  onClick={spawnDemoShipment}
-                  disabled={demoStart === demoEnd}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(79,70,229,0.4)]"
-                >
-                  SPAWN DEMO DATA
-                </button>
+            {(filter === 'active' ? activeShipments : filter === 'completed' ? shipments.filter(s => s.status === 'Delivered') : shipments).length === 0 && (
+              <div className="p-8 text-center text-slate-500 italic font-mono text-xs">
+                No shipments found in this category.
               </div>
             )}
           </div>
@@ -554,8 +518,8 @@ const TransporterDashboard = () => {
               <span>{s.endCity}</span>
             </div>
             <div className="mt-4 pt-4 border-t border-white/5 flex justify-between text-xs text-slate-400 uppercase font-bold">
-              <span>HUB: {INDIA_LOCATIONS[s.startCity]?.hub}</span>
-              <span>HUB: {INDIA_LOCATIONS[s.endCity]?.hub}</span>
+              <span>HUB: ORIGIN-HUB</span>
+              <span>HUB: DEST-HUB</span>
             </div>
           </div>
         ))}
@@ -699,7 +663,7 @@ const TransporterDashboard = () => {
         <GlowingStatCard icon={MapIcon} title="Active Routes" value={activeShipments.length} color="indigo" />
         <GlowingStatCard icon={CheckCircle2} title="Completed" value={shipments.filter(s=>s.status==='Delivered').length} color="emerald" />
         <GlowingStatCard icon={AlertTriangle} title="Quarantined" value={shipments.filter(s=>s.status==='Quarantined').length} color="red" />
-        <GlowingStatCard icon={Radio} title="Network Nodes" value={`${CITY_KEYS.length} Active`} color="blue" />
+        <GlowingStatCard icon={Radio} title="Network Nodes" value={`${shipments.length} Active`} color="blue" />
       </div>
 
       {/* Main View Router - Using CSS opacity to prevent Leaflet Map from unmounting and breaking */}

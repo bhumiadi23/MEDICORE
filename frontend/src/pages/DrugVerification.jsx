@@ -1,26 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getReadOnlyContract } from '../blockchain/contract';
-import { ShieldCheck, AlertTriangle, Search, XCircle, CheckCircle, PackageSearch, Clock } from 'lucide-react';
+import { useWeb3 } from '../context/Web3Context';
+import { ShieldCheck, AlertTriangle, Search, XCircle, CheckCircle, PackageSearch, Clock, QrCode } from 'lucide-react';
 import { formatDateTime, shortAddress, DRUG_STATUS_LABELS, DRUG_STATUS_COLORS } from '../utils/helpers';
 import Timeline from '../components/Timeline';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import QRScanner from '../components/QRScanner';
+import QRCodeGenerator from '../components/QRCodeGenerator';
+import { useReactToPrint } from 'react-to-print';
+import PassportCertificate from '../components/PassportCertificate';
+import { useRef } from 'react';
 
 const DrugVerification = () => {
   const { drugId: urlDrugId } = useParams();
   const navigate = useNavigate();
+  const { contract } = useWeb3();
   
   const [drugId, setDrugId] = useState(urlDrugId || '');
   const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showScanner, setShowScanner] = useState(false);
+
+  const certificateRef = useRef();
+  
+  const handlePrintCertificate = useReactToPrint({
+    content: () => certificateRef.current,
+    documentTitle: `MediCore-Passport-${drugId || urlDrugId}`,
+  });
 
   useEffect(() => {
     if (urlDrugId) {
       verifyDrug(urlDrugId);
     }
   }, [urlDrugId]);
+
+  const handleScanSuccess = (decodedText) => {
+    setShowScanner(false);
+    
+    // If the QR contains the full URL (e.g., http://localhost:5173/verify/PARA-001)
+    // Extract just the ID part. Otherwise, assume it's just the ID.
+    let extractedId = decodedText;
+    if (decodedText.includes('/verify/')) {
+      extractedId = decodedText.split('/verify/').pop();
+    }
+    
+    setDrugId(extractedId);
+    navigate(`/verify/${extractedId}`);
+  };
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -34,7 +62,6 @@ const DrugVerification = () => {
     setResult(null);
     
     try {
-      const contract = await getReadOnlyContract();
       if (!contract) throw new Error("Could not connect to network");
       
       const data = await contract.verifyDrug(id);
@@ -120,6 +147,14 @@ const DrugVerification = () => {
               onChange={(e) => setDrugId(e.target.value)}
             />
             <button 
+              type="button"
+              onClick={() => setShowScanner(true)}
+              className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 font-semibold transition-colors flex items-center border-l border-slate-200"
+            >
+              <QrCode className="h-5 w-5 mr-2" />
+              Scan QR
+            </button>
+            <button 
               type="submit" 
               disabled={isLoading}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 font-semibold transition-colors text-lg"
@@ -128,6 +163,15 @@ const DrugVerification = () => {
             </button>
           </div>
         </form>
+
+        <AnimatePresence>
+          {showScanner && (
+            <QRScanner 
+              onScanSuccess={handleScanSuccess} 
+              onClose={() => setShowScanner(false)} 
+            />
+          )}
+        </AnimatePresence>
 
         {error && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-red-50 border border-red-200 text-red-800 p-8 rounded-2xl flex items-start shadow-sm">
@@ -200,19 +244,50 @@ const DrugVerification = () => {
               </div>
             </div>
 
-            {/* Mini Timeline */}
-            {history.length > 0 && (
-              <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-                <h4 className="text-lg font-bold text-slate-900 mb-6">Supply Chain History</h4>
-                <Timeline events={history.slice(0, 3)} />
-                {history.length > 3 && (
-                  <button onClick={() => navigate(`/passport/${urlDrugId}`)} className="w-full mt-4 py-3 bg-slate-50 text-blue-600 font-semibold rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors">
-                    View Full Digital Passport
-                  </button>
-                )}
+            {/* Mini Timeline & QR Code */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              {history.length > 0 ? (
+                <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+                  <h4 className="text-lg font-bold text-slate-900 mb-6">Supply Chain History</h4>
+                  <Timeline events={history.slice(0, 3)} />
+                  {history.length > 3 && (
+                    <button onClick={() => navigate(`/passport/${urlDrugId}`)} className="w-full mt-4 py-3 bg-slate-50 text-blue-600 font-semibold rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors">
+                      View Full Digital Passport
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 flex flex-col items-center justify-center text-center">
+                  <h4 className="text-lg font-bold text-slate-900 mb-2">Supply Chain History</h4>
+                  <p className="text-slate-500">This batch was recently minted and has no transfer history yet.</p>
+                </div>
+              )}
+              
+                <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 flex flex-col items-center justify-center">
+                  <h4 className="text-lg font-bold text-slate-900 mb-2">Digital Product Passport QR</h4>
+                  <p className="text-sm text-slate-500 mb-6 text-center">Print this QR code and attach it to the physical packaging.</p>
+                  <QRCodeGenerator drugId={urlDrugId} size={180} />
+                </div>
               </div>
-            )}
-          </motion.div>
+
+              {/* Download PDF Button */}
+              <div className="mt-6 flex justify-center">
+                <button
+                  onClick={() => window.print()}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center"
+                >
+                  Download PDF Product Passport
+                </button>
+              </div>
+
+              {/* Hidden PDF Certificate Template */}
+              <PassportCertificate 
+                ref={certificateRef} 
+                result={result} 
+                history={history} 
+                drugId={urlDrugId} 
+              />
+            </motion.div>
         )}
       </div>
     </div>

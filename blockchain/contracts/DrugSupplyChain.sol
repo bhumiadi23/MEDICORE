@@ -138,6 +138,7 @@ contract DrugSupplyChain is ReentrancyGuard {
         uint256 expectedArrival;
         uint256 actualArrival;
         ShipmentStatus status;
+        bytes32 verificationHash;
         bool exists;
     }
 
@@ -207,6 +208,8 @@ contract DrugSupplyChain is ReentrancyGuard {
 
     mapping(string => Shipment) private shipments;
     mapping(address => string[]) private transporterShipmentIds;
+    string[] private allShipmentIds;
+    mapping(address => string[]) private receiverShipmentIds;
 
     mapping(string => QualityApproval) private qualityApprovals;
     
@@ -539,13 +542,31 @@ contract DrugSupplyChain is ReentrancyGuard {
         uint256 _quantity,
         string calldata _sourceId,
         string calldata _destinationId,
-        string calldata _transporterId
+        string calldata _transporterId,
+        bytes32 _verificationHash
     ) external onlyRegistered onlyActive nonReentrant {
         require(!shipments[_shipmentId].exists, "Shipment already exists");
         require(drugs[_drugId].exists, "Drug does not exist");
-        require(drugs[_drugId].status == DrugStatus.AVAILABLE || drugs[_drugId].status == DrugStatus.DELIVERED, "Drug not available for shipment");
+        require(drugs[_drugId].status == DrugStatus.AVAILABLE || drugs[_drugId].status == DrugStatus.DELIVERED || drugs[_drugId].status == DrugStatus.SOLD, "Drug not available for shipment");
         require(entityById[_transporterId].role == Role.Transporter, "Invalid transporter");
         
+        Role senderRole = entityById[_sourceId].role;
+        address senderWallet = walletById[_sourceId];
+        require(senderWallet == msg.sender, "Sender mismatch");
+        
+        if (senderRole == Role.Manufacturer) {
+            require(drugs[_drugId].remainingQty >= _quantity, "Insufficient manufacturer stock");
+            drugs[_drugId].remainingQty -= _quantity;
+        } else if (senderRole == Role.Wholesaler) {
+            require(wholesalerInventory[senderWallet][_drugId].availableQty >= _quantity, "Insufficient wholesaler stock");
+            wholesalerInventory[senderWallet][_drugId].availableQty -= _quantity;
+        } else if (senderRole == Role.Retailer) {
+            require(retailerInventory[senderWallet][_drugId].availableQty >= _quantity, "Insufficient retailer stock");
+            retailerInventory[senderWallet][_drugId].availableQty -= _quantity;
+        } else {
+            revert("Invalid sender role");
+        }
+
         address transporterWallet = walletById[_transporterId];
 
         shipments[_shipmentId] = Shipment({
@@ -559,11 +580,17 @@ contract DrugSupplyChain is ReentrancyGuard {
             departureTime: block.timestamp,
             expectedArrival: 0,
             actualArrival: 0,
+            verificationHash: _verificationHash,
             status: ShipmentStatus.PREPARING,
             exists: true
         });
 
         transporterShipmentIds[transporterWallet].push(_shipmentId);
+        allShipmentIds.push(_shipmentId);
+        address destWallet = walletById[_destinationId];
+        if (destWallet != address(0)) {
+            receiverShipmentIds[destWallet].push(_shipmentId);
+        }
         
         emit ShipmentCreated(_shipmentId, _drugId, _transporterId);
     }
@@ -600,6 +627,68 @@ contract DrugSupplyChain is ReentrancyGuard {
         emit ShipmentStatusChanged(_shipmentId, oldStatus, ShipmentStatus.DELIVERED);
     }
 
+    function receiveShipment(string calldata _shipmentId, string calldata _verificationCode) external onlyRegistered onlyActive nonReentrant {
+        require(shipments[_shipmentId].exists, "Shipment does not exist");
+        require(shipments[_shipmentId].status != ShipmentStatus.DELIVERED, "SHIPMENT ALREADY DELIVERED");
+        
+        string memory destId = shipments[_shipmentId].destinationId;
+        require(walletById[destId] == msg.sender, "Unauthorized receiver");
+        
+        bytes32 providedHash = keccak256(abi.encodePacked(_verificationCode));
+        require(providedHash == shipments[_shipmentId].verificationHash, "INVALID SHIPMENT CODE");
+
+        ShipmentStatus oldStatus = shipments[_shipmentId].status;
+        shipments[_shipmentId].status = ShipmentStatus.DELIVERED;
+        shipments[_shipmentId].actualArrival = block.timestamp;
+        
+        string memory _drugId = shipments[_shipmentId].drugId;
+        uint256 _quantity = shipments[_shipmentId].quantity;
+        
+        Role destRole = entityById[destId].role;
+        
+        if (destRole == Role.Wholesaler) {
+            InventorySlot storage slot = wholesalerInventory[msg.sender][_drugId];
+            if (!slot.exists) {
+                wholesalerInventory[msg.sender][_drugId] = InventorySlot({
+                    drugId: _drugId,
+                    drugName: drugs[_drugId].drugName,
+                    receivedQty: _quantity,
+                    availableQty: _quantity,
+                    suppliedQty: 0,
+                    exists: true
+                });
+                wholesalerDrugIds[msg.sender].push(_drugId);
+            } else {
+                slot.receivedQty += _quantity;
+                slot.availableQty += _quantity;
+            }
+        } else if (destRole == Role.Retailer) {
+            InventorySlot storage slot = retailerInventory[msg.sender][_drugId];
+            if (!slot.exists) {
+                retailerInventory[msg.sender][_drugId] = InventorySlot({
+                    drugId: _drugId,
+                    drugName: drugs[_drugId].drugName,
+                    receivedQty: _quantity,
+                    availableQty: _quantity,
+                    suppliedQty: 0,
+                    exists: true
+                });
+                retailerDrugIds[msg.sender].push(_drugId);
+            } else {
+                slot.receivedQty += _quantity;
+                slot.availableQty += _quantity;
+            }
+        }
+        
+        drugs[_drugId].currentOwner = msg.sender;
+        drugs[_drugId].currentOwnerId = destId;
+        
+        _updateDrugStatus(_drugId, DrugStatus.DELIVERED);
+
+        emit ShipmentStatusChanged(_shipmentId, oldStatus, ShipmentStatus.DELIVERED);
+    }
+
+
     function getShipment(string calldata _shipmentId) external view returns (Shipment memory) {
         require(shipments[_shipmentId].exists, "Shipment does not exist");
         return shipments[_shipmentId];
@@ -610,6 +699,23 @@ contract DrugSupplyChain is ReentrancyGuard {
         Shipment[] memory list = new Shipment[](ids.length);
         for (uint256 i = 0; i < ids.length; i++) {
             list[i] = shipments[ids[i]];
+        }
+        return list;
+    }
+
+    function getShipmentsByReceiver(address _receiverAddress) external view returns (Shipment[] memory) {
+        string[] storage ids = receiverShipmentIds[_receiverAddress];
+        Shipment[] memory list = new Shipment[](ids.length);
+        for (uint256 i = 0; i < ids.length; i++) {
+            list[i] = shipments[ids[i]];
+        }
+        return list;
+    }
+
+    function getAllShipments() external view returns (Shipment[] memory) {
+        Shipment[] memory list = new Shipment[](allShipmentIds.length);
+        for (uint256 i = 0; i < allShipmentIds.length; i++) {
+            list[i] = shipments[allShipmentIds[i]];
         }
         return list;
     }

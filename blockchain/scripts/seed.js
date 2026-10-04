@@ -225,6 +225,28 @@ async function main() {
     console.log("  ⚠️  M→W METF skipped:", e.reason || e.message);
   }
 
+  // ── Create Active Demonstration Shipment ────────────────────────────
+  console.log("\n🚚 Creating demo active shipment for Transporter & Wholesaler...");
+  try {
+    const demoCode = "MC-DEMO-2026";
+    const demoHash = hre.ethers.keccak256(hre.ethers.toUtf8Bytes(demoCode));
+    await contract.connect(manufacturer).createShipment(
+      "SHP-DEMO-001",
+      "PARA-2026-001",
+      1000,
+      "MFR-001",
+      "WHL-001",
+      "TRN-001",
+      demoHash
+    );
+    console.log("  ✅ Demo Shipment: SHP-DEMO-001 (1,000 units PARA-2026-001)");
+    console.log("     Assigned Transporter: TRN-001 (FastMed Logistics)");
+    console.log("     Destination: WHL-001 (XYZ Wholesalers)");
+    console.log("     Verification Code: MC-DEMO-2026");
+  } catch (e) {
+    console.log("  ⚠️  Demo shipment creation skipped:", e.reason || e.message);
+  }
+
   // ── Add Documents ──────────────────────────────────────────────────
   console.log("\n📄 Adding IPFS documents...");
 

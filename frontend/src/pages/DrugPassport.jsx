@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getReadOnlyContract } from '../blockchain/contract';
+import { useWeb3 } from '../context/Web3Context';
 import { ShieldCheck, FileText, Activity, AlertTriangle, Snowflake, Factory, Printer } from 'lucide-react';
 import { formatDateTime, shortAddress, DRUG_STATUS_LABELS } from '../utils/helpers';
 import Timeline from '../components/Timeline';
@@ -10,6 +10,7 @@ import StatusBadge from '../components/StatusBadge';
 const DrugPassport = () => {
   const { drugId } = useParams();
   const navigate = useNavigate();
+  const { contract } = useWeb3();
   const [data, setData] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +18,6 @@ const DrugPassport = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const contract = await getReadOnlyContract();
         if(!contract) return;
         const drug = await contract.verifyDrug(drugId);
         setData(drug);
@@ -39,7 +39,7 @@ const DrugPassport = () => {
       }
     };
     if (drugId) fetchData();
-  }, [drugId]);
+  }, [drugId, contract]);
 
   if (loading) return <div className="p-12 text-center text-slate-500 font-medium">Loading passport data...</div>;
   if (!data || !data.exists) return <div className="p-12 text-center text-red-500 font-bold">Drug Passport Not Found</div>;
