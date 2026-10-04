@@ -105,6 +105,14 @@ app.post('/api/shipments/:shipmentId/scan', (req, res) => {
     });
 });
 
+app.delete('/api/incidents/:incidentId', (req, res) => {
+    const { incidentId } = req.params;
+    db.run(`DELETE FROM incidents WHERE incidentId = ?`, [incidentId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, deleted: this.changes });
+    });
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Backend server running on port ${PORT}`);

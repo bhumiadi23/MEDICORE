@@ -123,8 +123,8 @@ const DashboardLayout = () => {
   const config = ROLE_CONFIGS[pathBase] || ROLE_CONFIGS['/manufacturer'];
   const themeClasses = getThemeClasses(config.theme);
   
-  // Security Enforcement Rule
-  const isDemoMode = (config.roleId === 0 && !isOwner) || (config.roleId !== 0 && entityInfo?.role !== config.roleId);
+  // Security Enforcement Rule: Contract Owner has universal superuser access
+  const isDemoMode = !isOwner && ((config.roleId === 0) || (config.roleId !== 0 && entityInfo?.role !== config.roleId));
 
   const handleExit = () => {
     disconnectWallet();

@@ -120,16 +120,12 @@ const LandingPage = () => {
           const styles = getColorClasses(role.color);
           
           const isConnected = !!account;
-          const isAuthorized = isConnected && (
-            (role.id === 0 && isOwner) || 
-            (role.id !== 0 && entityInfo?.role === role.id)
-          );
+          const isAuthorized = !isConnected || isOwner || (role.id === 0 && isOwner) || (role.id !== 0 && entityInfo?.role === role.id);
+          const isStrictRoleMatch = isOwner || (role.id === 0 && isOwner) || (role.id !== 0 && entityInfo?.role === role.id);
           
           // Determine the styling state based on authorization
-          const cardOpacityClass = !isConnected ? 'opacity-90' : (!isAuthorized ? 'opacity-50 grayscale' : 'opacity-100');
-          const hoverStateClass = isAuthorized 
-            ? `hover:border-transparent ${styles.shadow} group-hover:scale-[1.02]` 
-            : 'hover:border-red-500/30 hover:shadow-red-500/10 cursor-not-allowed';
+          const cardOpacityClass = 'opacity-100';
+          const hoverStateClass = `hover:border-transparent ${styles.shadow} group-hover:scale-[1.02] cursor-pointer`;
 
           return (
             <motion.div
@@ -137,36 +133,35 @@ const LandingPage = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ delay: idx * 0.1, type: 'spring', stiffness: 100, damping: 20 }}
+              onClick={() => handleRoleSelect(role)}
               className={`group relative rounded-3xl p-6 transition-all duration-500 flex flex-col h-[320px] overflow-hidden bg-slate-900/60 backdrop-blur-xl border border-white/10 ${cardOpacityClass} ${hoverStateClass}`}
             >
               {/* Dynamic Animated Background Image */}
               <div 
-                className={`absolute inset-0 z-0 bg-cover bg-center transition-all duration-700 opacity-20 ${isAuthorized ? 'group-hover:opacity-50 group-hover:scale-110 grayscale group-hover:grayscale-0' : ''}`}
+                className={`absolute inset-0 z-0 bg-cover bg-center transition-all duration-700 opacity-20 group-hover:opacity-50 group-hover:scale-110 grayscale group-hover:grayscale-0`}
                 style={{ backgroundImage: `url('${role.bgImage}')` }}
               />
               {/* Gradient Overlay to ensure text readability */}
               <div className="absolute inset-0 z-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent opacity-100 transition-opacity duration-500" />
               
               {/* Top Accent Line */}
-              {isAuthorized && (
-                <div 
-                  className="absolute top-0 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20" 
-                  style={{ backgroundColor: role.hex, boxShadow: `0 0 20px ${role.hex}` }}
-                />
-              )}
+              <div 
+                className="absolute top-0 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20" 
+                style={{ backgroundColor: role.hex, boxShadow: `0 0 20px ${role.hex}` }}
+              />
 
               <div className="relative z-10 flex flex-col h-full pointer-events-none">
                 <div className="flex items-center justify-between mb-auto">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10 transition-colors duration-500 ${isAuthorized ? styles.bg : 'bg-slate-800'}`}>
-                    <Icon className={`w-6 h-6 ${isAuthorized ? 'text-white' : 'text-slate-500'}`} />
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10 transition-colors duration-500 ${isStrictRoleMatch ? styles.bg : 'bg-slate-800'}`}>
+                    <Icon className={`w-6 h-6 ${isStrictRoleMatch ? 'text-white' : 'text-slate-400'}`} />
                   </div>
-                  <div className={`font-mono text-xs tracking-widest uppercase ${isAuthorized ? 'text-green-400' : 'text-slate-500'}`}>
-                    {isAuthorized ? 'AUTHORIZED' : `SYS_${role.id}`}
+                  <div className={`font-mono text-xs tracking-widest uppercase ${isOwner ? 'text-amber-400 font-bold' : isStrictRoleMatch ? 'text-green-400' : 'text-slate-400'}`}>
+                    {isOwner ? 'SUPERUSER' : isStrictRoleMatch ? 'AUTHORIZED' : 'DEMO MODE'}
                   </div>
                 </div>
 
                 <div className="mt-8">
-                  <h3 className={`text-2xl font-bold mb-2 transition-colors duration-300 ${isAuthorized ? `text-white ${styles.text}` : 'text-slate-400'}`}>
+                  <h3 className={`text-2xl font-bold mb-2 transition-colors duration-300 text-white ${styles.text}`}>
                     {role.name}
                   </h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
@@ -177,22 +172,13 @@ const LandingPage = () => {
               
               <div className="relative z-20 mt-6 pt-4 border-t border-white/10">
                 <button
-                  onClick={() => isAuthorized && handleRoleSelect(role)}
-                  disabled={!isAuthorized && isConnected}
-                  className={`w-full flex items-center justify-between text-sm font-bold transition-colors duration-300 py-2 group/btn ${
-                    !isConnected ? 'text-blue-400 hover:text-blue-300' :
-                    isAuthorized ? `text-slate-300 ${styles.text}` : 
-                    'text-red-500/70 cursor-not-allowed'
-                  }`}
+                  onClick={(e) => { e.stopPropagation(); handleRoleSelect(role); }}
+                  className={`w-full flex items-center justify-between text-sm font-bold transition-colors duration-300 py-2 group/btn text-slate-300 ${styles.text}`}
                 >
                   <span className="tracking-widest uppercase">
-                    {!isConnected ? 'CONNECT TO ENTER' : isAuthorized ? 'INITIALIZE' : 'ACCESS DENIED'}
+                    {!isConnected ? 'ENTER WORKSPACE' : isOwner ? 'SUPERUSER ACCESS' : isStrictRoleMatch ? 'INITIALIZE' : 'VIEW WORKSPACE'}
                   </span>
-                  {!isConnected || isAuthorized ? (
-                    <ArrowRight className="w-5 h-5 transform group-hover/btn:translate-x-2 transition-transform" />
-                  ) : (
-                    <Lock className="w-5 h-5" />
-                  )}
+                  <ArrowRight className="w-5 h-5 transform group-hover/btn:translate-x-2 transition-transform" />
                 </button>
               </div>
             </motion.div>
