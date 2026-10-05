@@ -53,6 +53,9 @@ const Navbar = () => {
                 <Link to="/track" className={`px-3 py-2 rounded-md text-sm font-medium ${location.pathname === '/track' ? 'bg-brand-800 text-white' : 'text-gray-300 hover:bg-brand-700 hover:text-white'}`}>
                   Track Drug
                 </Link>
+                <Link to="/iot" className={`px-3 py-2 rounded-md text-sm font-medium ${location.pathname === '/iot' ? 'bg-brand-800 text-white' : 'text-gray-300 hover:bg-brand-700 hover:text-white'}`}>
+                  IoT Telemetry
+                </Link>
                 <button
                   onClick={() => setShowSentinel(true)}
                   className="px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider bg-teal-500/20 text-teal-300 border border-teal-500/40 hover:bg-teal-500/30 transition-all flex items-center space-x-1.5 shadow-[0_0_15px_rgba(20,184,166,0.3)]"
