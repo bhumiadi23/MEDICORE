@@ -230,10 +230,12 @@ const CustomerDashboard = () => {
     </motion.div>
   );
 
-  const cleanPath = location.pathname.startsWith('/dashboard') 
+  const rawPath = location.pathname.startsWith('/dashboard') 
     ? location.pathname.replace(/^\/dashboard/, '') 
     : location.pathname;
-  const currentTab = cleanPath === '' || cleanPath === '/' || cleanPath === '/customer' ? '/customer' : cleanPath;
+  const cleanPath = rawPath.replace(/\/$/, '') || '/customer';
+  const validTabs = ['/customer', '/customer/history'];
+  const currentTab = validTabs.includes(cleanPath) ? cleanPath : '/customer';
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] flex-1 relative">

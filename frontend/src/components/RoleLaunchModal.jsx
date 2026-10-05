@@ -88,6 +88,17 @@ const RoleLaunchModal = () => {
   const { isOpen, roleConfig, address } = roleLaunchModal || {};
   const theme = COLOR_MAP[roleConfig?.badgeColor || 'teal'] || COLOR_MAP.teal;
 
+  const handleLaunch = useCallback(async () => {
+    closeRoleLaunchModal();
+    if (roleConfig?.role) {
+      await switchActiveRole(roleConfig.role);
+    }
+    if (roleConfig?.path) {
+      toast.success(`Launching ${roleConfig.name} workspace!`, { icon: '🚀', duration: 3000 });
+      navigate(roleConfig.path);
+    }
+  }, [closeRoleLaunchModal, switchActiveRole, roleConfig, navigate]);
+
   useEffect(() => {
     if (isOpen) {
       setSecondsLeft(3);
@@ -99,36 +110,19 @@ const RoleLaunchModal = () => {
   useEffect(() => {
     if (!isOpen || isPaused || showRolePicker) return;
 
-    timerRef.current = setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current);
-          handleLaunch();
-          return 0;
-        }
-        return prev - 1;
-      });
+    if (secondsLeft <= 0) {
+      handleLaunch();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setSecondsLeft((prev) => prev - 1);
     }, 1000);
 
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isOpen, isPaused, showRolePicker, roleConfig]);
-
-  const handleLaunch = async () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    closeRoleLaunchModal();
-    if (roleConfig?.role) {
-      await switchActiveRole(roleConfig.role);
-    }
-    if (roleConfig?.path) {
-      toast.success(`Launching ${roleConfig.name} workspace!`, { icon: '🚀', duration: 3000 });
-      navigate(roleConfig.path);
-    }
-  };
+    return () => clearTimeout(timer);
+  }, [isOpen, isPaused, showRolePicker, secondsLeft, handleLaunch]);
 
   const handleSelectDifferentRole = async (r) => {
-    if (timerRef.current) clearInterval(timerRef.current);
     setShowRolePicker(false);
     closeRoleLaunchModal();
     await switchActiveRole(r.role);

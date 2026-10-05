@@ -5,6 +5,7 @@ import { Web3Provider } from './context/Web3Context';
 import { NotificationProvider } from './context/NotificationContext';
 import ConnectionIndicator from './components/ConnectionIndicator';
 import RoleLaunchModal from './components/RoleLaunchModal';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Layouts
 import PublicLayout from './layouts/PublicLayout';
@@ -35,60 +36,62 @@ import AdminDashboard from './pages/AdminDashboard';
 function App() {
   return (
     <Router>
-      <Web3Provider>
-        <NotificationProvider>
-          <Toaster position="top-right" />
-          <RoleLaunchModal />
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<PublicLayout />}>
-              <Route index element={<LandingPage />} />
-              <Route path="connect" element={<ConnectWallet />} />
-              <Route path="register" element={<Register />} />
-              <Route path="verify" element={<DrugVerification />} />
-              <Route path="verify/:drugId" element={<DrugVerification />} />
-              <Route path="track" element={<DrugTracking />} />
-              <Route path="passport/:drugId" element={<DrugPassport />} />
-              <Route path="iot" element={<IoTSimulator />} />
-              <Route path="verify/shipment/:shipmentId" element={<VerifyShipment />} />
-            </Route>
+      <ErrorBoundary>
+        <Web3Provider>
+          <NotificationProvider>
+            <Toaster position="top-right" />
+            <RoleLaunchModal />
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<PublicLayout />}>
+                <Route index element={<LandingPage />} />
+                <Route path="connect" element={<ConnectWallet />} />
+                <Route path="register" element={<Register />} />
+                <Route path="verify" element={<DrugVerification />} />
+                <Route path="verify/:drugId" element={<DrugVerification />} />
+                <Route path="track" element={<DrugTracking />} />
+                <Route path="passport/:drugId" element={<DrugPassport />} />
+                <Route path="iot" element={<IoTSimulator />} />
+                <Route path="verify/shipment/:shipmentId" element={<VerifyShipment />} />
+              </Route>
 
-            {/* Protected Routes (Dashboard) */}
-            <Route element={<DashboardLayout />}>
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/manufacturer" element={<ManufacturerDashboard />} />
-              <Route path="/wholesaler/*" element={<WholesalerDashboard />} />
-              <Route path="/retailer/*" element={<RetailerDashboard />} />
-              <Route path="/customer/*" element={<CustomerDashboard />} />
-              <Route path="/transporter/*" element={<TransporterDashboard />} />
-              <Route path="/regulator" element={<RegulatorDashboard />} />
-              <Route path="/quality-officer/*" element={<QualityOfficerDashboard />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/explorer" element={<TransactionExplorer />} />
+              {/* Protected Routes (Dashboard) */}
+              <Route element={<DashboardLayout />}>
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/manufacturer" element={<ManufacturerDashboard />} />
+                <Route path="/wholesaler/*" element={<WholesalerDashboard />} />
+                <Route path="/retailer/*" element={<RetailerDashboard />} />
+                <Route path="/customer/*" element={<CustomerDashboard />} />
+                <Route path="/transporter/*" element={<TransporterDashboard />} />
+                <Route path="/regulator" element={<RegulatorDashboard />} />
+                <Route path="/quality-officer/*" element={<QualityOfficerDashboard />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/explorer" element={<TransactionExplorer />} />
 
-              {/* Direct Dashboard Routes & Workspace Aliases */}
-              <Route path="/dashboard/admin" element={<AdminDashboard />} />
-              <Route path="/dashboard/manufacturer" element={<ManufacturerDashboard />} />
-              <Route path="/dashboard/wholesaler" element={<WholesalerDashboard />} />
-              <Route path="/dashboard/wholesaler/*" element={<WholesalerDashboard />} />
-              <Route path="/dashboard/retailer" element={<RetailerDashboard />} />
-              <Route path="/dashboard/retailer/*" element={<RetailerDashboard />} />
-              <Route path="/dashboard/pharmacy" element={<RetailerDashboard />} />
-              <Route path="/dashboard/pharmacy/*" element={<RetailerDashboard />} />
-              <Route path="/dashboard/customer" element={<CustomerDashboard />} />
-              <Route path="/dashboard/customer/*" element={<CustomerDashboard />} />
-              <Route path="/dashboard/transporter" element={<TransporterDashboard />} />
-              <Route path="/dashboard/transporter/*" element={<TransporterDashboard />} />
-              <Route path="/dashboard/regulator" element={<RegulatorDashboard />} />
-              <Route path="/dashboard/quality-officer" element={<QualityOfficerDashboard />} />
-              <Route path="/dashboard/quality-officer/*" element={<QualityOfficerDashboard />} />
-            </Route>
+                {/* Direct Dashboard Routes & Workspace Aliases */}
+                <Route path="/dashboard/admin" element={<AdminDashboard />} />
+                <Route path="/dashboard/manufacturer" element={<ManufacturerDashboard />} />
+                <Route path="/dashboard/wholesaler" element={<WholesalerDashboard />} />
+                <Route path="/dashboard/wholesaler/*" element={<WholesalerDashboard />} />
+                <Route path="/dashboard/retailer" element={<RetailerDashboard />} />
+                <Route path="/dashboard/retailer/*" element={<RetailerDashboard />} />
+                <Route path="/dashboard/pharmacy" element={<RetailerDashboard />} />
+                <Route path="/dashboard/pharmacy/*" element={<RetailerDashboard />} />
+                <Route path="/dashboard/customer" element={<CustomerDashboard />} />
+                <Route path="/dashboard/customer/*" element={<CustomerDashboard />} />
+                <Route path="/dashboard/transporter" element={<TransporterDashboard />} />
+                <Route path="/dashboard/transporter/*" element={<TransporterDashboard />} />
+                <Route path="/dashboard/regulator" element={<RegulatorDashboard />} />
+                <Route path="/dashboard/quality-officer" element={<QualityOfficerDashboard />} />
+                <Route path="/dashboard/quality-officer/*" element={<QualityOfficerDashboard />} />
+              </Route>
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-          <ConnectionIndicator />
-        </NotificationProvider>
-      </Web3Provider>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            <ConnectionIndicator />
+          </NotificationProvider>
+        </Web3Provider>
+      </ErrorBoundary>
     </Router>
   );
 }

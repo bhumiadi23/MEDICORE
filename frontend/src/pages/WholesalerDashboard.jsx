@@ -529,10 +529,12 @@ const WholesalerDashboard = () => {
     </motion.div>
   );
 
-  const cleanPath = location.pathname.startsWith('/dashboard') 
+  const rawPath = location.pathname.startsWith('/dashboard') 
     ? location.pathname.replace(/^\/dashboard/, '') 
     : location.pathname;
-  const currentTab = cleanPath === '' || cleanPath === '/' || cleanPath === '/wholesaler' ? '/wholesaler' : cleanPath;
+  const cleanPath = rawPath.replace(/\/$/, '') || '/wholesaler';
+  const validTabs = ['/wholesaler', '/wholesaler/incoming', '/wholesaler/supply', '/wholesaler/inventory'];
+  const currentTab = validTabs.includes(cleanPath) ? cleanPath : '/wholesaler';
 
   return (
     <div className="relative h-[calc(100vh-8rem)] w-full">

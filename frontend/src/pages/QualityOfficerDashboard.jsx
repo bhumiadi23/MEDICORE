@@ -211,10 +211,12 @@ const QualityOfficerDashboard = () => {
     </motion.div>
   );
 
-  const cleanPath = location.pathname.startsWith('/dashboard') 
+  const rawPath = location.pathname.startsWith('/dashboard') 
     ? location.pathname.replace(/^\/dashboard/, '') 
     : location.pathname;
-  const currentTab = cleanPath === '' || cleanPath === '/' || cleanPath === '/quality-officer' ? '/quality-officer' : cleanPath;
+  const cleanPath = rawPath.replace(/\/$/, '') || '/quality-officer';
+  const validTabs = ['/quality-officer', '/quality-officer/queue', '/quality-officer/inspections'];
+  const currentTab = validTabs.includes(cleanPath) ? cleanPath : '/quality-officer';
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] flex-1 relative">

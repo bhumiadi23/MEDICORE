@@ -379,10 +379,13 @@ const RetailerDashboard = () => {
     </motion.div>
   );
 
-  const cleanPath = location.pathname.startsWith('/dashboard') 
+  const rawPath = location.pathname.startsWith('/dashboard') 
     ? location.pathname.replace(/^\/dashboard/, '') 
     : location.pathname;
-  const currentTab = cleanPath === '' || cleanPath === '/' || cleanPath === '/retailer' ? '/retailer' : cleanPath;
+  const noSlash = rawPath.replace(/\/$/, '') || '/retailer';
+  const cleanPath = noSlash.startsWith('/pharmacy') ? noSlash.replace(/^\/pharmacy/, '/retailer') : noSlash;
+  const validTabs = ['/retailer', '/retailer/dispense', '/retailer/inventory'];
+  const currentTab = validTabs.includes(cleanPath) ? cleanPath : '/retailer';
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] flex-1 relative">

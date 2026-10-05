@@ -668,10 +668,12 @@ const TransporterDashboard = () => {
 
       {/* Main View Router - Using CSS opacity to prevent Leaflet Map from unmounting and breaking */}
       {(() => {
-        const cleanPath = location.pathname.startsWith('/dashboard') 
+        const rawPath = location.pathname.startsWith('/dashboard') 
           ? location.pathname.replace(/^\/dashboard/, '') 
           : location.pathname;
-        const currentTab = cleanPath === '' || cleanPath === '/' || cleanPath === '/transporter' ? '/transporter' : cleanPath;
+        const cleanPath = rawPath.replace(/\/$/, '') || '/transporter';
+        const validTabs = ['/transporter', '/transporter/routes', '/transporter/cold-chain', '/transporter/incidents', '/transporter/history'];
+        const currentTab = validTabs.includes(cleanPath) ? cleanPath : '/transporter';
         return (
           <div className="flex-1 min-h-0 relative">
             <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/transporter' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
