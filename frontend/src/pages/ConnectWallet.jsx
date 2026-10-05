@@ -7,7 +7,7 @@ import { getRoleConfigForAddress } from '../config/roles';
 import toast from 'react-hot-toast';
 
 const ConnectWallet = () => {
-  const { account, connectWallet, entityInfo } = useWeb3();
+  const { account, connectWallet, entityInfo, triggerRoleLaunchModal } = useWeb3();
   const navigate = useNavigate();
   const [isConnecting, setIsConnecting] = useState(false);
 
@@ -15,20 +15,17 @@ const ConnectWallet = () => {
     if (account) {
       const config = getRoleConfigForAddress(account, entityInfo?.role);
       if (config) {
-        toast.success(`Connected as ${config.name}! Launching Workspace...`, { icon: '🚀', duration: 3000 });
-        navigate(config.path);
+        triggerRoleLaunchModal?.(config, account);
       }
     }
-  }, [account, entityInfo, navigate]);
+  }, [account, entityInfo, triggerRoleLaunchModal]);
 
   const handleConnect = async () => {
     setIsConnecting(true);
     try {
       const res = await connectWallet();
       if (res && res.success) {
-        const { roleConfig } = res;
-        toast.success(`Connected as ${roleConfig.name}! Launching Workspace...`, { icon: '🚀', duration: 3000 });
-        navigate(roleConfig.path);
+        triggerRoleLaunchModal?.(res.roleConfig, res.address);
       }
     } catch (e) {
       console.error(e);

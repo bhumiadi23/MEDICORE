@@ -15,6 +15,25 @@ export const Web3Provider = ({ children }) => {
   const [currentRoleConfig, setCurrentRoleConfig] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [isConnecting, setIsConnecting] = useState(true);
+  const [roleLaunchModal, setRoleLaunchModal] = useState({
+    isOpen: false,
+    roleConfig: null,
+    address: null
+  });
+
+  const triggerRoleLaunchModal = useCallback((config, addr) => {
+    if (config) {
+      setRoleLaunchModal({
+        isOpen: true,
+        roleConfig: config,
+        address: addr
+      });
+    }
+  }, []);
+
+  const closeRoleLaunchModal = useCallback(() => {
+    setRoleLaunchModal((prev) => ({ ...prev, isOpen: false }));
+  }, []);
 
   // Fallback Read-Only Provider
   useEffect(() => {
@@ -96,6 +115,11 @@ export const Web3Provider = ({ children }) => {
 
         const roleConfig = getRoleConfigForAddress(address, resolvedEntity?.role);
         setCurrentRoleConfig(roleConfig);
+
+        if (!isSilent) {
+          triggerRoleLaunchModal(roleConfig, address);
+        }
+
         return { success: true, address, roleConfig, entityInfo: resolvedEntity };
       } catch (error) {
         console.error("Connection error:", error);
@@ -108,7 +132,7 @@ export const Web3Provider = ({ children }) => {
       setIsConnecting(false);
       return { success: false, error: 'No wallet detected' };
     }
-  }, []);
+  }, [triggerRoleLaunchModal]);
 
   useEffect(() => {
     let mounted = true;
@@ -124,9 +148,12 @@ export const Web3Provider = ({ children }) => {
           if (mounted) setIsConnecting(false);
         }
 
-        const handleAccountsChanged = (accounts) => {
-          if (accounts.length > 0 && localStorage.getItem('manuallyDisconnected') !== 'true') {
-            connectWallet(true);
+        const handleAccountsChanged = async (newAccounts) => {
+          if (newAccounts.length > 0 && localStorage.getItem('manuallyDisconnected') !== 'true') {
+            const res = await connectWallet(false);
+            if (res && res.success) {
+              triggerRoleLaunchModal(res.roleConfig, res.address);
+            }
           } else {
             disconnectWallet();
           }
@@ -145,10 +172,11 @@ export const Web3Provider = ({ children }) => {
     
     checkConnection();
     return () => { mounted = false; };
-  }, [connectWallet]);
+  }, [connectWallet, triggerRoleLaunchModal]);
 
   const disconnectWallet = () => {
     localStorage.setItem('manuallyDisconnected', 'true');
+    closeRoleLaunchModal();
     setAccount(null);
     setEntityInfo(null);
     setCurrentRoleConfig(null);
@@ -159,7 +187,23 @@ export const Web3Provider = ({ children }) => {
   };
 
   return (
-    <Web3Context.Provider value={{ provider, signer, account, contract, entityInfo, isOwner, isConnecting, currentRoleConfig, setCurrentRoleConfig, connectWallet, disconnectWallet, setEntityInfo }}>
+    <Web3Context.Provider value={{ 
+      provider, 
+      signer, 
+      account, 
+      contract, 
+      entityInfo, 
+      isOwner, 
+      isConnecting, 
+      currentRoleConfig, 
+      setCurrentRoleConfig, 
+      connectWallet, 
+      disconnectWallet, 
+      setEntityInfo,
+      roleLaunchModal,
+      triggerRoleLaunchModal,
+      closeRoleLaunchModal
+    }}>
       {children}
     </Web3Context.Provider>
   );

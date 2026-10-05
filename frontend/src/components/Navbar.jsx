@@ -9,7 +9,7 @@ import { ALL_ROLES_LIST, getRoleConfigForAddress } from '../config/roles';
 import toast from 'react-hot-toast';
 
 const Navbar = () => {
-  const { account, entityInfo, currentRoleConfig, connectWallet, disconnectWallet } = useWeb3();
+  const { account, entityInfo, currentRoleConfig, connectWallet, disconnectWallet, triggerRoleLaunchModal } = useWeb3();
   const location = useLocation();
   const navigate = useNavigate();
   const [showSentinel, setShowSentinel] = useState(false);
@@ -21,12 +21,8 @@ const Navbar = () => {
     try {
       const res = await connectWallet(false);
       if (res && res.success) {
-        const { roleConfig } = res;
-        toast.success(`Connected as ${roleConfig.name}! Launching Workspace...`, {
-          icon: '🚀',
-          duration: 3500
-        });
-        navigate(roleConfig.path);
+        const { roleConfig, address } = res;
+        triggerRoleLaunchModal?.(roleConfig, address);
       }
     } catch (err) {
       console.error("Wallet connection failed", err);
@@ -35,11 +31,7 @@ const Navbar = () => {
 
   const handleSwitchWorkspace = (roleItem) => {
     setShowRoleDropdown(false);
-    toast.success(`Switched active workspace to ${roleItem.name}!`, {
-      icon: '🔄',
-      duration: 2500
-    });
-    navigate(roleItem.path);
+    triggerRoleLaunchModal?.(roleItem, account);
   };
 
   return (

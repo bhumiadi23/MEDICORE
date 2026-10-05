@@ -61,21 +61,22 @@ const BackgroundParticles = () => {
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { account, entityInfo, isOwner, connectWallet } = useWeb3();
+  const { account, entityInfo, isOwner, connectWallet, triggerRoleLaunchModal } = useWeb3();
 
   const handleRoleSelect = async (role) => {
     if (account) {
-      navigate(role.path);
+      triggerRoleLaunchModal?.({
+        role: role.name.toLowerCase().replace(' ', '-'),
+        name: role.name,
+        path: role.path,
+        badgeColor: role.color,
+        description: role.desc
+      }, account);
     } else {
       try {
         const res = await connectWallet(false);
         if (res && res.success) {
-          const { roleConfig } = res;
-          toast.success(`Connected as ${roleConfig.name}! Launching Workspace...`, {
-            icon: '🚀',
-            duration: 3500
-          });
-          navigate(roleConfig.path);
+          triggerRoleLaunchModal?.(res.roleConfig, res.address);
         } else {
           navigate(role.path);
         }

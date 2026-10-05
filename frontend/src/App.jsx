@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { Web3Provider } from './context/Web3Context';
 import { NotificationProvider } from './context/NotificationContext';
 import ConnectionIndicator from './components/ConnectionIndicator';
+import RoleLaunchModal from './components/RoleLaunchModal';
 
 // Layouts
 import PublicLayout from './layouts/PublicLayout';
@@ -37,6 +38,7 @@ function App() {
       <Web3Provider>
         <NotificationProvider>
           <Toaster position="top-right" />
+          <RoleLaunchModal />
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<PublicLayout />}>
