@@ -10,6 +10,22 @@ import toast from 'react-hot-toast';
 
 const SHIPMENT_STATUS_LABELS = ['Preparing', 'Dispatched', 'In Transit', 'Arrived', 'Delivered', 'Delayed', 'Quarantined'];
 
+const DRUG_STATUS_LABELS = {
+  0: 'CREATED',
+  1: 'QUALITY_PENDING',
+  2: 'QUALITY_APPROVED',
+  3: 'AVAILABLE',
+  4: 'IN_TRANSIT',
+  5: 'DELIVERED',
+  6: 'FLAGGED',
+  7: 'QUARANTINED',
+  8: 'UNDER_INVESTIGATION',
+  9: 'RELEASED',
+  10: 'RECALLED',
+  11: 'EXPIRED',
+  12: 'SOLD'
+};
+
 const WholesalerDashboard = () => {
   const { contract, entityInfo, account } = useWeb3();
   const { execute, isLoading, error } = useTransaction();
@@ -26,12 +42,26 @@ const WholesalerDashboard = () => {
   const fetchData = async () => {
     if (!contract || !account) return;
     try {
-      const inventory = await contract.getWholesalerInventory(account);
-      const activeInventory = inventory.filter(i => i.exists && Number(i.availableQty) > 0);
+      let inventory = [];
+      try {
+        inventory = await contract.getWholesalerInventory(account);
+      } catch(e) {}
+
+      // Fallback to registered WHL entity wallet if account is not bound directly
+      if (!inventory || inventory.length === 0) {
+        try {
+          const whl = await contract.getEntity(entityInfo?.id || 'WHL-001');
+          if (whl && whl.wallet) {
+            inventory = await contract.getWholesalerInventory(whl.wallet);
+          }
+        } catch(e) {}
+      }
+
+      const activeInventory = (inventory || []).filter(i => i.exists && Number(i.availableQty) > 0);
       
       let totRec = 0;
       let totSup = 0;
-      inventory.forEach(i => {
+      (inventory || []).forEach(i => {
         if (i.exists) {
           totRec += Number(i.receivedQty || 0);
           totSup += Number(i.suppliedQty || 0);
@@ -42,12 +72,25 @@ const WholesalerDashboard = () => {
       const enrichedDrugs = await Promise.all(activeInventory.map(async (item) => {
         try {
           const batch = await contract.getDrug(item.drugId);
+          const statusNum = Number(batch.status);
+          const isRecalled = batch.isRecalled || statusNum === 10;
+          const isQuarantined = statusNum === 7;
+          const isFlagged = statusNum === 6;
+          const isInvestigating = statusNum === 8;
+          const isBlocked = isRecalled || isQuarantined || isFlagged || isInvestigating;
+
           return {
             drugId: item.drugId,
             drugName: item.drugName,
             remainingQty: item.availableQty,
             expiryDate: batch.expiryDate,
-            isRecalled: batch.isRecalled,
+            isRecalled,
+            isQuarantined,
+            isFlagged,
+            isInvestigating,
+            isBlocked,
+            statusNum,
+            statusLabel: DRUG_STATUS_LABELS[statusNum] || 'AVAILABLE',
             manufacturerId: batch.manufacturerId
           };
         } catch(e) {
@@ -57,6 +100,12 @@ const WholesalerDashboard = () => {
             remainingQty: item.availableQty,
             expiryDate: 0,
             isRecalled: false,
+            isQuarantined: false,
+            isFlagged: false,
+            isInvestigating: false,
+            isBlocked: false,
+            statusNum: 3,
+            statusLabel: 'AVAILABLE',
             manufacturerId: 'Unknown'
           };
         }
@@ -103,7 +152,18 @@ const WholesalerDashboard = () => {
 
   useEffect(() => {
     fetchData();
+    const timer = setInterval(fetchData, 3000);
+    return () => clearInterval(timer);
   }, [contract, entityInfo, account]);
+
+  useEffect(() => {
+    if (supplyData.drugId) {
+      const selected = drugs.find(d => d.drugId === supplyData.drugId);
+      if (selected && selected.isBlocked) {
+        setSupplyData(prev => ({ ...prev, drugId: '' }));
+      }
+    }
+  }, [drugs, supplyData.drugId]);
 
   const handleSupplyRequest = (e) => {
     e.preventDefault();
@@ -352,6 +412,18 @@ const WholesalerDashboard = () => {
             <p className="text-slate-400 text-sm ml-12">Transfer bulk pharmaceutical inventory to retail nodes on the ledger.</p>
           </div>
 
+          {drugs.some(d => d.isBlocked) && (
+            <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-start space-x-3">
+              <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="text-sm font-bold text-red-300">Regulator Safety Lock Active</h4>
+                <p className="text-xs text-red-400/80 mt-1">
+                  {drugs.filter(d => d.isBlocked).length} batch(es) in your inventory have been flagged, quarantined, or recalled by authorities and are locked from downstream distribution.
+                </p>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSupplyRequest} className="space-y-6 relative z-10">
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Select Active Batch</label>
@@ -362,7 +434,7 @@ const WholesalerDashboard = () => {
                 onChange={e => setSupplyData({...supplyData, drugId: e.target.value})}
               >
                 <option value="" className="bg-slate-900 text-slate-400">Select a batch from inventory...</option>
-                {drugs.filter(d => Number(d.remainingQty) > 0 && !d.isRecalled).map(d => (
+                {drugs.filter(d => Number(d.remainingQty) > 0 && !d.isBlocked).map(d => (
                   <option key={d.drugId} value={d.drugId} className="bg-slate-900 text-white">
                     {d.drugName} (Qty Available: {Number(d.remainingQty)})
                   </option>
@@ -433,7 +505,11 @@ const WholesalerDashboard = () => {
                 <td className="p-4 text-slate-400 font-mono text-xs">{d.manufacturerId}</td>
                 <td className="p-4">
                   {d.isRecalled ? (
-                    <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-bold border border-red-500/30">RECALLED</span>
+                    <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-bold border border-red-500/30">RECALLED (LOCKED)</span>
+                  ) : d.isQuarantined ? (
+                    <span className="px-3 py-1 bg-amber-500/20 text-amber-400 rounded-full text-xs font-bold border border-amber-500/30">QUARANTINED (TEMP)</span>
+                  ) : d.isBlocked ? (
+                    <span className="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-bold border border-purple-500/30">{d.statusLabel}</span>
                   ) : (
                     <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-bold border border-emerald-500/30">SECURE IN STOCK</span>
                   )}

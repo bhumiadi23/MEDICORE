@@ -7,41 +7,111 @@ import { formatDateTime } from '../utils/helpers';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const DRUG_STATUS_LABELS = {
+  0: 'CREATED',
+  1: 'QUALITY_PENDING',
+  2: 'QUALITY_APPROVED',
+  3: 'AVAILABLE',
+  4: 'IN_TRANSIT',
+  5: 'DELIVERED',
+  6: 'FLAGGED',
+  7: 'QUARANTINED',
+  8: 'UNDER_INVESTIGATION',
+  9: 'RELEASED',
+  10: 'RECALLED',
+  11: 'EXPIRED',
+  12: 'SOLD'
+};
+
 const RetailerDashboard = () => {
   const { contract, entityInfo, account } = useWeb3();
   const { execute, isLoading } = useTransaction();
   const location = useLocation();
   const [drugs, setDrugs] = useState([]);
   const [sellData, setSellData] = useState({ drugId: '', customerId: '', quantity: '' });
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, data: null });
 
   const fetchDrugs = async () => {
-    if (!contract || !account) return;
+    if (!contract) return;
     try {
-      const inventory = await contract.getRetailerInventory(account);
-      const activeInventory = inventory.filter(i => i.exists && Number(i.availableQty) > 0);
+      let retailerAddress = account;
+      let inventory = [];
+
+      if (retailerAddress) {
+        try {
+          inventory = await contract.getRetailerInventory(retailerAddress);
+        } catch(e) {}
+      }
+
+      // Fallback to registered RET-001 if connected as admin or empty
+      if ((!inventory || inventory.length === 0) && contract.getEntityById) {
+        try {
+          const ret = await contract.getEntityById("RET-001");
+          if (ret && ret.wallet) {
+            inventory = await contract.getRetailerInventory(ret.wallet);
+          }
+        } catch(e) {}
+      }
+
+      const activeInventory = (inventory || []).filter(i => i.exists && Number(i.availableQty) > 0);
       
       const enrichedDrugs = await Promise.all(activeInventory.map(async (item) => {
-        const batch = await contract.getDrug(item.drugId);
-        return {
-          drugId: item.drugId,
-          drugName: item.drugName,
-          remainingQty: item.availableQty,
-          expiryDate: batch.expiryDate,
-          isRecalled: batch.isRecalled
-        };
+        try {
+          const batch = await contract.getDrug(item.drugId);
+          const statusNum = Number(batch.status);
+          const isRecalled = batch.isRecalled || statusNum === 10;
+          const isQuarantined = statusNum === 7;
+          const isFlagged = statusNum === 6;
+          const isInvestigating = statusNum === 8;
+          const isBlocked = isRecalled || isQuarantined || isFlagged || isInvestigating;
+
+          return {
+            drugId: item.drugId,
+            drugName: item.drugName,
+            remainingQty: item.availableQty,
+            expiryDate: batch.expiryDate,
+            isRecalled,
+            isQuarantined,
+            isFlagged,
+            isInvestigating,
+            isBlocked,
+            statusNum,
+            statusLabel: DRUG_STATUS_LABELS[statusNum] || 'UNKNOWN'
+          };
+        } catch(e) {
+          return {
+            drugId: item.drugId,
+            drugName: item.drugName,
+            remainingQty: item.availableQty,
+            expiryDate: 0,
+            isRecalled: false,
+            isBlocked: false,
+            statusNum: 3,
+            statusLabel: 'AVAILABLE'
+          };
+        }
       }));
       
       setDrugs(enrichedDrugs);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching retailer drugs:", err);
     }
   };
 
   useEffect(() => {
     fetchDrugs();
+    const timer = setInterval(fetchDrugs, 3000);
+    return () => clearInterval(timer);
   }, [contract, entityInfo, account]);
 
-const [confirmModal, setConfirmModal] = useState({ isOpen: false, data: null });
+  useEffect(() => {
+    if (sellData.drugId) {
+      const selected = drugs.find(d => d.drugId === sellData.drugId);
+      if (selected && selected.isBlocked) {
+        setSellData(prev => ({ ...prev, drugId: '' }));
+      }
+    }
+  }, [drugs, sellData.drugId]);
 
   const handleSellRequest = (e) => {
     e.preventDefault();
@@ -186,6 +256,18 @@ const [confirmModal, setConfirmModal] = useState({ isOpen: false, data: null });
             <p className="text-slate-400 text-sm ml-12">Dispense verified medications directly to a patient's cryptographic identity.</p>
           </div>
 
+          {drugs.some(d => d.isBlocked) && (
+            <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-start space-x-3">
+              <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="text-sm font-bold text-red-300">Regulator Safety Lock Active</h4>
+                <p className="text-xs text-red-400/80 mt-1">
+                  {drugs.filter(d => d.isBlocked).length} batch(es) in your inventory have been flagged, quarantined, or recalled by authorities and are locked from point-of-sale dispensing.
+                </p>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSellRequest} className="space-y-6 relative z-10">
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Select Medication Batch</label>
@@ -196,7 +278,7 @@ const [confirmModal, setConfirmModal] = useState({ isOpen: false, data: null });
                 onChange={e => setSellData({...sellData, drugId: e.target.value})}
               >
                 <option value="" className="bg-slate-900 text-slate-400">Scan or select a medication...</option>
-                {drugs.filter(d => Number(d.remainingQty) > 0 && !d.isRecalled).map(d => (
+                {drugs.filter(d => Number(d.remainingQty) > 0 && !d.isBlocked).map(d => (
                   <option key={d.drugId} value={d.drugId} className="bg-slate-900 text-white">
                     {d.drugName} (In Stock: {Number(d.remainingQty)})
                   </option>
@@ -274,9 +356,13 @@ const [confirmModal, setConfirmModal] = useState({ isOpen: false, data: null });
                   </td>
                   <td className="p-4">
                     {drug.isRecalled ? (
-                      <span className="px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded text-xs font-bold uppercase inline-flex items-center"><AlertTriangle className="w-3 h-3 mr-1"/> Recalled</span>
+                      <span className="px-2.5 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded text-xs font-bold uppercase inline-flex items-center"><AlertTriangle className="w-3 h-3 mr-1"/> Recalled (Locked)</span>
+                    ) : drug.isQuarantined ? (
+                      <span className="px-2.5 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded text-xs font-bold uppercase inline-flex items-center"><AlertTriangle className="w-3 h-3 mr-1"/> Quarantined</span>
+                    ) : drug.isBlocked ? (
+                      <span className="px-2.5 py-1 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded text-xs font-bold uppercase inline-flex items-center"><AlertTriangle className="w-3 h-3 mr-1"/> {drug.statusLabel}</span>
                     ) : (
-                      <span className="px-2 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-xs font-bold uppercase inline-flex items-center"><ShieldAlert className="w-3 h-3 mr-1"/> Available</span>
+                      <span className="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-xs font-bold uppercase inline-flex items-center"><ShieldAlert className="w-3 h-3 mr-1"/> Available</span>
                     )}
                   </td>
                 </tr>

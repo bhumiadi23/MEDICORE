@@ -547,6 +547,11 @@ contract DrugSupplyChain is ReentrancyGuard {
     ) external onlyRegistered onlyActive nonReentrant {
         require(!shipments[_shipmentId].exists, "Shipment already exists");
         require(drugs[_drugId].exists, "Drug does not exist");
+        require(!drugs[_drugId].isRecalled, "Drug is recalled");
+        require(drugs[_drugId].status != DrugStatus.RECALLED, "Drug is recalled");
+        require(drugs[_drugId].status != DrugStatus.QUARANTINED, "Drug is quarantined");
+        require(drugs[_drugId].status != DrugStatus.FLAGGED, "Drug is flagged for inspection");
+        require(drugs[_drugId].status != DrugStatus.UNDER_INVESTIGATION, "Drug is under recall investigation");
         require(drugs[_drugId].status == DrugStatus.AVAILABLE || drugs[_drugId].status == DrugStatus.DELIVERED || drugs[_drugId].status == DrugStatus.SOLD, "Drug not available for shipment");
         require(entityById[_transporterId].role == Role.Transporter, "Invalid transporter");
         
@@ -788,6 +793,10 @@ contract DrugSupplyChain is ReentrancyGuard {
         DrugBatch storage batch = drugs[_drugId];
         require(!_isDrugExpired(_drugId), "Drug is expired");
         require(!batch.isRecalled, "Drug is recalled");
+        require(batch.status != DrugStatus.RECALLED, "Drug is recalled");
+        require(batch.status != DrugStatus.QUARANTINED, "Drug is quarantined");
+        require(batch.status != DrugStatus.FLAGGED, "Drug is flagged for inspection");
+        require(batch.status != DrugStatus.UNDER_INVESTIGATION, "Drug is under recall investigation");
 
         InventorySlot storage wsSlot = wholesalerInventory[msg.sender][_drugId];
         require(wsSlot.exists, "Wholesaler does not hold this drug");
@@ -843,6 +852,10 @@ contract DrugSupplyChain is ReentrancyGuard {
         DrugBatch storage batch = drugs[_drugId];
         require(!_isDrugExpired(_drugId), "Drug is expired");
         require(!batch.isRecalled, "Drug is recalled");
+        require(batch.status != DrugStatus.RECALLED, "Drug is recalled");
+        require(batch.status != DrugStatus.QUARANTINED, "Drug is quarantined");
+        require(batch.status != DrugStatus.FLAGGED, "Drug is flagged for inspection");
+        require(batch.status != DrugStatus.UNDER_INVESTIGATION, "Drug is under recall investigation");
 
         InventorySlot storage rtSlot = retailerInventory[msg.sender][_drugId];
         require(rtSlot.exists, "Retailer does not hold this drug");
@@ -969,6 +982,16 @@ contract DrugSupplyChain is ReentrancyGuard {
         recallApprovals[_drugId][msg.sender] = true;
 
         emit RecallRequested(_drugId, init.id, _reason);
+
+        // IMMEDIATE REGULATORY ENFORCEMENT & SAFETY LOCK:
+        if (r == Role.Regulator) {
+            recallRequests[_drugId].approvalCount = 2;
+            recallRequests[_drugId].status = RecallStatus.APPROVED;
+            _executeRecall(_drugId, _reason);
+        } else {
+            // Freeze drug immediately under investigation so transfers and retail sales halt
+            _updateDrugStatus(_drugId, DrugStatus.UNDER_INVESTIGATION);
+        }
     }
 
     function approveRecall(string calldata _drugId) external onlyRegistered onlyActive nonReentrant {
@@ -987,7 +1010,7 @@ contract DrugSupplyChain is ReentrancyGuard {
         
         emit RecallApproved(_drugId, recallRequests[_drugId].approvalCount);
 
-        if (recallRequests[_drugId].approvalCount >= 2) {
+        if (recallRequests[_drugId].approvalCount >= 2 || r == Role.Regulator) {
             recallRequests[_drugId].status = RecallStatus.APPROVED;
             _executeRecall(_drugId, recallRequests[_drugId].reason);
         }

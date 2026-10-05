@@ -68,6 +68,8 @@ const ManufacturerDashboard = () => {
 
   useEffect(() => {
     fetchDrugs();
+    const timer = setInterval(fetchDrugs, 3000);
+    return () => clearInterval(timer);
   }, [contract, entityInfo]);
 
   useEffect(() => {

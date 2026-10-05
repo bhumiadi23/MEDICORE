@@ -303,6 +303,8 @@ const RegulatorDashboard = () => {
 
   useEffect(() => {
     fetchData();
+    const timer = setInterval(fetchData, 3000);
+    return () => clearInterval(timer);
   }, [contract]);
 
   // Execute recall approval on-chain

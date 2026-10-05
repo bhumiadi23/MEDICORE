@@ -54,5 +54,33 @@ describe('DrugSupplyChain', function () {
     await expect(
       contract.connect(mfr)['manufactureDrug(string,string,uint256,uint256,uint256)']('Aspirin', 'BATCH-002', 500, 1690000000, 1893456000)
     ).to.be.revertedWith('Entity is suspended');
+    await contract.connect(owner).activateEntity('MFR-001');
+  });
+
+  it('Should immediately execute recall when ordered by Regulator and block sales', async function () {
+    const [, , , , , , , reg, cus] = await ethers.getSigners();
+    await contract.connect(reg).registerEntity('Regulator Authority', 'REG-001', 6);
+    await contract.connect(ret).registerEntity('Pharmacy', 'RET-001', 3);
+    await contract.connect(cus).registerEntity('Patient', 'CUS-001', 4);
+
+    // Wholesaler supplies remaining 400 units of BATCH-001 to Retailer RET-001
+    await contract.connect(whl).supplyToRetailer('BATCH-001', 'RET-001', 200);
+
+    // Regulator orders emergency recall of BATCH-001
+    await contract.connect(reg).requestRecall('BATCH-001', 'Contamination detected');
+
+    const drug = await contract.getDrug('BATCH-001');
+    expect(drug.isRecalled).to.be.true;
+    expect(drug.status).to.equal(10n); // RECALLED
+
+    // Retailer attempts to dispense to customer -> must revert
+    await expect(
+      contract.connect(ret).supplyToCustomer('BATCH-001', 'CUS-001', 10)
+    ).to.be.revertedWith('Drug is recalled');
+
+    // Wholesaler attempts to transfer to retailer -> must revert
+    await expect(
+      contract.connect(whl).supplyToRetailer('BATCH-001', 'RET-001', 10)
+    ).to.be.revertedWith('Drug is recalled');
   });
 });
