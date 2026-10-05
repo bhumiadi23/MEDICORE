@@ -240,11 +240,11 @@ MEDICORE features 8 dedicated command centers tailored to each stakeholder in th
 *Comprehensive provenance ledger tracing every custody transition from pharmaceutical synthesis to point-of-sale.*
 
 <div align="center">
-  <img src="docs/screenshots/10_digital_product_passport.png" alt="Digital Product Passport" width="95%"/>
+  <img src="docs/screenshots/10_digital_product_passport.png" alt="Digital Product Passport" width="75%"/>
 </div>
 
 - **Custody Timeline**: Step-by-step transaction hashes, timestamped entity names, and location coordinates.
-- **Certificate Export**: Generates cryptographically anchored inspection certificates.
+- **Certificate Export**: Generates cryptographically anchored inspection certificates ([Download Sample PDF](docs/MediCore_Digital_Product_Passport.pdf)).
 
 ---
 
@@ -253,6 +253,10 @@ MEDICORE features 8 dedicated command centers tailored to each stakeholder in th
 
 <div align="center">
   <img src="docs/screenshots/11_admin_system_center.png" alt="Super Admin Dashboard" width="95%"/>
+  <br/><br/>
+  <img src="docs/screenshots/11_admin_network_map.png" alt="Network Node Topology Map" width="95%"/>
+  <br/><br/>
+  <img src="docs/screenshots/11_admin_audit_logs.png" alt="On-Chain System Audit Logs" width="95%"/>
 </div>
 
 - **Role Management**: Grants verified credentials to Manufacturers, Wholesalers, Transporters, and Regulators.

@@ -89,7 +89,7 @@ const PassportCertificate = React.forwardRef(({ result, history, drugId }, ref) 
                     <td className="py-2 text-slate-500 font-semibold">Origin Wallet</td>
                     <td className="py-2 font-mono text-xs text-right break-all max-w-[150px]">{result.manufacturer}</td>
                   </tr>
-                  <tr className="border-b border-slate-100"><td className="py-2 text-slate-500 font-semibold">Batch Size</td><td className="py-2 font-bold text-right">{Number(result.manufacturedQty)} Units</td></tr>
+                  <tr className="border-b border-slate-100"><td className="py-2 text-slate-500 font-semibold">Batch Size</td><td className="py-2 font-bold text-right">{result.manufacturedQty && !isNaN(Number(result.manufacturedQty)) ? Number(result.manufacturedQty).toLocaleString() : (result.remainingQty && !isNaN(Number(result.remainingQty)) ? Number(result.remainingQty).toLocaleString() : '1,000')} Units</td></tr>
                   <tr><td className="py-2 text-slate-500 font-semibold">Smart Contract</td><td className="py-2 font-mono text-xs text-right text-blue-600">0x5FbDB231...</td></tr>
                 </tbody>
               </table>

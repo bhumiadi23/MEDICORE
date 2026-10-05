@@ -87,7 +87,13 @@ const DrugVerification = () => {
         manufacturer: data.manufacturerWallet,
         manufacturerId: data.manufacturerId,
         isExpired: data.isExpired,
-        status: data.status
+        status: data.status,
+        manufacturedQty: data.manufacturedQty,
+        remainingQty: data.remainingQty,
+        genericName: data.genericName,
+        brandName: data.brandName,
+        batchNumber: data.batchNumber,
+        currentOwnerId: data.currentOwnerId
       });
 
       // Fetch cryptographic integrity & physical seal tamper reports
