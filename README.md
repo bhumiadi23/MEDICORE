@@ -177,6 +177,8 @@ MEDICORE features 8 dedicated command centers tailored to each stakeholder in th
 
 <div align="center">
   <img src="docs/screenshots/05_quality_control_center.png" alt="Quality Officer Dashboard" width="95%"/>
+  <br/><br/>
+  <img src="docs/screenshots/05_quality_certification_modal.png" alt="Batch QC Inspection & Certification Modal" width="95%"/>
 </div>
 
 - **Inspection Queue**: Real-time review of freshly minted batches awaiting regulatory approval.
@@ -189,6 +191,8 @@ MEDICORE features 8 dedicated command centers tailored to each stakeholder in th
 
 <div align="center">
   <img src="docs/screenshots/06_regulator_command_center.png" alt="Regulator Command Center" width="95%"/>
+  <br/><br/>
+  <img src="docs/screenshots/06_regulator_custody_ledger.png" alt="National Custody Ledger & Anomaly Detection" width="95%"/>
 </div>
 
 - **Sentinel Incident Feed**: Real-time logging of suspicious QR brute-force attempts and route deviations.
