@@ -529,19 +529,24 @@ const WholesalerDashboard = () => {
     </motion.div>
   );
 
+  const cleanPath = location.pathname.startsWith('/dashboard') 
+    ? location.pathname.replace(/^\/dashboard/, '') 
+    : location.pathname;
+  const currentTab = cleanPath === '' || cleanPath === '/' || cleanPath === '/wholesaler' ? '/wholesaler' : cleanPath;
+
   return (
     <div className="relative h-[calc(100vh-8rem)] w-full">
       <div className="absolute inset-0">
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/wholesaler' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+        <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/wholesaler' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
           {renderCommandCenter()}
         </div>
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/wholesaler/incoming' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+        <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/wholesaler/incoming' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
           {renderIncoming()}
         </div>
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/wholesaler/supply' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+        <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/wholesaler/supply' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
           {renderSupply()}
         </div>
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/wholesaler/inventory' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+        <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/wholesaler/inventory' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
           {renderInventory()}
         </div>
       </div>

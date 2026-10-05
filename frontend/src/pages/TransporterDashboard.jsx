@@ -667,27 +667,35 @@ const TransporterDashboard = () => {
       </div>
 
       {/* Main View Router - Using CSS opacity to prevent Leaflet Map from unmounting and breaking */}
-      <div className="flex-1 min-h-0 relative">
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/transporter' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-          {renderLiveShipments()}
-        </div>
-        
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/transporter/routes' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-          {renderRoutes()}
-        </div>
-        
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/transporter/cold-chain' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-          {renderColdChain()}
-        </div>
-        
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/transporter/incidents' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-          {renderIncidents()}
-        </div>
-        
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/transporter/history' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-          {renderHistory()}
-        </div>
-      </div>
+      {(() => {
+        const cleanPath = location.pathname.startsWith('/dashboard') 
+          ? location.pathname.replace(/^\/dashboard/, '') 
+          : location.pathname;
+        const currentTab = cleanPath === '' || cleanPath === '/' || cleanPath === '/transporter' ? '/transporter' : cleanPath;
+        return (
+          <div className="flex-1 min-h-0 relative">
+            <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/transporter' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+              {renderLiveShipments()}
+            </div>
+            
+            <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/transporter/routes' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+              {renderRoutes()}
+            </div>
+            
+            <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/transporter/cold-chain' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+              {renderColdChain()}
+            </div>
+            
+            <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/transporter/incidents' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+              {renderIncidents()}
+            </div>
+            
+            <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/transporter/history' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+              {renderHistory()}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* CSS for custom Map Tiles overriding Carto error and Popup theming */}
       <style dangerouslySetInnerHTML={{__html: `

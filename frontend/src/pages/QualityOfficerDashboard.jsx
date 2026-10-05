@@ -211,18 +211,23 @@ const QualityOfficerDashboard = () => {
     </motion.div>
   );
 
+  const cleanPath = location.pathname.startsWith('/dashboard') 
+    ? location.pathname.replace(/^\/dashboard/, '') 
+    : location.pathname;
+  const currentTab = cleanPath === '' || cleanPath === '/' || cleanPath === '/quality-officer' ? '/quality-officer' : cleanPath;
+
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] flex-1 relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/10 rounded-full blur-[150px] pointer-events-none -z-10"></div>
       
       <div className="flex-1 min-h-0 relative">
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/quality-officer' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+        <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/quality-officer' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
           {renderCommandCenter()}
         </div>
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/quality-officer/queue' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+        <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/quality-officer/queue' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
           {renderQueue()}
         </div>
-        <div className={`absolute inset-0 transition-all duration-300 ${location.pathname === '/quality-officer/inspections' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
+        <div className={`absolute inset-0 transition-all duration-300 ${currentTab === '/quality-officer/inspections' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
           {renderInspections()}
         </div>
       </div>
