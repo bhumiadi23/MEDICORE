@@ -575,6 +575,43 @@
       {
         "indexed": false,
         "internalType": "string",
+        "name": "sealId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reporterId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "TamperDetected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "drugId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
         "name": "shipmentId",
         "type": "string"
       },
@@ -713,6 +750,24 @@
       }
     ],
     "name": "createShipment",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_reason",
+        "type": "string"
+      }
+    ],
+    "name": "emergencyQuarantine",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -982,6 +1037,55 @@
         "internalType": "struct DrugSupplyChain.Shipment[]",
         "name": "",
         "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getBatchIntegrity",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "exists",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isRecalled",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isQuarantined",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isFlagged",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isExpired",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isTampered",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isSafeToDispense",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -2499,6 +2603,62 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      }
+    ],
+    "name": "getTamperReports",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "drugId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "sealId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "evidenceCid",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "reporter",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "reporterId",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DrugSupplyChain.TamperReport[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getTotalDrugs",
     "outputs": [
@@ -2954,6 +3114,24 @@
       },
       {
         "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "releaseQuarantine",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
         "name": "_shipmentId",
         "type": "string"
       },
@@ -2964,6 +3142,34 @@
       }
     ],
     "name": "reportEnvironmentalViolation",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_drugId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_sealId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_evidenceCid",
+        "type": "string"
+      }
+    ],
+    "name": "reportTampering",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

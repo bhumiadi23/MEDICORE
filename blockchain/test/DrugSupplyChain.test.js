@@ -83,4 +83,43 @@ describe('DrugSupplyChain', function () {
       contract.connect(whl).supplyToRetailer('BATCH-001', 'RET-001', 10)
     ).to.be.revertedWith('Drug is recalled');
   });
+
+  it('Should report physical tampering and automatically quarantine batch', async function () {
+    // Manufacture a new batch BATCH-003
+    await contract.connect(mfr)['manufactureDrug(string,string,uint256,uint256,uint256)']('Ibuprofen', 'BATCH-003', 1000, 1690000000, 1893456000);
+    await contract.connect(qao).approveDrug('BATCH-003', 'Approved for distribution');
+
+    // Transporter reports broken tamper seal on BATCH-003
+    await contract.connect(trn).reportTampering('BATCH-003', 'SEAL-XYZ-999', 'Broken holographic sticker observed during inspection', 'QmEvidenceHash123');
+
+    const drug = await contract.getDrug('BATCH-003');
+    expect(drug.status).to.equal(7n); // QUARANTINED
+
+    const reports = await contract.getTamperReports('BATCH-003');
+    expect(reports.length).to.equal(1);
+    expect(reports[0].sealId).to.equal('SEAL-XYZ-999');
+
+    // Batch integrity check must report not safe to dispense
+    const integrity = await contract.getBatchIntegrity('BATCH-003');
+    expect(integrity.isQuarantined).to.be.true;
+    expect(integrity.isTampered).to.be.true;
+    expect(integrity.isSafeToDispense).to.be.false;
+  });
+
+  it('Should allow emergency quarantine and release by Regulator', async function () {
+    const [, , , , , , , reg] = await ethers.getSigners();
+    // Manufacture a new batch BATCH-004
+    await contract.connect(mfr)['manufactureDrug(string,string,uint256,uint256,uint256)']('Cough Syrup', 'BATCH-004', 500, 1690000000, 1893456000);
+    await contract.connect(qao).approveDrug('BATCH-004', 'Passed');
+
+    // Quality Officer executes emergency quarantine
+    await contract.connect(qao).emergencyQuarantine('BATCH-004', 'Precautionary cold-chain audit');
+    let drug = await contract.getDrug('BATCH-004');
+    expect(drug.status).to.equal(7n); // QUARANTINED
+
+    // Regulator inspects and releases quarantine
+    await contract.connect(reg).releaseQuarantine('BATCH-004', 'Lab test confirmed negative for contaminants');
+    drug = await contract.getDrug('BATCH-004');
+    expect(drug.status).to.equal(3n); // AVAILABLE again!
+  });
 });

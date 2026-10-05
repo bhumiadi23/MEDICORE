@@ -180,6 +180,16 @@ contract DrugSupplyChain is ReentrancyGuard {
         uint256 timestamp;
     }
 
+    struct TamperReport {
+        string  drugId;
+        string  sealId;
+        string  description;
+        string  evidenceCid;
+        address reporter;
+        string  reporterId;
+        uint256 timestamp;
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // STATE VARIABLES
     // ─────────────────────────────────────────────────────────────────────────
@@ -218,6 +228,7 @@ contract DrugSupplyChain is ReentrancyGuard {
 
     mapping(string => EnvironmentalViolation[]) private environmentalViolations;
     mapping(string => Document[]) private drugDocuments;
+    mapping(string => TamperReport[]) private tamperReports;
 
     // ─────────────────────────────────────────────────────────────────────────
     // EVENTS
@@ -252,6 +263,7 @@ contract DrugSupplyChain is ReentrancyGuard {
     event RecallApproved(string indexed drugId, uint8 approverCount);
 
     event DocumentAdded(string indexed drugId, string docType, string ipfsCid);
+    event TamperDetected(string indexed drugId, string sealId, string reporterId, string reason, uint256 timestamp);
 
     // ─────────────────────────────────────────────────────────────────────────
     // MODIFIERS
@@ -951,6 +963,94 @@ contract DrugSupplyChain is ReentrancyGuard {
 
     function getDocuments(string calldata _drugId) external view returns (Document[] memory) {
         return drugDocuments[_drugId];
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // SECURITY & TAMPER PROTECTION
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function reportTampering(
+        string calldata _drugId,
+        string calldata _sealId,
+        string calldata _description,
+        string calldata _evidenceCid
+    ) external onlyRegistered onlyActive nonReentrant {
+        require(drugs[_drugId].exists, "Drug does not exist");
+        
+        Entity storage reporter = entityByWallet[msg.sender];
+        
+        tamperReports[_drugId].push(TamperReport({
+            drugId: _drugId,
+            sealId: _sealId,
+            description: _description,
+            evidenceCid: _evidenceCid,
+            reporter: msg.sender,
+            reporterId: reporter.id,
+            timestamp: block.timestamp
+        }));
+
+        _updateDrugStatus(_drugId, DrugStatus.FLAGGED);
+        _updateDrugStatus(_drugId, DrugStatus.QUARANTINED);
+
+        emit TamperDetected(_drugId, _sealId, reporter.id, _description, block.timestamp);
+        emit DrugFlagged(_drugId, "Physical seal tampering reported", block.timestamp);
+        emit DrugQuarantined(_drugId, "Physical seal tampering reported", block.timestamp);
+    }
+
+    function emergencyQuarantine(
+        string calldata _drugId,
+        string calldata _reason
+    ) external onlyRegistered onlyActive nonReentrant {
+        require(drugs[_drugId].exists, "Drug does not exist");
+        Role r = entityByWallet[msg.sender].role;
+        require(
+            r == Role.Regulator || 
+            r == Role.QualityOfficer || 
+            msg.sender == owner ||
+            (r == Role.Manufacturer && drugs[_drugId].manufacturerWallet == msg.sender),
+            "Not authorized for emergency quarantine"
+        );
+
+        _updateDrugStatus(_drugId, DrugStatus.QUARANTINED);
+        emit DrugQuarantined(_drugId, _reason, block.timestamp);
+    }
+
+    function releaseQuarantine(
+        string calldata _drugId,
+        string calldata /* _releaseNote */
+    ) external onlyRole(Role.Regulator) onlyActive nonReentrant {
+        require(drugs[_drugId].exists, "Drug does not exist");
+        require(!drugs[_drugId].isRecalled, "Cannot release recalled drug");
+        require(drugs[_drugId].status == DrugStatus.QUARANTINED || drugs[_drugId].status == DrugStatus.FLAGGED, "Drug not in quarantined state");
+
+        _updateDrugStatus(_drugId, DrugStatus.AVAILABLE);
+        emit DrugReleased(_drugId, block.timestamp);
+    }
+
+    function getTamperReports(string calldata _drugId) external view returns (TamperReport[] memory) {
+        return tamperReports[_drugId];
+    }
+
+    function getBatchIntegrity(string calldata _drugId) external view returns (
+        bool exists,
+        bool isRecalled,
+        bool isQuarantined,
+        bool isFlagged,
+        bool isExpired,
+        bool isTampered,
+        bool isSafeToDispense
+    ) {
+        if (!drugs[_drugId].exists) {
+            return (false, false, false, false, false, false, false);
+        }
+        DrugBatch storage b = drugs[_drugId];
+        exists = true;
+        isRecalled = b.isRecalled || b.status == DrugStatus.RECALLED;
+        isQuarantined = b.status == DrugStatus.QUARANTINED;
+        isFlagged = b.status == DrugStatus.FLAGGED;
+        isExpired = _isDrugExpired(_drugId);
+        isTampered = tamperReports[_drugId].length > 0;
+        isSafeToDispense = !isRecalled && !isQuarantined && !isFlagged && !isExpired && !isTampered && (b.status == DrugStatus.AVAILABLE || b.status == DrugStatus.DELIVERED);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
