@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../context/Web3Context';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, LogOut, ShieldAlert, Search, Activity, User, 
   Factory, Truck, Store, CheckCircle, Database, FileText, AlertTriangle, AlertCircle,
-  Package, Map, Clock, ClipboardCheck, Users, Settings, Thermometer, FlaskConical
+  Package, Map, Clock, ClipboardCheck, Users, Settings, Thermometer, FlaskConical,
+  ChevronDown, Layers, Check
 } from 'lucide-react';
 import { formatAddress, getRoleLabel, ROLE_ROUTES } from '../utils/helpers';
 import NotificationCenter from '../components/NotificationCenter';
 import AnimatedLogo from '../components/AnimatedLogo';
+import { ALL_ROLES_LIST } from '../config/roles';
+import toast from 'react-hot-toast';
 
 const ROLE_CONFIGS = {
   '/manufacturer': {
@@ -118,11 +121,18 @@ const DashboardLayout = () => {
   const { account, entityInfo, isOwner, disconnectWallet } = useWeb3();
   const location = useLocation();
   const navigate = useNavigate();
+  const [showWorkspaceDropdown, setShowWorkspaceDropdown] = useState(false);
 
-  const pathBase = '/' + location.pathname.split('/')[1];
-  const config = ROLE_CONFIGS[pathBase] || ROLE_CONFIGS['/manufacturer'];
+  const segments = location.pathname.split('/').filter(Boolean);
+  const normalizedKey = segments[0] === 'dashboard' && segments[1]
+    ? (segments[1] === 'pharmacy' ? '/retailer' : `/${segments[1]}`)
+    : `/${segments[0] || ''}`;
+  const config = ROLE_CONFIGS[normalizedKey] || ROLE_CONFIGS['/manufacturer'];
   const themeClasses = getThemeClasses(config.theme);
   
+  const isDashboardPrefix = segments[0] === 'dashboard';
+  const currentNormalizedPath = isDashboardPrefix ? '/' + segments.slice(1).join('/') : location.pathname;
+
   // Security Enforcement Rule: Contract Owner has universal superuser access
   const isDemoMode = !isOwner && ((config.roleId === 0) || (config.roleId !== 0 && entityInfo?.role !== config.roleId));
 
@@ -131,8 +141,10 @@ const DashboardLayout = () => {
     navigate('/');
   };
 
-  const handleSwitchWorkspace = () => {
-    navigate('/');
+  const handleSelectWorkspace = (r) => {
+    setShowWorkspaceDropdown(false);
+    toast.success(`Switching to ${r.name} workspace...`, { icon: '🔄', duration: 2500 });
+    navigate(r.path);
   };
 
   return (
@@ -147,12 +159,13 @@ const DashboardLayout = () => {
         <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1 relative">
           {config.menu.map((item, index) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.path;
+            const targetPath = isDashboardPrefix ? `/dashboard${item.path}` : item.path;
+            const isActive = currentNormalizedPath === item.path || location.pathname === item.path || location.pathname === targetPath;
             
             return (
               <Link
                 key={index}
-                to={item.path}
+                to={targetPath}
                 className={`flex items-center px-3 py-3 rounded-xl text-sm font-bold transition-all duration-300 relative group overflow-hidden ${
                   isActive 
                     ? 'text-white shadow-[0_0_20px_rgba(255,255,255,0.1)] border border-white/10' 
@@ -198,12 +211,52 @@ const DashboardLayout = () => {
               {config.title}
             </h2>
           </div>
-          <div className="flex items-center space-x-4">
-            <button onClick={handleSwitchWorkspace} className="text-xs font-mono font-bold uppercase tracking-widest px-4 py-2 rounded-lg transition-all bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-300 hover:text-white">
-              Switch Workspace
-            </button>
+          <div className="flex items-center space-x-3">
+            {/* Quick Workspace Switcher Dropdown */}
+            <div className="relative">
+              <button 
+                onClick={() => setShowWorkspaceDropdown(!showWorkspaceDropdown)}
+                className="flex items-center space-x-2 text-xs font-mono font-bold uppercase tracking-widest px-3 py-2 rounded-xl transition-all bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-300 hover:text-white"
+              >
+                <Layers className="w-3.5 h-3.5 text-blue-400" />
+                <span>Switch Role</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${showWorkspaceDropdown ? 'rotate-180' : ''}`} />
+              </button>
+
+              {showWorkspaceDropdown && (
+                <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900 border border-white/15 shadow-2xl overflow-hidden z-50 p-2 backdrop-blur-xl">
+                  <div className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-white/5 flex items-center justify-between">
+                    <span>Available Workspaces</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  </div>
+                  <div className="py-1 space-y-0.5 max-h-72 overflow-y-auto">
+                    {ALL_ROLES_LIST.map((r) => {
+                      const isCurrent = normalizedKey === r.directPath;
+                      return (
+                        <button
+                          key={r.role}
+                          onClick={() => handleSelectWorkspace(r)}
+                          className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-xl transition-all ${
+                            isCurrent
+                              ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
+                              : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <span className={`w-1.5 h-1.5 rounded-full ${isCurrent ? 'bg-blue-400' : 'bg-slate-500'}`}></span>
+                            <span>{r.name}</span>
+                          </div>
+                          {isCurrent && <Check className="w-3.5 h-3.5 text-blue-400" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <NotificationCenter />
-            <div className="h-6 w-px mx-2 bg-white/10"></div>
+            <div className="h-6 w-px mx-1 bg-white/10"></div>
             <button onClick={handleExit} className="opacity-70 hover:opacity-100 hover:text-red-400 flex items-center text-sm font-bold transition-all hover:drop-shadow-[0_0_8px_rgba(248,113,113,0.8)]">
               <LogOut className="h-4 w-4 mr-1.5" /> <span className="hidden sm:inline tracking-widest uppercase text-xs">Exit</span>
             </button>

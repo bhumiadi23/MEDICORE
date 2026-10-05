@@ -1,19 +1,50 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../context/Web3Context';
-import { Activity, ShieldCheck, ShieldAlert, User } from 'lucide-react';
+import { Activity, ShieldCheck, ShieldAlert, User, ChevronDown, Layers, Check } from 'lucide-react';
 import { shortAddress, getRoleLabel } from '../utils/helpers';
 import AnimatedLogo from './AnimatedLogo';
 import SentinelDefenseShield from './SentinelDefenseShield';
+import { ALL_ROLES_LIST, getRoleConfigForAddress } from '../config/roles';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
-  const { account, entityInfo, connectWallet, disconnectWallet } = useWeb3();
+  const { account, entityInfo, currentRoleConfig, connectWallet, disconnectWallet } = useWeb3();
   const location = useLocation();
+  const navigate = useNavigate();
   const [showSentinel, setShowSentinel] = useState(false);
+  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
+
+  const activeRole = currentRoleConfig || getRoleConfigForAddress(account, entityInfo?.role);
+
+  const handleConnectWallet = async () => {
+    try {
+      const res = await connectWallet(false);
+      if (res && res.success) {
+        const { roleConfig } = res;
+        toast.success(`Connected as ${roleConfig.name}! Launching Workspace...`, {
+          icon: '🚀',
+          duration: 3500
+        });
+        navigate(roleConfig.path);
+      }
+    } catch (err) {
+      console.error("Wallet connection failed", err);
+    }
+  };
+
+  const handleSwitchWorkspace = (roleItem) => {
+    setShowRoleDropdown(false);
+    toast.success(`Switched active workspace to ${roleItem.name}!`, {
+      icon: '🔄',
+      duration: 2500
+    });
+    navigate(roleItem.path);
+  };
 
   return (
     <>
-      <nav className="bg-brand-900 text-white sticky top-0 z-50 shadow-lg">
+      <nav className="bg-brand-900 text-white sticky top-0 z-50 shadow-lg border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
@@ -38,34 +69,71 @@ const Navbar = () => {
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               {account ? (
-                <div className="flex items-center space-x-4">
-                  {entityInfo?.isRegistered ? (
-                    <>
-                      <Link to={entityInfo.role === 1 ? '/manufacturer' : entityInfo.role === 2 ? '/wholesaler' : entityInfo.role === 3 ? '/retailer' : entityInfo.role === 4 ? '/customer' : entityInfo.role === 5 ? '/transporter' : entityInfo.role === 6 ? '/regulator' : '/quality-officer'} className="px-4 py-1.5 rounded-lg text-sm font-semibold bg-white text-brand-900 hover:bg-gray-100 transition-colors">
-                        Go to Dashboard
-                      </Link>
-                      <span className="hidden md:inline px-3 py-1 rounded-full text-xs font-semibold bg-brand-800 border border-brand-700">
-                        {getRoleLabel(entityInfo.role)}
-                      </span>
-                    </>
-                  ) : (
-                    <Link to="/register" className="text-sm text-brand-300 hover:text-white underline">Register Entity</Link>
-                  )}
-                  <div className="flex items-center space-x-2 bg-brand-800 px-3 py-1.5 rounded-lg border border-brand-700">
-                    <User className="h-4 w-4 text-brand-400" />
-                    <span className="text-sm font-medium">{shortAddress(account)}</span>
+                <div className="flex items-center space-x-3">
+                  {/* Workspace Role Switcher Dropdown */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowRoleDropdown(!showRoleDropdown)}
+                      className="flex items-center space-x-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-white/10 transition-all text-white shadow-sm"
+                    >
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span className="max-w-[130px] truncate">{activeRole?.name || 'Workspace'}</span>
+                      <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${showRoleDropdown ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {showRoleDropdown && (
+                      <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900 border border-white/15 shadow-2xl overflow-hidden z-50 p-2 backdrop-blur-xl">
+                        <div className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-white/5 flex items-center justify-between">
+                          <span>Active Role Workspaces</span>
+                          <Layers className="w-3.5 h-3.5 text-slate-500" />
+                        </div>
+                        <div className="py-1 space-y-0.5">
+                          {ALL_ROLES_LIST.map((r) => {
+                            const isCurrent = location.pathname.startsWith(r.path);
+                            return (
+                              <button
+                                key={r.role}
+                                onClick={() => handleSwitchWorkspace(r)}
+                                className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-xl transition-all ${
+                                  isCurrent
+                                    ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
+                                    : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                                }`}
+                              >
+                                <div className="flex items-center space-x-2">
+                                  <span className={`w-1.5 h-1.5 rounded-full ${isCurrent ? 'bg-blue-400' : 'bg-slate-500'}`}></span>
+                                  <span>{r.name}</span>
+                                </div>
+                                {isCurrent && <Check className="w-3.5 h-3.5 text-blue-400" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <button onClick={disconnectWallet} className="text-sm text-gray-400 hover:text-red-400 font-medium ml-2">
+
+                  {/* Connected Wallet Address */}
+                  <div className="hidden sm:flex items-center space-x-1.5 bg-brand-800 px-3 py-1.5 rounded-xl border border-brand-700 font-mono text-xs text-slate-300">
+                    <User className="h-3.5 w-3.5 text-brand-400" />
+                    <span>{shortAddress(account)}</span>
+                  </div>
+
+                  <button 
+                    onClick={disconnectWallet} 
+                    className="text-xs text-slate-400 hover:text-red-400 font-medium px-2 py-1 rounded-lg hover:bg-white/5 transition-colors"
+                  >
                     Disconnect
                   </button>
                 </div>
               ) : (
                 <button 
-                  onClick={connectWallet}
-                  className="bg-brand-600 hover:bg-brand-500 px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center space-x-2"
+                  onClick={handleConnectWallet}
+                  className="bg-brand-600 hover:bg-brand-500 px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center space-x-2 shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:scale-105"
                 >
+                  <Activity className="w-4 h-4 text-blue-200" />
                   <span>Connect Wallet</span>
                 </button>
               )}

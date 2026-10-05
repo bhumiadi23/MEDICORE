@@ -63,6 +63,18 @@ function App() {
               <Route path="/quality-officer/*" element={<QualityOfficerDashboard />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/explorer" element={<TransactionExplorer />} />
+
+              {/* Direct Dashboard Routes & Workspace Aliases */}
+              <Route path="/dashboard/admin" element={<AdminDashboard />} />
+              <Route path="/dashboard/manufacturer" element={<ManufacturerDashboard />} />
+              <Route path="/dashboard/wholesaler/*" element={<WholesalerDashboard />} />
+              <Route path="/dashboard/retailer/*" element={<RetailerDashboard />} />
+              <Route path="/dashboard/pharmacy/*" element={<RetailerDashboard />} />
+              <Route path="/dashboard/pharmacy" element={<RetailerDashboard />} />
+              <Route path="/dashboard/customer/*" element={<CustomerDashboard />} />
+              <Route path="/dashboard/transporter/*" element={<TransporterDashboard />} />
+              <Route path="/dashboard/regulator" element={<RegulatorDashboard />} />
+              <Route path="/dashboard/quality-officer/*" element={<QualityOfficerDashboard />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

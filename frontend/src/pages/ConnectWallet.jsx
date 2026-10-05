@@ -3,29 +3,33 @@ import { useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../context/Web3Context';
 import { motion } from 'framer-motion';
 import { Wallet, Activity, ShieldCheck, ExternalLink } from 'lucide-react';
-import { ROLE_ROUTES } from '../utils/helpers';
+import { getRoleConfigForAddress } from '../config/roles';
+import toast from 'react-hot-toast';
 
 const ConnectWallet = () => {
-  const { account, connectWallet, entityInfo, isOwner } = useWeb3();
+  const { account, connectWallet, entityInfo } = useWeb3();
   const navigate = useNavigate();
   const [isConnecting, setIsConnecting] = useState(false);
 
   useEffect(() => {
     if (account) {
-      if (isOwner) {
-        navigate('/admin');
-      } else if (entityInfo?.isRegistered) {
-        navigate(ROLE_ROUTES[entityInfo.role] || '/');
-      } else {
-        navigate('/register');
+      const config = getRoleConfigForAddress(account, entityInfo?.role);
+      if (config) {
+        toast.success(`Connected as ${config.name}! Launching Workspace...`, { icon: '🚀', duration: 3000 });
+        navigate(config.path);
       }
     }
-  }, [account, entityInfo, isOwner, navigate]);
+  }, [account, entityInfo, navigate]);
 
   const handleConnect = async () => {
     setIsConnecting(true);
     try {
-      await connectWallet();
+      const res = await connectWallet();
+      if (res && res.success) {
+        const { roleConfig } = res;
+        toast.success(`Connected as ${roleConfig.name}! Launching Workspace...`, { icon: '🚀', duration: 3000 });
+        navigate(roleConfig.path);
+      }
     } catch (e) {
       console.error(e);
     } finally {

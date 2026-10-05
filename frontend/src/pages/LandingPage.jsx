@@ -4,16 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import { Factory, Warehouse, Truck, Store, CheckCircle, ShieldAlert, User, Activity, ArrowRight, Hexagon, Lock } from 'lucide-react';
 import { useWeb3 } from '../context/Web3Context';
 import AnimatedLogo from '../components/AnimatedLogo';
+import toast from 'react-hot-toast';
 
 const roles = [
-  { id: 1, name: 'Manufacturer', icon: Factory, desc: 'Create and manage pharmaceutical batches', color: 'blue', hex: '#3b82f6', bgImage: '/manufacturer-bg.jpg', path: '/manufacturer' },
-  { id: 2, name: 'Wholesaler', icon: Warehouse, desc: 'Manage distribution and warehouse inventory', color: 'teal', hex: '#14b8a6', bgImage: '/wholesaler-bg.jpg', path: '/wholesaler' },
-  { id: 5, name: 'Transporter', icon: Truck, desc: 'Live logistics control and cold chain', color: 'indigo', hex: '#6366f1', bgImage: '/transporter-bg.jpg', path: '/transporter' },
-  { id: 3, name: 'Pharmacy', icon: Store, desc: 'Manage inventory and dispense medicine', color: 'emerald', hex: '#10b981', bgImage: '/pharmacy-bg.jpg', path: '/retailer' },
-  { id: 7, name: 'Quality Officer', icon: CheckCircle, desc: 'Review lab reports and quality tests', color: 'purple', hex: '#a855f7', bgImage: '/quality-bg.jpg', path: '/quality-officer' },
-  { id: 6, name: 'Regulator', icon: ShieldAlert, desc: 'Monitor safety and network compliance', color: 'amber', hex: '#f59e0b', bgImage: '/regulator-bg.jpg', path: '/regulator' },
-  { id: 4, name: 'Customer', icon: User, desc: 'Verify medicine authenticity and origin', color: 'sky', hex: '#0ea5e9', bgImage: '/customer-bg.jpg', path: '/customer' },
-  { id: 0, name: 'Admin', icon: Activity, desc: 'MediCore network administration', color: 'slate', hex: '#94a3b8', bgImage: '/admin-bg.jpg', path: '/admin' }
+  { id: 1, name: 'Manufacturer', icon: Factory, desc: 'Create and manage pharmaceutical batches', color: 'blue', hex: '#3b82f6', bgImage: '/manufacturer-bg.jpg', path: '/dashboard/manufacturer' },
+  { id: 2, name: 'Wholesaler', icon: Warehouse, desc: 'Manage distribution and warehouse inventory', color: 'teal', hex: '#14b8a6', bgImage: '/wholesaler-bg.jpg', path: '/dashboard/wholesaler' },
+  { id: 5, name: 'Transporter', icon: Truck, desc: 'Live logistics control and cold chain', color: 'indigo', hex: '#6366f1', bgImage: '/transporter-bg.jpg', path: '/dashboard/transporter' },
+  { id: 3, name: 'Pharmacy', icon: Store, desc: 'Manage inventory and dispense medicine', color: 'emerald', hex: '#10b981', bgImage: '/pharmacy-bg.jpg', path: '/dashboard/retailer' },
+  { id: 7, name: 'Quality Officer', icon: CheckCircle, desc: 'Review lab reports and quality tests', color: 'purple', hex: '#a855f7', bgImage: '/quality-bg.jpg', path: '/dashboard/quality-officer' },
+  { id: 6, name: 'Regulator', icon: ShieldAlert, desc: 'Monitor safety and network compliance', color: 'amber', hex: '#f59e0b', bgImage: '/regulator-bg.jpg', path: '/dashboard/regulator' },
+  { id: 4, name: 'Customer', icon: User, desc: 'Verify medicine authenticity and origin', color: 'sky', hex: '#0ea5e9', bgImage: '/customer-bg.jpg', path: '/dashboard/customer' },
+  { id: 0, name: 'Admin', icon: Activity, desc: 'MediCore network administration', color: 'slate', hex: '#94a3b8', bgImage: '/admin-bg.jpg', path: '/dashboard/admin' }
 ];
 
 const BackgroundParticles = () => {
@@ -60,10 +61,28 @@ const BackgroundParticles = () => {
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { account, entityInfo, isOwner } = useWeb3();
+  const { account, entityInfo, isOwner, connectWallet } = useWeb3();
 
-  const handleRoleSelect = (role) => {
-    navigate(role.path);
+  const handleRoleSelect = async (role) => {
+    if (account) {
+      navigate(role.path);
+    } else {
+      try {
+        const res = await connectWallet(false);
+        if (res && res.success) {
+          const { roleConfig } = res;
+          toast.success(`Connected as ${roleConfig.name}! Launching Workspace...`, {
+            icon: '🚀',
+            duration: 3500
+          });
+          navigate(roleConfig.path);
+        } else {
+          navigate(role.path);
+        }
+      } catch (e) {
+        navigate(role.path);
+      }
+    }
   };
 
   const getColorClasses = (color) => {

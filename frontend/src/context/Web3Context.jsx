@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { ethers } from 'ethers';
 import { getContract } from '../blockchain/contract';
 import { NETWORK_CONFIG } from '../config/network';
+import { getRoleConfigForAddress } from '../config/roles';
 
 const Web3Context = createContext();
 
@@ -11,6 +12,7 @@ export const Web3Provider = ({ children }) => {
   const [account, setAccount] = useState(null);
   const [contract, setContract] = useState(null);
   const [entityInfo, setEntityInfo] = useState(null);
+  const [currentRoleConfig, setCurrentRoleConfig] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [isConnecting, setIsConnecting] = useState(true);
 
@@ -63,6 +65,7 @@ export const Web3Provider = ({ children }) => {
         const contractInstance = await getContract(web3Signer);
         setContract(contractInstance);
         
+        let resolvedEntity = null;
         if (contractInstance) {
           try {
             const ownerAddress = await contractInstance.owner();
@@ -71,31 +74,39 @@ export const Web3Provider = ({ children }) => {
 
             const entity = await contractInstance.getEntityByWallet(address);
             if (entity && entity.isRegistered) {
-              setEntityInfo({
+              resolvedEntity = {
                 name: entity.name,
                 id: entity.id,
                 role: Number(entity.role),
                 isRegistered: true,
                 isActive: entity.isActive
-              });
+              };
             } else if (ownerMatch) {
-              setEntityInfo({ isRegistered: true, role: 0, name: 'System Admin' });
+              resolvedEntity = { isRegistered: true, role: 0, name: 'System Admin' };
             } else {
-              setEntityInfo({ isRegistered: false, role: null });
+              resolvedEntity = { isRegistered: false, role: null };
             }
+            setEntityInfo(resolvedEntity);
           } catch (err) {
             console.error("Error fetching entity info:", err);
-            setEntityInfo({ isRegistered: false, role: null });
+            resolvedEntity = { isRegistered: false, role: null };
+            setEntityInfo(resolvedEntity);
           }
         }
+
+        const roleConfig = getRoleConfigForAddress(address, resolvedEntity?.role);
+        setCurrentRoleConfig(roleConfig);
+        return { success: true, address, roleConfig, entityInfo: resolvedEntity };
       } catch (error) {
         console.error("Connection error:", error);
+        return { success: false, error };
       } finally {
         setIsConnecting(false);
       }
     } else {
       if (!isSilent) alert("Please install MetaMask!");
       setIsConnecting(false);
+      return { success: false, error: 'No wallet detected' };
     }
   }, []);
 
@@ -140,6 +151,7 @@ export const Web3Provider = ({ children }) => {
     localStorage.setItem('manuallyDisconnected', 'true');
     setAccount(null);
     setEntityInfo(null);
+    setCurrentRoleConfig(null);
     setProvider(null);
     setSigner(null);
     setIsOwner(false);
@@ -147,7 +159,7 @@ export const Web3Provider = ({ children }) => {
   };
 
   return (
-    <Web3Context.Provider value={{ provider, signer, account, contract, entityInfo, isOwner, isConnecting, connectWallet, disconnectWallet, setEntityInfo }}>
+    <Web3Context.Provider value={{ provider, signer, account, contract, entityInfo, isOwner, isConnecting, currentRoleConfig, setCurrentRoleConfig, connectWallet, disconnectWallet, setEntityInfo }}>
       {children}
     </Web3Context.Provider>
   );
