@@ -78,7 +78,7 @@ const COLOR_MAP = {
 };
 
 const RoleLaunchModal = () => {
-  const { roleLaunchModal, closeRoleLaunchModal } = useWeb3();
+  const { roleLaunchModal, closeRoleLaunchModal, switchActiveRole } = useWeb3();
   const navigate = useNavigate();
   const [secondsLeft, setSecondsLeft] = useState(3);
   const [showRolePicker, setShowRolePicker] = useState(false);
@@ -115,19 +115,23 @@ const RoleLaunchModal = () => {
     };
   }, [isOpen, isPaused, showRolePicker, roleConfig]);
 
-  const handleLaunch = () => {
+  const handleLaunch = async () => {
     if (timerRef.current) clearInterval(timerRef.current);
     closeRoleLaunchModal();
+    if (roleConfig?.role) {
+      await switchActiveRole(roleConfig.role);
+    }
     if (roleConfig?.path) {
       toast.success(`Launching ${roleConfig.name} workspace!`, { icon: '🚀', duration: 3000 });
       navigate(roleConfig.path);
     }
   };
 
-  const handleSelectDifferentRole = (r) => {
+  const handleSelectDifferentRole = async (r) => {
     if (timerRef.current) clearInterval(timerRef.current);
     setShowRolePicker(false);
     closeRoleLaunchModal();
+    await switchActiveRole(r.role);
     toast.success(`Switched to ${r.name} workspace!`, { icon: '🔄', duration: 2500 });
     navigate(r.path);
   };

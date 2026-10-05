@@ -9,7 +9,7 @@ import { ALL_ROLES_LIST, getRoleConfigForAddress } from '../config/roles';
 import toast from 'react-hot-toast';
 
 const Navbar = () => {
-  const { account, entityInfo, currentRoleConfig, connectWallet, disconnectWallet, triggerRoleLaunchModal } = useWeb3();
+  const { account, entityInfo, currentRoleConfig, connectWallet, disconnectWallet, triggerRoleLaunchModal, switchActiveRole } = useWeb3();
   const location = useLocation();
   const navigate = useNavigate();
   const [showSentinel, setShowSentinel] = useState(false);
@@ -29,9 +29,11 @@ const Navbar = () => {
     }
   };
 
-  const handleSwitchWorkspace = (roleItem) => {
+  const handleSwitchWorkspace = async (roleItem) => {
     setShowRoleDropdown(false);
-    triggerRoleLaunchModal?.(roleItem, account);
+    await switchActiveRole(roleItem.role);
+    toast.success(`Switched to ${roleItem.name} workspace!`, { icon: '🚀', duration: 2500 });
+    navigate(roleItem.path);
   };
 
   return (

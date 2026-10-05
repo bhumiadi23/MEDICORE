@@ -61,29 +61,13 @@ const BackgroundParticles = () => {
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { account, entityInfo, isOwner, connectWallet, triggerRoleLaunchModal } = useWeb3();
+  const { switchActiveRole } = useWeb3();
 
   const handleRoleSelect = async (role) => {
-    if (account) {
-      triggerRoleLaunchModal?.({
-        role: role.name.toLowerCase().replace(' ', '-'),
-        name: role.name,
-        path: role.path,
-        badgeColor: role.color,
-        description: role.desc
-      }, account);
-    } else {
-      try {
-        const res = await connectWallet(false);
-        if (res && res.success) {
-          triggerRoleLaunchModal?.(res.roleConfig, res.address);
-        } else {
-          navigate(role.path);
-        }
-      } catch (e) {
-        navigate(role.path);
-      }
-    }
+    const roleKey = role.name.toLowerCase().replace(' ', '-');
+    await switchActiveRole(roleKey);
+    toast.success(`Switched to ${role.name} workspace!`, { icon: '🚀', duration: 2500 });
+    navigate(role.path);
   };
 
   const getColorClasses = (color) => {

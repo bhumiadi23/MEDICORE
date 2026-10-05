@@ -118,7 +118,7 @@ const getThemeClasses = (theme) => {
 };
 
 const DashboardLayout = () => {
-  const { account, entityInfo, isOwner, disconnectWallet, triggerRoleLaunchModal } = useWeb3();
+  const { account, entityInfo, isOwner, disconnectWallet, triggerRoleLaunchModal, switchActiveRole } = useWeb3();
   const location = useLocation();
   const navigate = useNavigate();
   const [showWorkspaceDropdown, setShowWorkspaceDropdown] = useState(false);
@@ -141,9 +141,11 @@ const DashboardLayout = () => {
     navigate('/');
   };
 
-  const handleSelectWorkspace = (r) => {
+  const handleSelectWorkspace = async (r) => {
     setShowWorkspaceDropdown(false);
-    triggerRoleLaunchModal?.(r, account);
+    await switchActiveRole(r.role);
+    toast.success(`Switched to ${r.name} workspace!`, { icon: '🚀', duration: 2500 });
+    navigate(r.path);
   };
 
   return (

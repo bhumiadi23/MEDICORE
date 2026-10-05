@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { ethers } from 'ethers';
 import { getContract } from '../blockchain/contract';
 import { NETWORK_CONFIG } from '../config/network';
-import { getRoleConfigForAddress } from '../config/roles';
+import { getRoleConfigForAddress, ALL_ROLES_LIST, ROLE_ACCOUNTS } from '../config/roles';
 
 const Web3Context = createContext();
 
@@ -10,6 +10,7 @@ export const Web3Provider = ({ children }) => {
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
   const [account, setAccount] = useState(null);
+  const [activeRoleOverride, setActiveRoleOverride] = useState(null);
   const [contract, setContract] = useState(null);
   const [entityInfo, setEntityInfo] = useState(null);
   const [currentRoleConfig, setCurrentRoleConfig] = useState(null);
@@ -34,6 +35,44 @@ export const Web3Provider = ({ children }) => {
   const closeRoleLaunchModal = useCallback(() => {
     setRoleLaunchModal((prev) => ({ ...prev, isOpen: false }));
   }, []);
+
+  const switchActiveRole = useCallback(async (roleInput) => {
+    const roleKey = typeof roleInput === 'string' ? roleInput.toLowerCase() : (roleInput?.role || '').toLowerCase();
+    
+    // Find role in ALL_ROLES_LIST or ROLE_ACCOUNTS
+    const roleConfig = ALL_ROLES_LIST.find(r => r.role === roleKey) || 
+                       Object.values(ROLE_ACCOUNTS).find(r => r.role === roleKey);
+    
+    if (!roleConfig) return null;
+
+    setActiveRoleOverride(roleConfig);
+    setCurrentRoleConfig(roleConfig);
+
+    // Update entityInfo for this role so all dashboards immediately reflect this entity
+    const newEntity = {
+      id: roleConfig.entityId,
+      name: roleConfig.entityName,
+      role: roleConfig.roleId,
+      isRegistered: true,
+      isActive: true
+    };
+    setEntityInfo(newEntity);
+    setIsOwner(roleConfig.roleId === 0);
+
+    // If MetaMask is installed and on a different account, prompt account switch in MetaMask
+    if (window.ethereum && roleConfig.address && account && account.toLowerCase() !== roleConfig.address.toLowerCase()) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_requestPermissions',
+          params: [{ eth_accounts: {} }]
+        });
+      } catch (e) {
+        // User ignored/cancelled MetaMask prompt, in-app role switch continues seamlessly
+      }
+    }
+
+    return roleConfig;
+  }, [account]);
 
   // Fallback Read-Only Provider
   useEffect(() => {
@@ -177,6 +216,7 @@ export const Web3Provider = ({ children }) => {
   const disconnectWallet = () => {
     localStorage.setItem('manuallyDisconnected', 'true');
     closeRoleLaunchModal();
+    setActiveRoleOverride(null);
     setAccount(null);
     setEntityInfo(null);
     setCurrentRoleConfig(null);
@@ -186,11 +226,14 @@ export const Web3Provider = ({ children }) => {
     setContract(null); // Triggers fallback
   };
 
+  const effectiveAccount = activeRoleOverride?.address || account;
+
   return (
     <Web3Context.Provider value={{ 
       provider, 
       signer, 
-      account, 
+      account: effectiveAccount, 
+      rawAccount: account,
       contract, 
       entityInfo, 
       isOwner, 
@@ -202,7 +245,8 @@ export const Web3Provider = ({ children }) => {
       setEntityInfo,
       roleLaunchModal,
       triggerRoleLaunchModal,
-      closeRoleLaunchModal
+      closeRoleLaunchModal,
+      switchActiveRole
     }}>
       {children}
     </Web3Context.Provider>
