@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../context/Web3Context';
@@ -83,21 +83,20 @@ const RoleLaunchModal = () => {
   const [secondsLeft, setSecondsLeft] = useState(3);
   const [showRolePicker, setShowRolePicker] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const timerRef = useRef(null);
 
   const { isOpen, roleConfig, address } = roleLaunchModal || {};
   const theme = COLOR_MAP[roleConfig?.badgeColor || 'teal'] || COLOR_MAP.teal;
 
-  const handleLaunch = useCallback(async () => {
+  const handleLaunch = () => {
     closeRoleLaunchModal();
     if (roleConfig?.role) {
-      await switchActiveRole(roleConfig.role);
+      switchActiveRole(roleConfig.role);
     }
     if (roleConfig?.path) {
       toast.success(`Launching ${roleConfig.name} workspace!`, { icon: '🚀', duration: 3000 });
       navigate(roleConfig.path);
     }
-  }, [closeRoleLaunchModal, switchActiveRole, roleConfig, navigate]);
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -120,7 +119,7 @@ const RoleLaunchModal = () => {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [isOpen, isPaused, showRolePicker, secondsLeft, handleLaunch]);
+  }, [isOpen, isPaused, showRolePicker, secondsLeft]);
 
   const handleSelectDifferentRole = async (r) => {
     setShowRolePicker(false);

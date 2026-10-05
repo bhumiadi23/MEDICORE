@@ -17,10 +17,12 @@ class ErrorBoundary extends React.Component {
   }
 
   handleReload = () => {
+    this.setState({ hasError: false, error: null, errorInfo: null });
     window.location.reload();
   };
 
   handleGoHome = () => {
+    this.setState({ hasError: false, error: null, errorInfo: null });
     window.location.href = '/';
   };
 
