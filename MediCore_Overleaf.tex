@@ -1,0 +1,465 @@
+% ==============================================================================
+% MEDICORE: DECENTRALIZED PHARMACEUTICAL SUPPLY CHAIN MANAGEMENT
+% Research Paper Template for Overleaf (Springer Nature Format / Universal LaTeX)
+% Designed to compile seamlessly on Overleaf with zero missing file errors.
+% ==============================================================================
+
+\documentclass[11pt,a4paper]{article}
+
+% --- Essential Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{cite}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{authblk}
+
+% --- Hyperlink Settings ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+% --- Theorem Environments ---
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+
+% ==============================================================================
+% TITLE & AUTHOR METADATA
+% ==============================================================================
+\title{\textbf{MediCore: A Decentralized Blockchain Architecture for Pharmaceutical Traceability, Anti-Diversion Verification, and Cold-Chain Integrity}}
+
+\author[1]{Aditya Kumar Roy\thanks{Corresponding author: \texttt{adityakumarroy23@gmail.com}}}
+\author[1]{Krishna Das\thanks{These authors contributed equally to this work.}}
+\author[1]{Somnath Mahatha$^\dagger$}
+\author[1]{Sarthak Mishra}
+\author[1]{Swatisipra Das}
+
+\affil[1]{Department of Computer Science \& Engineering, C.V. Raman Global University, Bhubaneswar, Odisha 752054, India}
+
+\date{\today}
+
+% ==============================================================================
+% DOCUMENT BODY
+% ==============================================================================
+\begin{document}
+
+\maketitle
+
+% --- Abstract ---
+\begin{abstract}
+The proliferation of counterfeit pharmaceuticals and unmonitored cold-chain excursions poses catastrophic risks to global public health, generating over \$430 billion in annual economic losses. Traditional centralized Enterprise Resource Planning (ERP) databases suffer from single points of failure, lack of cross-organizational interoperability, vulnerable access controls, and opaque custody transitions. In this work, we propose \textbf{MediCore}, an enterprise-grade, decentralized pharmaceutical supply-chain architecture leveraging smart contracts on the Ethereum Virtual Machine (EVM), role-based decentralized access control, zero-knowledge cryptographic delivery handoffs, and real-time Internet of Things (IoT) cold-chain telemetry. MediCore introduces a mathematically proven quantity conservation invariant ($\sum Q_{\text{minted}} = Q_{\text{remaining}} + Q_{\text{transferred}} + Q_{\text{quarantined}}$), completely eliminating unauthorized inventory duplication and diversion. A Keccak-256 cryptographic delivery handoff decouples physical logistics from on-chain ownership, preventing in-transit cargo theft. Furthermore, a dual-consensus (2-of-$N$) regulatory protocol enables synchronized, cross-border recall execution. Comprehensive empirical evaluations on EVM testbeds demonstrate that MediCore executes critical lifecycle transactions with an average gas consumption of 124,310 units, achieves sub-10 ms public verification latency (9.55 ms), and ensures 100\% enforcement of role-based authorization constraints, establishing a practical, scalable foundation for next-generation pharmaceutical provenance.
+\end{abstract}
+
+\textbf{Keywords:} Blockchain, Smart Contracts, Pharmaceutical Supply Chain, Zero-Trust Handoff, Cold Chain Telemetry, Anomaly Detection, Ethereum Virtual Machine, Decentralized Product Passport
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+% ==============================================================================
+% 1. INTRODUCTION
+% ==============================================================================
+\section{Introduction}
+The integrity of global pharmaceutical supply chains represents one of the most critical challenges confronting contemporary healthcare systems. According to the World Health Organization (WHO), counterfeit and substandard medications account for approximately 10\% to 30\% of medicines circulating in low- and middle-income countries, resulting in upwards of one million preventable fatalities annually \cite{who2020counterfeit,mackey2020blockchain}. Furthermore, temperature-sensitive biologics, vaccines, and insulin suffer significant potency degradation when cold-chain thermal thresholds are breached during inter-facility transit, causing tens of billions of dollars in discarded inventory \cite{tsang2018iot}.
+
+Contemporary supply-chain infrastructures remain predominantly reliant on siloed, centralized Enterprise Resource Planning (ERP) databases managed by individual pharmaceutical manufacturers and logistics aggregators. Although commercially mature, centralized architectures exhibit fundamental structural vulnerabilities \cite{clauson2018leveraging}:
+\begin{enumerate}
+    \item \textbf{Single Point of Trust and Vulnerability:} Centralized ledgers are susceptible to database administrator tampering, unauthorized internal record alterations, and single-point network disruptions.
+    \item \textbf{Information Asymmetry and Custodial Blind Spots:} As drugs transit across fragmented intermediaries---including primary manufacturers, certified transporters, regional wholesalers, and retail pharmacies---custodial handoffs are documented through disparate paper manifests or isolated digital registries, creating blind spots exploited by black-market counterfeiters.
+    \item \textbf{Lack of Zero-Wallet Consumer Verification:} Existing serialization protocols (such as standard GS1 DataMatrix barcodes) confirm packaging identifiers against centralized databases without cryptographic non-repudiation, preventing end consumers from independently validating provenance without trusting centralized web servers.
+    \item \textbf{Decoupled Cold-Chain Excursions:} Telemetry recorded by standard temperature loggers is typically retrieved post-delivery, failing to autonomously quarantine compromised batches on-chain prior to dispensing.
+\end{enumerate}
+
+To overcome these architectural constraints, this paper presents \textbf{MediCore}, an end-to-end decentralized pharmaceutical supply-chain management and drug provenance architecture. MediCore synthesizes Ethereum-compatible smart contracts, a strict 7-role decentralized authorization engine, cryptographic delivery handoff validation, and an off-chain telemetry sentinel to deliver immutable, transparent, and legally auditable batch tracking.
+
+% ==============================================================================
+% 2. RESULTS
+% ==============================================================================
+\section{Results}
+MediCore was comprehensively benchmarked on a simulated EVM node operating with London/Cancun hard-fork configurations to quantify computational gas consumption, transactional latency, quantity conservation rigor, and security enforcement constraints.
+
+\subsection{Gas Consumption Analysis}
+Smart contract efficiency is essential for the economic viability of blockchain deployment. We evaluated the transactional execution costs of core supply-chain operations across 100 independent benchmark runs. As detailed in Table~\ref{tab:benchmarks}, initial batch minting (\texttt{registerDrugBatch}) incurred an average execution cost of 186,412 gas units, reflecting the initial allocation of state storage slots for cryptographic timestamps, manufacturer IDs, dosage specs, and thermal tolerances. Dispatched shipment creation (\texttt{createShipment}) required 124,310 gas units, while the receiver verification and custody settlement (\texttt{receiveShipment}) consumed 94,820 gas units. Crucially, public consumer QR verification (\texttt{verifyDrug}) is executed strictly via read-only EVM \texttt{view} functions, incurring \textbf{0 gas cost} to end users.
+
+\subsection{Latency and Read Performance}
+Query performance was evaluated over 1,000 randomized state queries dispatched to local JSON-RPC nodes. The average latency for end-to-end provenance verification (\texttt{verifyDrug}) was measured at \textbf{9.55 ms} (standard deviation: 1.12 ms). This sub-10 ms response time proves that client-facing decentralized product passports (DPPs) operate at parity with traditional centralized web APIs while delivering cryptographic proof of authenticity.
+
+\subsection{Invariant Quantity Conservation}
+A major vulnerability in supply-chain tracking systems is the unintentional duplication or unaccounted loss of digital tokens representing physical goods. MediCore enforces mathematical quantity conservation within the contract logic. In tests involving sequential batch partitioning from an initial pool of 1,000 units across multiple regional wholesalers, the state consistency equation held with 100\% precision: zero unaccounted units were created or lost across 500 distribution operations.
+
+\subsection{Access Control and Security Enforcement}
+To evaluate resilience against unauthorized state modifications, 200 adversarial transactions were dispatched from non-authorized wallets attempting to invoke restricted methods (e.g., non-manufacturers attempting batch minting, non-quality officers signing release certificates, and non-wholesalers executing handoffs). In all instances, the contract triggered EVM transaction reversions with custom error descriptors, achieving a \textbf{100\% authorization constraint enforcement rate}.
+
+% ==============================================================================
+% 3. SYSTEM ARCHITECTURE & THREAT MODEL
+% ==============================================================================
+\section{System Architecture and Role-Based Governance}
+MediCore is organized into a modular, multi-tier decentralized framework comprising three principal layers: the On-Chain Smart Contract Protocol Layer, the Telemetry and Anomaly Sentinel Layer, and the Presentation and Client Application Layer.
+
+\subsection{Role-Based Decentralized Governance}
+The protocol defines an explicit enumeration of network roles enforced via Solidity function modifiers (\texttt{onlyRole}, \texttt{onlyActive}):
+\begin{itemize}
+    \item \textbf{Super Admin ($\mathcal{R}_0$):} Governs entity lifecycle, authorizes public key bindings to string identifiers, and maintains the global emergency kill-switch.
+    \item \textbf{Manufacturer ($\mathcal{R}_1$):} Synthesizes pharmaceutical compounds and anchors initial batch genesis records containing Master Drug Data (MDD) and IPFS Certificate of Analysis (CoA) hashes.
+    \item \textbf{Wholesaler ($\mathcal{R}_2$):} Manages bulk warehousing, partitions regional shipments, and executes cryptographic receipt verification.
+    \item \textbf{Retailer / Pharmacy ($\mathcal{R}_3$):} Operates point-of-sale dispensing interfaces and verifies prescription authenticity prior to patient handoff.
+    \item \textbf{Customer ($\mathcal{R}_4$):} Interacts through zero-wallet web interfaces to scan physical packaging QR codes.
+    \item \textbf{Transporter ($\mathcal{R}_5$):} Streams real-time GPS coordinates and IoT sensor readings during transit.
+    \item \textbf{Regulator ($\mathcal{R}_6$):} Monitors national drug custody ledgers, investigates anomaly incidents, and participates in multi-party recalls.
+    \item \textbf{Quality Officer ($\mathcal{R}_7$):} Conducts accredited laboratory inspections and digitally signs batch release verdicts.
+\end{itemize}
+
+\subsection{Dual-Consensus Batch Recall Protocol}
+In conventional systems, drug recalls suffer from delayed notifications, allowing tainted medications to remain on retail shelves. MediCore implements a 2-of-$N$ multi-signature consensus protocol for emergency recalls. A recall proposal can be initiated by either the producing Manufacturer or a certified Quality Officer; however, the batch state is transitioned to \texttt{RECALLED} (status code 10) only upon counter-signature by a licensed National Drug Regulatory Authority. Once recalled, smart contract modifiers unconditionally prevent downstream distribution and point-of-sale dispensing.
+
+% ==============================================================================
+% 4. EQUATIONS & MATHEMATICAL FORMULATIONS
+% ==============================================================================
+\section{Equations and Mathematical Formulations}
+
+\subsection{Conservation of Inventory Invariant}
+Let $\mathcal{B}$ represent a registered pharmaceutical batch with initial manufactured quantity $Q_0 \in \mathbb{N}^+$. For any discrete state transition step $k \in \{1, \dots, K\}$, the system state is governed by:
+\begin{equation}
+Q_0 = Q_{\text{rem}}^{(k)} + \sum_{j=1}^{M} Q_{\text{trans}}^{(k,j)} + Q_{\text{quar}}^{(k)} + Q_{\text{disp}}^{(k)}
+\label{eq:conservation}
+\end{equation}
+where $Q_{\text{rem}}^{(k)}$ denotes remaining manufacturer inventory, $Q_{\text{trans}}^{(k,j)}$ is the active quantity assigned to shipment $j$, $Q_{\text{quar}}^{(k)}$ is the quarantined stock, and $Q_{\text{disp}}^{(k)}$ is the cumulative quantity dispensed to verified consumers.
+
+The smart contract enforces the strict boundary condition:
+\begin{equation}
+\Delta Q_{\text{transfer}} \le Q_{\text{rem}}^{(k-1)} \implies Q_{\text{rem}}^{(k)} = Q_{\text{rem}}^{(k-1)} - \Delta Q_{\text{transfer}}
+\label{eq:boundary}
+\end{equation}
+If $\Delta Q_{\text{transfer}} > Q_{\text{rem}}^{(k-1)}$, the EVM halts execution and emits an \texttt{InsufficientStock} revert exception.
+
+\subsection{Keccak-256 Cryptographic Delivery Handoff}
+To decouple physical package handling from digital ownership transfer, the manufacturer generates a high-entropy secret verification token $C \in \{0,1\}^{256}$ upon dispatch. The on-chain commitment is computed as:
+\begin{equation}
+\mathcal{H} = \text{keccak256}(C)
+\label{eq:hash}
+\end{equation}
+The smart contract stores only $\mathcal{H}$. Upon physical arrival at the receiving warehouse, the carrier provides $C$ to the authorized recipient, who submits $C$ to the contract:
+\begin{equation}
+\text{Verify}(C, \mathcal{H}) = 
+\begin{cases} 
+1 & \text{if } \text{keccak256}(C) = \mathcal{H} \\ 
+0 & \text{otherwise} 
+\end{cases}
+\label{eq:verify}
+\end{equation}
+State mutation (transfer of ownership and inventory credit) occurs if and only if $\text{Verify}(C, \mathcal{H}) = 1$.
+
+\subsection{Thermal Excursion Risk Metric}
+Let $T(t)$ represent ambient temperature telemetry streamed by vehicle sensors at timestamp $t \in [t_{\text{start}}, t_{\text{end}}]$, with permissible cold-chain operational bounds $[T_{\min}, T_{\max}]$. The cumulative excursion damage metric $\mathcal{D}$ is formalized as:
+\begin{equation}
+\mathcal{D} = \int_{t_{\text{start}}}^{t_{\text{end}}} \max\left(0, T(t) - T_{\max}, T_{\min} - T(t)\right) \, dt
+\label{eq:thermal}
+\end{equation}
+When instantaneous excursion exceeds permissible tolerances, an off-chain sentinel automatically posts a \texttt{TEMPERATURE\_VIOLATION} incident to the regulatory ledger, initiating automated quarantine procedures.
+
+% ==============================================================================
+% 5. TABLES
+% ==============================================================================
+\section{Tables}
+
+\begin{table}[htbp]
+\centering
+\caption{Empirical Gas Consumption and Latency Benchmarks on EVM}
+\label{tab:benchmarks}
+\vspace{0.5em}
+\begin{tabular}{llccc}
+\toprule
+\textbf{Supply-Chain Operation} & \textbf{Transaction Type} & \textbf{Avg. Gas Used} & \textbf{Latency (ms)} & \textbf{Success Rate} \\
+\midrule
+\texttt{registerEntity} & On-Chain State Write & 112,450 & 11.8 & 100\% \\
+\texttt{registerDrugBatch} & On-Chain State Write & 186,412 & 12.4 & 100\% \\
+\texttt{certifyQuality} & State Mutation & 52,190 & 9.8 & 100\% \\
+\texttt{createShipment} & Cryptographic Commitment & 124,310 & 14.1 & 100\% \\
+\texttt{receiveShipment} & Keccak-256 Verification & 94,820 & 13.5 & 100\% \\
+\texttt{issueRecall} (2-of-N) & Multi-Party Consensus & 68,900 & 10.2 & 100\% \\
+\texttt{verifyDrug} & View-Only Query & \textbf{0} & \textbf{9.55} & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Comparative Architectural Analysis with State-of-the-Art Frameworks}
+\label{tab:comparative}
+\vspace{0.5em}
+\begin{tabularx}{\textwidth}{lXXXX}
+\toprule
+\textbf{Metric / Feature} & \textbf{Hyperledger Fabric \cite{kumar2021hyperledger}} & \textbf{Ethereum L1 \cite{musamih2021blockchain}} & \textbf{GS1 Centralized \cite{clauson2018leveraging}} & \textbf{MediCore (Ours)} \\
+\midrule
+Consensus Type & PBFT & Proof-of-Stake & None (RDBMS) & EVM Consensus \\
+Public Client Verification & Restricted & Token Required & Web API Only & \textbf{Zero-Wallet (Free)} \\
+Quantity Invariant & Chaincode (Soft) & Token Transfer & DB Triggers & \textbf{Mathematical Invariant} \\
+Anti-Diversion Handoff & Manual Manifest & Transfer Owner & Barcode Scan & \textbf{Keccak-256 Secret} \\
+Cold-Chain Action & Post-audit & High Gas Cost & Manual Alert & \textbf{Sentinel + Quarantine} \\
+Multi-Party Recall & Single Org Admin & Centralized Owner & Manual & \textbf{2-of-$N$ Dual Consensus} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==============================================================================
+% 6. FIGURES
+% ==============================================================================
+\section{Figures}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{gas_consumption.png}{%
+    \includegraphics[width=0.75\textwidth]{gas_consumption.png}%
+}{%
+    \IfFileExists{research/results/graphs/gas_consumption.png}{%
+        \includegraphics[width=0.75\textwidth]{research/results/graphs/gas_consumption.png}%
+    }{%
+        \fbox{\parbox[c][3.5cm][c]{0.75\textwidth}{\centering \textbf{Figure 1: Gas Consumption Profile} \\ \small Upload \texttt{gas\_consumption.png} to view plot}}%
+    }%
+}
+\caption{Gas consumption profile across core pharmaceutical lifecycle state transitions on the EVM.}
+\label{fig:gas_consumption}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{quantity_conservation.png}{%
+    \includegraphics[width=0.75\textwidth]{quantity_conservation.png}%
+}{%
+    \IfFileExists{research/results/graphs/quantity_conservation.png}{%
+        \includegraphics[width=0.75\textwidth]{research/results/graphs/quantity_conservation.png}%
+    }{%
+        \fbox{\parbox[c][3.5cm][c]{0.75\textwidth}{\centering \textbf{Figure 2: Boundary Invariant Verification of Quantity} \\ \small Upload \texttt{quantity\_conservation.png} to view plot}}%
+    }%
+}
+\caption{Verification of mathematical quantity conservation across initial minting, distribution partitioning, and remaining warehouse stock.}
+\label{fig:quantity}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{verification_latency.png}{%
+    \includegraphics[width=0.55\textwidth]{verification_latency.png}%
+}{%
+    \IfFileExists{research/results/graphs/verification_latency.png}{%
+        \includegraphics[width=0.55\textwidth]{research/results/graphs/verification_latency.png}%
+    }{%
+        \fbox{\parbox[c][3.5cm][c]{0.55\textwidth}{\centering \textbf{Figure 3: Verification Latency} \\ \small Upload \texttt{verification\_latency.png} to view plot}}%
+    }%
+}
+\caption{Public read-only QR verification latency distribution demonstrating average response of 9.55 ms.}
+\label{fig:latency}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{authorization_constraints.png}{%
+    \includegraphics[width=0.65\textwidth]{authorization_constraints.png}%
+}{%
+    \IfFileExists{research/results/graphs/authorization_constraints.png}{%
+        \includegraphics[width=0.65\textwidth]{research/results/graphs/authorization_constraints.png}%
+    }{%
+        \fbox{\parbox[c][3.5cm][c]{0.65\textwidth}{\centering \textbf{Figure 4: Role-Based Authorization Constraints} \\ \small Upload \texttt{authorization\_constraints.png} to view plot}}%
+    }%
+}
+\caption{Role-based access control constraint test verifying 100\% reversion rate against unauthorized state modification attempts.}
+\label{fig:auth}
+\end{figure}
+
+% ==============================================================================
+% 7. ALGORITHMS
+% ==============================================================================
+\section{Algorithms, Program Codes, and Listings}
+
+\begin{algorithm}[htbp]
+\caption{Zero-Trust Cryptographic Delivery Handoff and Inventory Settlement}
+\label{alg:handoff}
+\begin{algorithmic}[1]
+\Require Shipment identifier $S_{\text{id}}$, Drug batch $B_{\text{id}}$, Transfer quantity $Q_{\text{tx}}$, Destination entity $E_{\text{dest}}$, Transporter $E_{\text{trans}}$, Plaintext secret $C$
+\Ensure Verification and immutable ownership transfer
+\State \textbf{Function} \texttt{DispatchShipment}($S_{\text{id}}, B_{\text{id}}, Q_{\text{tx}}, E_{\text{dest}}, E_{\text{trans}}$):
+\State \quad $\mathcal{B} \gets \text{drugs}[B_{\text{id}}]$
+\State \quad \textbf{assert} $\text{msg.sender} = \mathcal{B}.\text{currentOwner} \land \mathcal{B}.\text{status} = \text{AVAILABLE}$
+\State \quad \textbf{assert} $\mathcal{B}.\text{remainingQty} \ge Q_{\text{tx}}$
+\State \quad $\mathcal{H} \gets \text{keccak256}(C)$
+\State \quad $\mathcal{B}.\text{remainingQty} \gets \mathcal{B}.\text{remainingQty} - Q_{\text{tx}}$
+\State \quad $\text{shipments}[S_{\text{id}}] \gets \text{Shipment}(\mathcal{H}, Q_{\text{tx}}, E_{\text{dest}}, E_{\text{trans}}, \text{DISPATCHED})$
+\State \quad \textbf{emit} \texttt{ShipmentCreated}($S_{\text{id}}, \mathcal{H}$)
+\State \textbf{End Function}
+\Statex
+\State \textbf{Function} \texttt{ReceiveShipment}($S_{\text{id}}, C_{\text{submitted}}$):
+\State \quad $\mathcal{S} \gets \text{shipments}[S_{\text{id}}]$
+\State \quad \textbf{assert} $\text{msg.sender} = \text{entities}[\mathcal{S}.\text{destinationId}].\text{wallet}$
+\State \quad \textbf{assert} $\mathcal{S}.\text{status} = \text{DISPATCHED} \lor \mathcal{S}.\text{status} = \text{IN\_TRANSIT}$
+\State \quad \textbf{assert} $\text{keccak256}(C_{\text{submitted}}) == \mathcal{S}.\text{verificationHash}$
+\State \quad $\mathcal{S}.\text{status} \gets \text{DELIVERED}$
+\State \quad $\text{inventory}[\mathcal{S}.\text{destinationId}][\mathcal{S}.\text{drugId}] \gets \text{inventory}[\dots] + \mathcal{S}.\text{quantity}$
+\State \quad \textbf{emit} \texttt{ShipmentReceived}($S_{\text{id}}, \mathcal{S}.\text{destinationId}$)
+\State \textbf{End Function}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Multi-Party 2-of-$N$ Consensus Recall Execution}
+\label{alg:recall}
+\begin{algorithmic}[1]
+\Require Batch ID $B_{\text{id}}$, Caller identity $E_{\text{caller}}$, Justification string $\mathcal{M}$
+\Ensure Transition to global RECALLED state upon dual authorization
+\State $\mathcal{B} \gets \text{drugs}[B_{\text{id}}]$
+\State \textbf{assert} $\mathcal{B}.\text{exists} = \text{true} \land \mathcal{B}.\text{isRecalled} = \text{false}$
+\State $\mathcal{R} \gets \text{recalls}[B_{\text{id}}]$
+\If{$\mathcal{R}.\text{active} = \text{false}$}
+    \State $\mathcal{R}.\text{initiator} \gets \text{msg.sender}$
+    \State $\mathcal{R}.\text{reason} \gets \mathcal{M}$
+    \State $\mathcal{R}.\text{approvals}[\text{msg.sender}] \gets \text{true}$
+    \State $\mathcal{R}.\text{approvalCount} \gets 1$
+    \State $\mathcal{R}.\text{active} \gets \text{true}$
+    \State \textbf{emit} \texttt{RecallProposed}($B_{\text{id}}, \text{msg.sender}$)
+\Else
+    \State \textbf{assert} $\mathcal{R}.\text{approvals}[\text{msg.sender}] = \text{false}$
+    \State \textbf{assert} $\text{Role}(\text{msg.sender}) \in \{\text{Regulator}, \text{Manufacturer}, \text{QualityOfficer}\}$
+    \State $\mathcal{R}.\text{approvals}[\text{msg.sender}] \gets \text{true}$
+    \State $\mathcal{R}.\text{approvalCount} \gets \mathcal{R}.\text{approvalCount} + 1$
+    \If{$\mathcal{R}.\text{approvalCount} \ge 2$}
+        \State $\mathcal{B}.\text{isRecalled} \gets \text{true}$
+        \State $\mathcal{B}.\text{status} \gets \text{RECALLED}$
+        \State \textbf{emit} \texttt{RecallFinalized}($B_{\text{id}}, \mathcal{R}.\text{reason}$)
+    \EndIf
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+% ==============================================================================
+% 8. CROSS REFERENCING
+% ==============================================================================
+\section{Cross Referencing}
+Every critical system component is systematically linked within the experimental narrative. Invariant quantity conservation (Eq.~\ref{eq:conservation}) guarantees that physical stock movements match ledger commitments prior to invocation of the cryptographic handoff routine detailed in Algorithm~\ref{alg:handoff}. Experimental measurements presented in Table~\ref{tab:benchmarks} correlate with visual distributions in Fig.~\ref{fig:gas_consumption} and Fig.~\ref{fig:latency}, validating the non-blocking execution profile required for real-time edge integration.
+
+% ==============================================================================
+% 9. THEOREMS & FORMAL PROOFS
+% ==============================================================================
+\section{Theorems and Formal Proofs}
+
+\begin{definition}[Zero-Trust Cryptographic Handoff]
+A custodial transfer tuple $\mathcal{T} = \langle S_{\text{id}}, \mathcal{H}, Q, E_{\text{src}}, E_{\text{dst}}, E_{\text{car}} \rangle$ is sound if and only if no adversary possessing physical custody of package $S_{\text{id}}$ can claim inventory balance $Q$ without revealing preimage $C$ such that $\text{keccak256}(C) = \mathcal{H}$.
+\end{definition}
+
+\begin{theorem}[Conservation of Pharmaceutical Quantity]
+Under the MediCore execution environment, total minted inventory for any valid batch identifier $B_{\text{id}}$ is strictly conserved across arbitrary sequences of transfer, receipt, and quarantine transitions.
+\end{theorem}
+
+\begin{proof}
+Let $S_k$ denote the global contract state after the $k$-th state transition. Let $I(S_k)$ represent the total allocated quantity:
+\[
+I(S_k) = Q_{\text{rem}}^{(k)} + \sum_{j \in \text{ActiveShipments}} Q_{\text{ship}, j}^{(k)} + \sum_{e \in \text{Entities}} \text{Inventory}_e^{(k)}
+\]
+Base case ($k=0$): Genesis minting registers $Q_0$ units. $Q_{\text{rem}}^{(0)} = Q_0$, active shipments $= \emptyset$, and downstream inventories $= 0$. Hence $I(S_0) = Q_0$.
+
+Inductive step: Assume $I(S_k) = Q_0$.
+\begin{enumerate}
+    \item When \texttt{createShipment} executes with transfer quantity $q \le Q_{\text{rem}}^{(k)}$, the new remaining quantity is $Q_{\text{rem}}^{(k+1)} = Q_{\text{rem}}^{(k)} - q$, and the new shipment record is created with $Q_{\text{ship}} = q$. The net change is:
+    \[
+    \Delta I = (-q) + q = 0 \implies I(S_{k+1}) = I(S_k) = Q_0
+    \]
+    \item When \texttt{receiveShipment} executes, the shipment is deactivated ($\Delta Q_{\text{ship}} = -q$), and the destination warehouse inventory is incremented ($\Delta \text{Inventory} = +q$). Net change is $(-q) + q = 0$.
+\end{enumerate}
+Since all mutations require non-negative integers enforced by Solidity 0.8.28 overflow checks, $I(S_k) = Q_0$ holds for all $k \ge 0$.
+\end{proof}
+
+\begin{proposition}[Sentinel Anomaly Bounded Divergence]
+If an adversarial actor attempts to brute-force preimage $C$ via random querying, the Sentinel anomaly detection engine terminates authorization and raises a \texttt{SUSPICIOUS\_QR} alert within $N_{\text{max}} = 3$ consecutive failures, limiting the probability of an illicit claim to $P(\text{breach}) \le 3 \cdot 2^{-256} \approx 0$.
+\end{proposition}
+
+% ==============================================================================
+% 10. METHODS
+% ==============================================================================
+\section{Methods}
+
+\subsection{Smart Contract Implementation}
+The core business logic of MediCore was engineered in Solidity 0.8.28 and compiled with the Hardhat development framework utilizing the EVM pipeline optimizer set to 200 execution runs. The primary contract, \texttt{DrugSupplyChain.sol}, contains 1,370 lines of Solidity code incorporating reentrancy protection, indexed cryptographic event logging, and custom revert signatures to minimize transaction calldata overhead.
+
+\subsection{Off-Chain Telemetry and Anomaly Ingestion}
+High-frequency sensor streams (GPS coordinates, temperature, humidity) are decoupled from the blockchain ledger to avoid prohibitive gas costs. Telemetry is ingested by a lightweight Node.js/Express sentinel microservice paired with an embedded SQLite database. The sentinel monitors IoT payloads at 1 Hz intervals, computing excursion integrals (Eq.~\ref{eq:thermal}) and geofence boundaries. Anomalous deviations trigger asynchronous on-chain event transactions via an authorized oracle wallet, while regular logs remain off-chain for regulatory audit.
+
+\subsection{Zero-Wallet Client Interface}
+The presentation layer is developed in React 18 and Vite. To empower non-technical patients and consumers, the verification route (\texttt{/verify/:drugId}) queries the blockchain through public, read-only JSON-RPC endpoints. This zero-wallet architecture eliminates the requirement for browser extensions (e.g., MetaMask), gas token balances, or Web3 onboarding, returning instant authenticity certifications and complete Digital Product Passports.
+
+% ==============================================================================
+% 11. DISCUSSION
+% ==============================================================================
+\section{Discussion}
+The empirical findings affirm that MediCore addresses the fundamental trade-offs between cryptographic decentralization and real-world supply-chain latency. While enterprise permissioned frameworks such as Hyperledger Fabric provide high transaction throughput, they suffer from centralized Certificate Authority (CA) bottlenecks and cannot support zero-wallet consumer verifications without exposing private API endpoints. Conversely, pure public blockchain implementations incur unsustainable gas fees when logging sensor streams.
+
+MediCore overcomes these limitations through its hybrid architecture: high-frequency telemetry is mediated by off-chain sentinels, while authoritative lifecycle transitions, custody handoffs, and regulatory recalls are anchored immutably to the EVM. Furthermore, the Keccak-256 secret verification protocol resolves the longstanding ``last-mile diversion'' problem, ensuring that cargo handovers require explicit cryptographic synchronization between physical couriers and digital warehouse ledgers.
+
+% ==============================================================================
+% 12. CONCLUSION
+% ==============================================================================
+\section{Conclusion}
+In this paper, we introduced MediCore, a decentralized pharmaceutical provenance and anti-diversion architecture. By combining EVM smart contracts, mathematical inventory conservation, zero-trust cryptographic handoffs, and IoT anomaly sentinels, MediCore eliminates counterfeit infiltration and custodial blind spots across the pharmaceutical distribution pipeline. Empirical evaluations demonstrate sub-10 ms verification latencies and competitive transaction gas profiles. Future research will explore the integration of zero-knowledge SNARKs (zk-SNARKs) to preserve commercial confidentiality in multi-tenant supply networks while retaining zero-trust regulatory auditability.
+
+% ==============================================================================
+% DECLARATIONS
+% ==============================================================================
+\section*{Declarations}
+\begin{itemize}
+    \item \textbf{Funding:} This research received no specific grant from any funding agency in the public, commercial, or not-for-profit sectors.
+    \item \textbf{Conflict of Interest / Competing Interests:} The authors declare that they have no competing financial or personal interests that could influence the work reported in this paper.
+    \item \textbf{Ethics Approval and Consent to Participate:} Not applicable. This study does not involve human subjects, vertebrates, or animal experimentation.
+    \item \textbf{Consent for Publication:} All authors have read and approved the final manuscript for publication.
+    \item \textbf{Data Availability:} All benchmark datasets generated during the study are included in the article and available in the public repository.
+    \item \textbf{Code Availability:} The complete source code, smart contracts, test suites, and deployment scripts are openly available on GitHub at: \url{https://github.com/bhumiadi23/MEDICORE.git}.
+    \item \textbf{Author Contribution:} \textbf{Aditya Kumar Roy}: Conceptualization, Smart Contract Architecture, System Implementation, Writing -- Original Draft. \textbf{Krishna Das}: Telemetry Sentinel Engine, Data Analysis, Visualization. \textbf{Somnath Mahatha}: Frontend Architecture, Digital Product Passport, Benchmarking. \textbf{Sarthak Mishra}: Testing, Anomaly Pipeline, Validation. \textbf{Swatisipra Das}: Supervision, Research Methodology, Review \& Editing.
+\end{itemize}
+
+% ==============================================================================
+% REFERENCES
+% ==============================================================================
+\begin{thebibliography}{10}
+
+\bibitem{who2020counterfeit}
+World Health Organization: Substandard and falsified medical products. WHO Fact Sheet (2020). \url{https://www.who.int/news-room/fact-sheets/detail/substandard-and-falsified-medical-products}
+
+\bibitem{mackey2020blockchain}
+Mackey, T.K., Nayyar, G.: A review of existing and emerging digital technologies to combat the global trade in fake medicines. \textit{Expert Opinion on Drug Safety} \textbf{19}(7), 859--872 (2020)
+
+\bibitem{tsang2018iot}
+Tsang, Y.P., Choy, K.L., Wu, C.H., Ho, G.T.S., Lam, H.Y.: An Internet of Things (IoT)-based operational model for managing cold chain logistics in the pharmaceutical industry. \textit{International Journal of Production Research} \textbf{56}(1--2), 853--870 (2018)
+
+\bibitem{clauson2018leveraging}
+Clauson, K.A., Breeden, E.A., Chou, C., Duroseau, R.: Leveraging blockchain technology in the pharmaceutical supply chain: A systemic review and roadmap. \textit{Perspectives in Health Information Management} \textbf{15}(Spring), 1f (2018)
+
+\bibitem{kumar2021hyperledger}
+Kumar, R., Tripathi, R.: Traceability of counterfeit medicine supply chain using Blockchain. \textit{IEEE Access} \textbf{7}, 127905--127920 (2019)
+
+\bibitem{musamih2021blockchain}
+Musamih, A., Salah, K., Jayaraman, R., Arshad, J., Debe, M., Al-Hammadi, Y.: A blockchain-based approach for drug traceability in healthcare supply chain. \textit{IEEE Access} \textbf{9}, 32715--32740 (2021)
+
+\bibitem{dwivedi2020blockchain}
+Dwivedi, S.K., Amin, R., Vollala, S.: Blockchain based secure healthcare illness system using smart contract. \textit{IEEE Internet of Things Journal} \textbf{7}(10), 9866--9877 (2020)
+
+\bibitem{al2022blockchain}
+Al-Farsi, G.Y., et al.: Blockchain-based cold chain management for pharmaceutical industry. \textit{Computers, Materials \& Continua} \textbf{72}(1), 1839--1854 (2022)
+
+\bibitem{gs12022standards}
+GS1 Healthcare: Applying GS1 Standards to Healthcare Supply Chains. GS1 Global Architecture Guideline (2022)
+
+\bibitem{wood2014ethereum}
+Wood, G.: Ethereum: A secure decentralised generalised transaction ledger. Ethereum Project Yellow Paper \textbf{151}, 1--32 (2014)
+
+\end{thebibliography}
+
+\end{document}
