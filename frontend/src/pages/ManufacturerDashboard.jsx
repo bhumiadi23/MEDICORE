@@ -143,6 +143,7 @@ const ManufacturerDashboard = () => {
       if (success) {
         setFormData({ drugName: '', drugId: '', quantity: '', expiryDays: '365' });
         fetchDrugs();
+        toast.success(`Batch ${data.drugId} successfully minted on blockchain!`, { icon: '💊', duration: 4000 });
       }
     } catch(err) { console.error(err); }
   };
