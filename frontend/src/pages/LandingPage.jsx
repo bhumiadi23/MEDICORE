@@ -61,7 +61,7 @@ const BackgroundParticles = () => {
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { switchActiveRole } = useWeb3();
+  const { account, isOwner, entityInfo, switchActiveRole } = useWeb3();
 
   const handleRoleSelect = async (role) => {
     const roleKey = role.name.toLowerCase().replace(' ', '-');
